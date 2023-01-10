@@ -1,0 +1,54 @@
+{
+  "Questionnaire": [
+    {
+      "0301": "Daily Living Observations",
+      "Answers": [
+        {
+          "030101": "Yes",
+          "030102": "No"
+        }
+      ]
+    },
+    {
+      "0202": "Appetite",
+      "Answers": [
+        "Appetite normal",
+        "Appetite less",
+        "Appetite more"
+      ]
+    },
+    {
+      "0203": "Sleep",
+      "Answers": [
+        "Sleep normal",
+        "Sleep less",
+        "Sleep more"
+      ]
+    },
+    {
+      "0204": "Energy",
+      "Answers": [
+        "Fatigue absent",
+        "Fatigue sometimes",
+        "Fatigue nearly every day"
+      ]
+    },
+    {
+      "0205": "Memory",
+      "Answers": [
+        "Memory normal",
+        "Memory poor",
+        "Memory very poor"
+      ]
+    },
+    {
+      "0206": "Thoughts",
+      "Answers": [
+        "Thoughts normal",
+        "Thoughts preoccupations",
+        "Thoughts ruminations",
+        "Thoughts negative"
+      ]
+    }
+  ]
+}

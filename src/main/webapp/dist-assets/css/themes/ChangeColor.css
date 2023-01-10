@@ -1,0 +1,26 @@
+﻿.CardItem:active {
+    background-color: yellow;
+}
+
+.btn-primary{
+    background: #3CB043 !important;
+}
+
+.btn-info, .btn-outline-info {
+    border-color: #75e07c !important;
+    background: #3CB043 !important;
+}
+
+.btn-primary, .btn-outline-primary {
+    border-color: #75e07c !important;
+}
+
+.btn-info:hover, .btn-outline-info:hover {
+    background: #75e07c;
+    box-shadow: 0 8px 25px -8px #75e07c;
+}
+
+.btn-primary:hover, .btn-outline-primary:hover {
+    background: #75e07c;
+    box-shadow: 0 8px 25px -8px #75e07c;
+}
