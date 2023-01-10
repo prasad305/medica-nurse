@@ -339,6 +339,7 @@ function CmdAddSession_Click()
         DatePicker();
         TimePicker();
         document.getElementById("TxtSessionCardHeading").innerHTML = "Add New Session";
+
     }
 }
 
@@ -350,6 +351,7 @@ function CmdSaveSession_Click()
     let EndTime = document.getElementById('TxtSessionEnd').value;
     let BranchId = document.getElementById('DrpSessionInstituteBranchId').value;
     let SessionType = document.getElementById('DrpSessionType').value;
+
 
     if (RoomNumber === "" ){
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
