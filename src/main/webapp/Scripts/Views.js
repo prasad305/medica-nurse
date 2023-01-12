@@ -445,7 +445,8 @@ function PatientSearch()
 
         let DivFormRowPatient = new Div(undefined, "col-sm-6 col-12 mt-2");
         DivFormRowPatient.appendChild(new Label(undefined, "Patient Birth Date", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPatientDateBirth")]));
-        DivFormRowPatient.appendChild(new Textbox("TxtPatientDateBirth", "form-control form-control-rounded", [new Attribute(_AttributeType, "text")]));
+        // DivFormRowPatient.appendChild(new Textbox("TxtPatientDateBirth", "form-control form-control-rounded", [new Attribute(_AttributeType, "text")]));
+        DivFormRowPatient.appendChild(new Textbox("TxtPatientDateBirth", "form-control form-control-rounded patient-form Date-Picker", [new Attribute(_AttributeType, "text")]));
         FormRow0PatientSearch.appendChild(DivFormRowPatient);
         FormPatientSearch.appendChild(FormRow0PatientSearch);
 
@@ -510,7 +511,7 @@ function PatientTable()
         let CardBodyPrescriptions = new Div(undefined, "card-body");
 
         let HeadingPrescriptions = new Heading4("Patient Data", undefined);
-        let ImagePrescriptions = new Imagebox(undefined, "images/add-icon.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
+        let ImagePrescriptions = new Imagebox(undefined, "dist-assets/images/Nurse/add-icon.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
         HeadingPrescriptions.appendChild(ImagePrescriptions);
         CardBodyPrescriptions.appendChild(HeadingPrescriptions);
 

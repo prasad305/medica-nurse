@@ -25,8 +25,8 @@ function Login_Success(Response)
         new PatientSearch().Render(Containers.MainContent);
         document.getElementById("PatientCard").style.backgroundColor = "#BDC3C7";
 
-        
 
+        DatePicker();
         GetSessionDoctorId();
         GetNurseBranches();
         NurseGet();
