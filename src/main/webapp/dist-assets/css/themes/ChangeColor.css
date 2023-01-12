@@ -3,33 +3,33 @@
 }
 
 .btn-primary{
-    background: #3CB043 !important;
+    background: #175aa9 !important;
 }
 
 .btn-info, .btn-outline-info {
-    border-color: #75e07c !important;
-    background: #3CB043 !important;
+    border-color: #7583e0 !important;
+    background: #175aa9 !important;
 }
 
 .btn-primary, .btn-outline-primary {
-    border-color: #75e07c !important;
+    border-color: #7583e0 !important;
 }
 
 .btn-info:hover, .btn-outline-info:hover {
-    background: #75e07c;
-    box-shadow: 0 8px 25px -8px #75e07c;
+    background: #7583e0;
+    box-shadow: 0 8px 25px -8px #7583e0;
 }
 
 .btn-primary:hover, .btn-outline-primary:hover {
-    background: #75e07c;
-    box-shadow: 0 8px 25px -8px #75e07c;
+    background: #7583e0;
+    box-shadow: 0 8px 25px -8px #7583e0;
 }
 
 
 .medicanurse{
-width: 15%;
+    width: 15%;
 }
 
 .docnote{
-width: 40%;
+    width: 40%;
 }

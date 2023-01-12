@@ -6,10 +6,10 @@ const _GasEnabled = true;
 const _LiveEnabled = true;
 
 //LIVE
-//const _ServiceURL = _GasEnabled ? "https://clinic.medica.lk/API" : "http://api.medica.gq";
+const _ServiceURL = _GasEnabled ? "https://clinic.medica.lk/API" : "http://api.medica.gq";
 
 //TEST
-const _ServiceURL = _LiveEnabled ? "https://ayu-api.medica.lk" : "http://api.medica.gq";
+// const _ServiceURL = _LiveEnabled ? "https://ayu-api.medica.lk" : "http://api.medica.gq";
 
 //File Upload URL
 /*const _FileUploadURL = "https://utilities.mobios.gq/Uploader";*/
@@ -60,7 +60,7 @@ var _AppointmentNumber;
 var _AppointmentDetails;
 var _AppointmentSessionId;
 var _AppointmentPatientId;
-var _AppointmentDoctorName; 
+var _AppointmentDoctorName;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
 
@@ -83,7 +83,7 @@ var _NurseFirstName;
 const ServiceMethods =
 {
     OTPSend: "OTP/Send",
-    UserPost: "User/Post", 
+    UserPost: "User/Post",
     DoctorGet: "Doctor/Get/",
     SavePatient: "Patient/Save",
     Login: "Authenticate/Login",
@@ -95,7 +95,7 @@ const ServiceMethods =
     SessionGet: "Session/GET/",
     SessionsGet: "Session/GetSessions",
     SessionGetByDate: "Session/GetByDate",
-    NextAppoinment: "Appointment/GetNext", 
+    NextAppoinment: "Appointment/GetNext",
     GetAppoinment: "Appointment/GetAppointment",
     SaveAppoinmnet: "Appointment/Post",
     SaveAnalaytics: "MedicalAnalytic/Save",
@@ -198,25 +198,25 @@ var HideLoader = function ()
 function InitRequestHandler()
 {
     _UserId = getCookie("UserId");
-   
+
     let Headers = new Array();
 
     if (_UserId !== undefined && _UserId !== null && _UserId !== "" && parseInt(_UserId) > 0)
         Headers.push(new HttpHeader("UserId", _UserId));
 
     if (_PatientId !== null && _PatientId !== undefined && _PatientId !== "")
-        Headers.push(new HttpHeader("PatientId", _PatientId));   
+        Headers.push(new HttpHeader("PatientId", _PatientId));
 
     _Request = GetRequest(_ServiceURL, Headers);
 
    //_Request = new Request(_ServiceURL, new Array(), GlobalFail);
- 
+
     _HttpRequestMultiPartWithoutAsync = new HttpRequestMultiPartWithoutAsync(_ServiceURL, new Array(), GlobalFail);
 
     //Comman File Upload-Nurse
-    
+
     _HttpRequestMultiPartWithoutAsync.Headers = _Request.Headers;
-  
+
 }
 
 /*===========================
@@ -250,7 +250,7 @@ function ValidateFields(Selector)
 }
 
 /**
- * 
+ *
  * @param {string} Message
  * @param {MessageTypes} Type
  * @param {string} Title
@@ -298,7 +298,7 @@ function ShowImagePopup(Url)
 		Event Handlers
 ===========================*/
 function Page_Load()
-{   
+{
     Wait(
     function ()
     {

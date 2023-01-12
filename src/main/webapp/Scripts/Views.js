@@ -207,7 +207,7 @@ function SiteNavigation()
         let DropDownRemainder = new Div(undefined, "dropown");
         let DivBadgeTop = new Div("dropdownNotification", "badge-top-container", [new Attribute(_AttributeDataToggle, "dropdown"), new Attribute(_AttributeAriaHaspopup, "true"), new Attribute(_AttributeAriaExpand, "false")]);
         DropDownRemainder.appendChild(DivBadgeTop);
-        let BellIcon = new Span(undefined, undefined, "i-Bell header-icon",[new Attribute("style", "color: #3CB043;")]);
+        let BellIcon = new Span(undefined, undefined, "i-Bell header-icon",[new Attribute("style", "color: #175aa9 ;")]);
         DivBadgeTop.appendChild(BellIcon);
         DivRightHeaderPart.appendChild(DropDownRemainder);
 
