@@ -112,7 +112,7 @@ function Login()
         DivContent.appendChild(new Heading4("MEDICA Reception Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ")]));
 
         let RowUsername = new Div(undefined, "form-group"); //p-4 child
-        RowUsername.appendChild(new Label(undefined, "Username / Mobile No", undefined, [new Attribute(_AttributeFor, "TxtUsername")]));
+        RowUsername.appendChild(new Label(undefined, "Username", undefined, [new Attribute(_AttributeFor, "TxtUsername")]));
         RowUsername.appendChild(new Textbox("TxtUsername", "form-control form-control-rounded UserLogin", [new Attribute(_AttributePattern, "[0-9]{10}"), new Attribute(_AttributePlaceHolder, "Username")]));
         DivContent.appendChild(RowUsername);
 
@@ -132,9 +132,9 @@ function Login()
         DivForgotPassword.appendChild(new Hyperlink("LnkRecover", _ClickVoid, "Forgot Password?", "text-muted", [new Attribute(_AttributeOnClick, "LnkRecover_Click(this)")]));
         DivContent.appendChild(DivForgotPassword);
 
-        let DivDoctor = new Div(undefined, " mt-2 text-center mr-4");
-        DivDoctor.appendChild(new Hyperlink("LnkDoctor", _ClickVoid, "I am a doctor", "text-muted", [new Attribute(_AttributeOnClick, "LnkVirtualconsultation_Click()")]));
-        DivContent.appendChild(DivDoctor);
+        // let DivDoctor = new Div(undefined, " mt-2 text-center mr-4");
+        // DivDoctor.appendChild(new Hyperlink("LnkDoctor", _ClickVoid, "I am a doctor", "text-muted", [new Attribute(_AttributeOnClick, "LnkVirtualconsultation_Click()")]));
+        // DivContent.appendChild(DivDoctor);
 
         //let DivSignInDescription = new Div(undefined, "text-center mt-3");
         //DivSignInDescription.appendChild(new Label(undefined, "DoctorOnline Consulation by MEDICA", undefined), [new Attribute(_AttributeFor, "LnkDoctorOnline_Click")]);
@@ -218,7 +218,7 @@ function SiteNavigation()
         let DropDownProfileMenu = new Div(undefined, "dropdown-menu dropdown-menu-right", [new Attribute(_AttributeAreaLabledBy, "userDropdown")]);
         let HyperlinkProfile = new Hyperlink(undefined, undefined, "Profile", "dropdown-item", [new Attribute(_AttributeOnClick, "CmdProfile_Click(this)")]);
         let HyperlinkAbout = new Hyperlink(undefined, undefined, "About", "dropdown-item", [new Attribute(_AttributeOnClick, "CmdAboutUs_Click(this)")]);
-        let HyperlinkSignOut = new Hyperlink(undefined, undefined, "Sign Out", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSignOut_Click(this)")]);
+        let HyperlinkSignOut = new Hyperlink(undefined, undefined, "Log Out", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSignOut_Click(this)")]);
         DropDownProfileMenu.appendChild(HyperlinkProfile);
         DropDownProfileMenu.appendChild(HyperlinkAbout);
         DropDownProfileMenu.appendChild(HyperlinkSignOut);
