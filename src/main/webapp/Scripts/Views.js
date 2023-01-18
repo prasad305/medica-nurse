@@ -141,7 +141,7 @@ function Login()
         //DivContent.appendChild(DivSignInDescription);
 
         let DivSignInDescription = new Div(undefined, "text-center mt-3");
-        DivSignInDescription.appendChild(new Hyperlink("LnkRecover1", _ClickVoid, "DoctorOnline Consulation by MEDICA", "text-muted", [new Attribute(_AttributeOnClick, "LnkDoctorOnline_Click()")]));
+        DivSignInDescription.appendChild(new Hyperlink("LnkRecover1", _ClickVoid, "DocNote Consulation by MEDICA", "text-muted", [new Attribute(_AttributeOnClick, "LnkDocNote_Click()")]));
         DivContent.appendChild(DivSignInDescription);
 
         BindView(Container, DivContent);
@@ -1313,7 +1313,7 @@ function Footer()
 
         let RowColSub1Footer = new Div(undefined, "col-md-12 col-12 mt-4 mb-4 col-footer text center");
         let WidgetFooter1 = new Div(undefined, "ul-widget7__pic");
-        WidgetFooter1.appendChild(new Heading6("DoctorOnline By MEDICA"));
+        WidgetFooter1.appendChild(new Heading6("DocNote By MEDICA"));
         RowColSub1Footer.appendChild(WidgetFooter1);
         RowFooter.appendChild(RowColSub1Footer);
 

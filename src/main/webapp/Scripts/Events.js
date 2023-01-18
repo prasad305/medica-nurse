@@ -8,7 +8,7 @@ function CmdLogin_Click(Sender)
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
 
     _Request.Post(ServiceMethods.Login, new UserCredential(document.getElementById("TxtUsername").value, document.getElementById("TxtPassword").value), Login_Success);
-    
+
 }
 
 function Welcome_Load()
@@ -48,13 +48,13 @@ function LnkDoctorOnline_Click()
 {
     //a.href = "www.doctoronline.lk";
     //document.body.prepend(a);
-    
+
     window.location.replace("http://www.doctoronline.lk");
 }
 
 function LnkVirtualconsultation_Click()
 {
-    window.location.replace("http://www.medica.gq/Vc/");
+    window.location.replace("https://docnote.medica.lk/");
 }
 
 function LnkEditProfile_Click()
@@ -66,7 +66,7 @@ function LnkEditProfile_Click()
     document.getElementById('UserGender').innerHTML = _PatientGender;
     GetDependentData();
 }
-      
+
 function LnkResetPassword_Click()
 {
     new ResetPassword().Render(Containers.MainContent);
@@ -103,7 +103,7 @@ function CmdPatientSearch_Click()
 {
     _AppointmentSessionId = undefined;
     new PatientSearch().Render(Containers.MainContent);
-    
+
 
 }
 
@@ -119,13 +119,13 @@ function CmdSearchPatient_Click()
     _PatientMobile = PatientMobileNumber;
 
     if (ValidateNIC(PatientNicNumber) === false && PatientNicNumber != "")
-        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!"); 
+        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!");
 
     if (ValidateMobile(PatientMobileNumber) === false && PatientMobileNumber != "")
-        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!"); 
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
 
     if (PatientNicNumber === "" && PatientMobileNumber === "" && PatientHealthID === "" && PatientName === "")
-        return ShowMessage(Messages.SearchFieldValidate, MessageTypes.Warning, "Warning!"); 
+        return ShowMessage(Messages.SearchFieldValidate, MessageTypes.Warning, "Warning!");
     else
     {
         if (PatientNicNumber === "")
@@ -181,7 +181,7 @@ function LoadSessionViceAppointments(Object,SessionId)
     _SessionDetails = SessionDetails;
 
     ViewAppointmentedPatientList();
-} 
+}
 
 function SetAppointmentPatient(Object, PatientId)
 {
@@ -207,23 +207,23 @@ function ViewAppointmentedPatientList()
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');
         SetDoctorData('DrpAppoinmentDoctor');
-    }    
+    }
 }
 
 function AddPatient_Click()
 {
     _Id = 0;
     new NavEditPatient().Render(Containers.MainContent);
-    document.getElementById('nav-primary-tab').click();   
+    document.getElementById('nav-primary-tab').click();
 
     if (_PatientNIC != undefined && _PatientNIC != null && _PatientNIC != "")
     {
-        document.getElementById('TxtAddId').value = _PatientNIC; 
+        document.getElementById('TxtAddId').value = _PatientNIC;
         CmdGetDOBandGender();
     }
 
     if (_PatientMobile != undefined && _PatientMobile != null && _PatientMobile != "" )
-        document.getElementById('TxtAddMobileNumber').value = _PatientMobile; 
+        document.getElementById('TxtAddMobileNumber').value = _PatientMobile;
 
     DatePicker();
 }
@@ -246,16 +246,16 @@ function SavePatient_Click()
     let PatientTypeId = 1;
     let Gender;
 
-    let NIC = document.getElementById('TxtAddId').value; 
+    let NIC = document.getElementById('TxtAddId').value;
     let Title = document.getElementById('DrpAddPatientTtitle').value;
     let MobileNumber = document.getElementById('TxtAddMobileNumber').value;
     let FirstName = document.getElementById('TxtAddFirstName').value;
     let LastName = document.getElementById('TxtAddLastName').value;
     let DateBirth = document.getElementById('TxtAddDateBirth').value;
     let Address = document.getElementById('TxtAddAddress').value;
-    let Occupation = document.getElementById('TxtAddOccupation').value; 
+    let Occupation = document.getElementById('TxtAddOccupation').value;
     let MaritalStatus = document.getElementById('DrpAddPatientMaritalStatus').value;
-      
+
     if (document.getElementById("ChkPatientMale").checked === true)
         Gender = "MALE";
     else if (document.getElementById("ChkPatientFemale").checked === true)
@@ -346,7 +346,7 @@ function CmdSessionSearch_Click()
 
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
-    
+
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
 }
 
@@ -380,7 +380,7 @@ function GetDoctorSessionDataForAppoinment()
 }
 
 function SetAppoinmentToDoctor_Click()
-{ 
+{
     _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
@@ -429,7 +429,7 @@ this.ShowCommunicationError = function ()
 
 
 
-// ***Warning -Need to Refactor 
+// ***Warning -Need to Refactor
 function CmdUploadReportFile_Click()
 {
     //File Validating
@@ -446,7 +446,7 @@ function CmdUploadReportFile_Click()
         let GetFileName = FupUploadSize.name;
 
         let FileName = GetFileName.split('.').slice(0, -1).join('.');
-        
+
         let Files = new FormData();
 
         let Form = document.createElement("form");
@@ -455,10 +455,10 @@ function CmdUploadReportFile_Click()
         if (FupUploadSize.size > _UploadSizeMax)
             return ShowMessage(Messages.FileMaximumSize, MessageTypes.Warning, "Warning!");
 
-        //Upload File 
+        //Upload File
         for (let Count = 0; Count < FupUpload.files.length; Count++)
             Files.append('files', FupUpload.files[Count]);
-       
+
          ShowLoader();
 
         _Request.Upload("PatientDiagnosisDocument", Files, FupUpload, function (Response)
@@ -467,7 +467,7 @@ function CmdUploadReportFile_Click()
 
             _Request.Post(ServiceMethods.PatientInformationSave, new PatientUploadInformation(_PatientId, FupUploadSize.type, FupUploadSize.name, FileName, _UserId), PatientReportSave_Success);
         });
-         
+
     }
     catch (Error)
     {
@@ -518,7 +518,7 @@ function LoadPrescriptionRecordDrugs(Id)
 }
 
 function CmdReadyDrugUpdate_Click()
-{    
+{
     let RecordDrugs = [];
     let PrescriptionRecordId = _ArrayPrescriptionData[0].Id;
     let PrescriptionId = _ArrayPrescriptionData[0].PrescriptionId;
@@ -554,7 +554,7 @@ function CmdReadyDrugUpdate_Click()
             let Entity = new RecordDrugsUpdates(Status, Id, DrugId);
 
             RecordDrugs.push(Entity);
-        } 
+        }
     }
 
     AvailableDrugStatusSave(RecordDrugs, PrescriptionRecordId, PrescriptionId, AppointmentId, PatientId, PrescriptionStatus, _UserId)
@@ -619,14 +619,14 @@ function LnkSignOut_Click()
 
 function CmdBtnClickable_Click(Event)
 {
-    CmdBtnColorRemove_Click();    
+    CmdBtnColorRemove_Click();
     Event.style.backgroundColor = "#BDC3C7";
-   
+
 }
 
 function CmdBtnColorRemove_Click()
 {
-    
+
     document.getElementById("PatientCard").style.backgroundColor = "white";
     document.getElementById("AppoinmentsCard").style.backgroundColor = "white";
     document.getElementById("SessionCard").style.backgroundColor = "white";
@@ -672,5 +672,5 @@ $('#TableAppointedPatient').each(function (index)
     $(this).children('td').three().addClass('d-none d-lg-table-cell');
     $(this).children('td').four().addClass('d-none d-lg-table-cell');
     $(this).children('td').five().addClass('d-none d-lg-table-cell');
-   
+
 });
