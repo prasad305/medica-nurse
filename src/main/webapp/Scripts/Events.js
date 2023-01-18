@@ -53,9 +53,8 @@ function LnkDoctorOnline_Click()
 }
 function LnkVirtualconsultation_Click()
 {
-    window.location.replace("https://ayurveda.medica.lk/");
+    window.location.replace("https://docnote.medica.lk/");
 }
-
 function LnkEditProfile_Click()
 {
     new Profile().Render(Containers.MainContent);
