@@ -53,7 +53,7 @@ function LnkDoctorOnline_Click()
 }
 function LnkVirtualconsultation_Click()
 {
-    window.location.replace("http://www.medica.gq/Vc/");
+    window.location.replace("https://docnote.medica.lk/");
 }
 
 function LnkEditProfile_Click()
