@@ -35,12 +35,12 @@ function FileChoosenValidate(Id)
 
     return ShowMessage(Messages.InvalidFileType, MessageTypes.Warning, "Warning!");
 
-    //if (!AllowedExtensions.includes(FileExtension)) 
+    //if (!AllowedExtensions.includes(FileExtension))
     //{
     //    return ShowMessage(Messages.InvalidFileType, MessageTypes.Error, "Error!");
     //    $('#' + Id).val('');
     //}
-    //else if (fileSize > sizeLimit) 
+    //else if (fileSize > sizeLimit)
     //{
     //    return ShowMessage(Messages.InvalidFileType, MessageTypes.Error, "Error!");
     //    $('#' + Id).val('');
@@ -92,9 +92,9 @@ function DatePicker()
         ({
             changeMonth: true,
             changeYear: true,
+            yearRange: "1950:today"
         });
 }
-
 function TimePicker()
 {
     var Minite = 1000 * 60 * 30;
