@@ -1206,7 +1206,7 @@ function TablePatientAppointment()
 {
     this.Render = function (Container, Data)
     {
-        let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Action"];
+        let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Status", "Action"];
 
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12 mt-4");

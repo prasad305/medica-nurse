@@ -6,14 +6,10 @@
 let DataLength;
 let LoopCount = 0;
 
-function Login_Success(Response)
-{
-    if (Response.Status != 1000 || Response.Data.UserTypeId != 4)
-    {
+function Login_Success(Response) {
+    if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
         return ShowMessage(Messages.LoginInvalid, MessageTypes.Warning, "Warning!");
-    }  
-    else
-    {
+    } else {
         _Username = Response.Data.Username;
         setCookie("UserId", Response.Data.Id);
         _UserId = Response.Data.Id;
@@ -25,7 +21,6 @@ function Login_Success(Response)
         new PatientSearch().Render(Containers.MainContent);
         document.getElementById("PatientCard").style.backgroundColor = "#BDC3C7";
 
-        
 
         GetSessionDoctorId();
         GetNurseBranches();
@@ -33,60 +28,51 @@ function Login_Success(Response)
     }
 }
 
-function Welcome_Success(PatientData)
-{
+function Welcome_Success(PatientData) {
     if (Response.Status == 1001 && Response.Data.length == 0)
         return ShowMessage(Messages.Error, MessageTypes.Warning, "Warning!");
     else
         _PatientData = PatientData;
 }
 
-function SaveDetails_Success(Response)
-{
+function SaveDetails_Success(Response) {
     _PatientNIC = undefined;
 
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
-        if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined)
-        {
+    else {
+        if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
             new NewAppoinment().Render(Containers.MainContent);
             GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
             GetDoctorAppoinmentList();
-        }           
+        }
 
         _PatientDetails = Response.Data;
         FilterPatientData(Response.Data);
 
-        return ShowMessage(Messages.UserSaveSuccess, MessageTypes.Success, "Success!"); 
-    }     
+        return ShowMessage(Messages.UserSaveSuccess, MessageTypes.Success, "Success!");
+    }
 }
 
-function NurseGet()
-{
+function NurseGet() {
     _Request.Get(ServiceMethods.GetNurse, null, NurseGet_Success);
 }
 
-function NurseGet_Success(Response)
-{
+function NurseGet_Success(Response) {
     _NurseFirstName = Response.Data[0].FirstName;
     _NurseLastName = Response.Data[0].LastName;
     _NurseNIC = Response.Data[0].NIC;
 }
 
-function GetNurseBranches()
-{
+function GetNurseBranches() {
     _Request.Post(ServiceMethods.InstituteBranch, new Doctor(undefined, undefined), GetNurseBranches_Success);
     //_Request.Get(ServiceMethods.InstituteBranchGet, null, GetNurseBranches_Success);
 }
 
-function GetNurseBranches_Success(Response)
-{
-    if (Response.Data[0] != null || Response.Data[0] != "")
-    {
+function GetNurseBranches_Success(Response) {
+    if (Response.Data[0] != null || Response.Data[0] != "") {
         _UserBranchId = Response.Data[0].Id;
         document.getElementById("LblInstituteBranch").innerHTML = Response.Data[0].Name;
     }
@@ -97,10 +83,8 @@ function GetNurseBranches_Success(Response)
 		Patient Methods
  =================================*/
 
-function GetPatientData_Success(Response)
-{
-    if (Response.Data.length === 0 || Response.Status != 1000)
-    {
+function GetPatientData_Success(Response) {
+    if (Response.Data.length === 0 || Response.Status != 1000) {
         swal(
             {
                 title: 'Ooops!',
@@ -115,42 +99,39 @@ function GetPatientData_Success(Response)
                 cancelButtonClass: 'btn btn-danger',
                 buttonsStyling: false
 
-            }).then(function ()
-            {
+            }).then(function () {
                 AddPatient_Click();
             },
-                function (dismiss)
-                {
-                    if (dismiss === 'cancel')
-                    {
+            function (dismiss) {
+                if (dismiss === 'cancel') {
 
-                    }
-                });
-    }
-    else
-    {
+                }
+            });
+    } else {
         _PatientDetails = Response.Data[0];
         FilterPatientData(Response.Data);
     }
 }
 
-function FilterPatientData(Data)
-{
+function FilterPatientData(Data) {
     let DataLength = Data.length;
     let Count = 0;
     let ArrayPatientData = [];
     let PatientType = "-";
 
-    if (DataLength === undefined)
-    {
-        ArrayPatientData.push({ " ": " ", Name: Data.Title + Data.FirstName + " " + Data.LastName, "NIC": Data.NIC, "Mobile": Data.Mobile, Gender: Data.Gender, Dep: PatientType, Action:'<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>' });
-    }
-    else
-    {
-        for (Count; Count < DataLength; Count++)
-        {            
-            switch (Data[Count].PatientTypeId)
-            {
+    if (DataLength === undefined) {
+        ArrayPatientData.push({
+            " ": " ",
+            Name: Data.Title + Data.FirstName + " " + Data.LastName,
+            "NIC": Data.NIC,
+            "Mobile": Data.Mobile,
+            Gender: Data.Gender,
+            Dep: PatientType,
+            Action: '<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>'
+        });
+    } else {
+        for (Count; Count < DataLength; Count++) {
+            switch (Data[Count].PatientTypeId) {
                 case 1:
                     PatientType = "Adult";
                     break;
@@ -162,22 +143,28 @@ function FilterPatientData(Data)
                     break;
             }
 
-            ArrayPatientData.push({ " ": " ", Name: Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName, "NIC": Data[Count].NIC, "Mobile": Data[Count].Mobile, Gender: Data[Count].Gender, Dep: PatientType, Action: '<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>' });
+            ArrayPatientData.push({
+                " ": " ",
+                Name: Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName,
+                "NIC": Data[Count].NIC,
+                "Mobile": Data[Count].Mobile,
+                Gender: Data[Count].Gender,
+                Dep: PatientType,
+                Action: '<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>'
+            });
         }
-    }  
+    }
 
     new PatientTable().Render(Containers.MainContent, ArrayPatientData);
     CreateDataTable('TableSelectPatient');
 }
 
-function LoadPatientData(PatientId)
-{
+function LoadPatientData(PatientId) {
     EditPatient_Click();
     _Request.Get(ServiceMethods.GetPatientData + PatientId, PatientId, LoadPatientData_Success);
 }
 
-function LoadPatientData_Success(Response)
-{
+function LoadPatientData_Success(Response) {
     _Id = Response.Data.Id;
     document.getElementById('TxtAddId').value = Response.Data.NIC;
     document.getElementById('TxtAddMobileNumber').value = Response.Data.Mobile;
@@ -198,55 +185,45 @@ function LoadPatientData_Success(Response)
 		Session Methods
  =================================*/
 
-function SaveSession_Success(Response)
-{
+function SaveSession_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         CmdCancelSession_Click();
         return ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
     }
 }
 
-function GetSessionDoctorId()
-{
+function GetSessionDoctorId() {
     _Request.Get(ServiceMethods.NurseDoctor, _UserId, GetSessionDoctorId_Success);
 }
 
-function GetSessionDoctorId_Success(Response)
-{
+function GetSessionDoctorId_Success(Response) {
     _DoctorSessionData = [];
     if (Response.Data === 0 || Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         let Count;
         let DataLength = Response.Data.length;
-        for (Count = 0; Count < DataLength; Count++)
-        {
+        for (Count = 0; Count < DataLength; Count++) {
             _Request.Get(ServiceMethods.DoctorGet + Response.Data[Count].DoctorId, undefined, GetDoctorData_Success);
         }
     }
 }
 
-function GetDoctorData_Success(Response)
-{
+function GetDoctorData_Success(Response) {
     _DoctorSessionData.push(Response.Data);
 }
 
-function SetDoctorData(Id)
-{
+function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
-    for (Count = 0; Count < DataLength; Count++)
-    {
+    for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
 }
 
-function GetDoctorSessionData_Success(Response)
-{
+function GetDoctorSessionData_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     if (Response.Data.length === 0)
@@ -255,26 +232,34 @@ function GetDoctorSessionData_Success(Response)
         FilterDoctorSessionData(Response.Data);
 }
 
-function FilterDoctorSessionData(Data)
-{
+function FilterDoctorSessionData(Data) {
     let DataLength = Data.length;
     let Count = 0;
     let Type;
     let ArrayDoctorSessionData = [];
-    
-    for (Count; Count < DataLength; Count++)
-    {
+
+    for (Count; Count < DataLength; Count++) {
         let SelectDate = Data[Count].TimeStart.split("T")[0];
 
         let RoomNumber = Data[Count].RoomNumber;
 
         let TimeStartSplit = Data[Count].TimeStart.split("T")[1].split(":");
         let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
-        const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' });
+        const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+            timeZone: 'UTC',
+            hour12: true,
+            hour: 'numeric',
+            minute: 'numeric'
+        });
 
         let TimeEndSplit = Data[Count].TimeEnd.split("T")[1].split(":");
         let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
-        const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' });
+        const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+            timeZone: 'UTC',
+            hour12: true,
+            hour: 'numeric',
+            minute: 'numeric'
+        });
 
         if (Data[Count].Type === 1)
             Type = "Virtual";
@@ -284,16 +269,21 @@ function FilterDoctorSessionData(Data)
             Type = "Both";
 
 
-       
-
-        ArrayDoctorSessionData.push({ " ": " ", "Date": SelectDate, "StartTime": StartTime, "EndTime": EndTime, "Room": RoomNumber, Type: Type, "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> <button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>' });
+        ArrayDoctorSessionData.push({
+            " ": " ",
+            "Date": SelectDate,
+            "StartTime": StartTime,
+            "EndTime": EndTime,
+            "Room": RoomNumber,
+            Type: Type,
+            "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> <button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>'
+        });
     }
     new DoctorSessionTable().Render('DivSessionTable', ArrayDoctorSessionData);
     CreateDataTable('TableSession');
 }
 
-function LoadSessionData(Id)
-{
+function LoadSessionData(Id) {
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
     DatePicker();
@@ -302,12 +292,10 @@ function LoadSessionData(Id)
     _Request.Get(ServiceMethods.SessionGet + Id, undefined, LoadSessionData_Success);
 }
 
-function LoadSessionData_Success(Response)
-{
+function LoadSessionData_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         _SessionId = Response.Data.Id;
         document.getElementById('TxtSessionRoomNumber').value = Response.Data.RoomNumber;
         document.getElementById('TxtSessionDate').value = Response.Data.TimeStart.split("T")[0];
@@ -317,17 +305,14 @@ function LoadSessionData_Success(Response)
     }
 }
 
-function GetInstituteBranches()
-{
+function GetInstituteBranches() {
     _Request.Post(ServiceMethods.InstituteBranch, new Doctor(_DoctorId, undefined), GetInstituteBranches_Success);
 }
 
-function GetInstituteBranches_Success(Response)
-{
+function GetInstituteBranches_Success(Response) {
     let Count;
     let DataLength = Response.Data.length;
-    for (Count = 0; Count < DataLength; Count++)
-    {
+    for (Count = 0; Count < DataLength; Count++) {
         $('#DrpSessionInstituteBranchId').append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
         $('#DrpSessionInstituteBranchId').val(1);
     }
@@ -338,33 +323,39 @@ function GetInstituteBranches_Success(Response)
 		Appoinments Methods
  =================================*/
 
-function GetDoctorSessionDataForAppoinment_Success(Response)
-{
+function GetDoctorSessionDataForAppoinment_Success(Response) {
     $("#DrpSessionDateDoctor").empty();
 
     if (Response.Status != 1000)
         $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-    else
-    {   
+    else {
         let DataLength = Response.Data.length;
         let Count = 0;
         let Type;
         if (DataLength === 0)
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-        else
-        {
+        else {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-            for (Count = 0; Count < DataLength; Count++)
-            {
+            for (Count = 0; Count < DataLength; Count++) {
                 let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
                 let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
 
                 let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
-                const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' });
+                const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC',
+                    hour12: true,
+                    hour: 'numeric',
+                    minute: 'numeric'
+                });
 
                 let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
                 let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
-                const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' });
+                const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC',
+                    hour12: true,
+                    hour: 'numeric',
+                    minute: 'numeric'
+                });
 
                 if (Response.Data[Count].Type === 1)
                     Type = "Virtual";
@@ -379,67 +370,57 @@ function GetDoctorSessionDataForAppoinment_Success(Response)
     }
 }
 
-function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails)
-{
+function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     new NewAppoinment().Render(Containers.MainContent);
     _AppointmentSessionId = Id;
-    if (_PatientId !== null && _PatientId !== undefined)
-    {
+    if (_PatientId !== null && _PatientId !== undefined) {
         document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
-        document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " +SessionDetails;
+        document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " + SessionDetails;
         document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
-    }
-    else
-    {
-        document.getElementById('TxtAppointmentsDetails').innerHTML = "Dr." +"  "+ DoctorName + "<br>" + SessionDetails;
-        
+    } else {
+        document.getElementById('TxtAppointmentsDetails').innerHTML = "Dr." + "  " + DoctorName + "<br>" + SessionDetails;
+
         _ApoointmentHeadingTitle = "Dr." + DoctorName + "/" + SessionDetails;
         $("#BtnSaveAppointment").hide();
         document.getElementById("BtnNewAppointment").style.display = "block";
-        
+
     }
     _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
 }
 
-function GetNextAppoinmentNumber_Sucess(Response)
-{
+function GetNextAppoinmentNumber_Sucess(Response) {
     if (Response.Status !== 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     else
-        document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;     
+        document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
 }
 
-function SaveAppointment_Success(Response)
-{
+function SaveAppointment_Success(Response) {
     if (Response.Status !== 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         _PatientId = null;
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
 
         //SavePatientAnalytics(Response.Data);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
-    }        
+    }
 }
 
-function GetDoctorAppoinmentList()
-{
+function GetDoctorAppoinmentList() {
     _ArrayAppointedPatientData = [];
     _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, _AppointmentSessionId), GetDoctorAppoinmentList_Success);
 }
 
-function GetDoctorAppoinmentList_Success(Response)
-{
+function GetDoctorAppoinmentList_Success(Response) {
     if (Response.Status !== 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         LoopCount = 0;
-       _AppointmentDetails = Response.Data;
+        _AppointmentDetails = Response.Data;
         //GetAppointedPatients(Response.Data); 
 
         //*******new 
@@ -448,33 +429,64 @@ function GetDoctorAppoinmentList_Success(Response)
     }
 }
 
-function FilterAppointedPatientData(Data)
-{
-    let PaymentStatus;
+function FilterAppointedPatientData(Data) {
+    let PaymentStatus = '-';
 
     let DataLength = Data.length;
     let Count;
 
-    for (Count = 0; Count < DataLength; Count++)
-    {
-        switch (Data[Count].Status)
-        {
+    for (Count = 0; Count < DataLength; Count++) {
+        switch (Data[Count].Status) {
             case 2:
                 PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
                 break;
             case 3:
                 PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
                 break;
-            
+
         }
 
-        _ArrayAppointedPatientData.push({ " ": " ", "No": Data[Count].Number, "Name": Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName, "NIC": Data[Count].NIC, "Mobile": Data[Count].Mobile, Gender: Data[Count].Gender, Payment: PaymentStatus, "Action": '<button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button"  onclick= "LoadVitals(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2">Vitals</i></span></button> <button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button" onclick= "UploadFile(' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-file">Upload</i></span></button> <button class="btn btn-success btn-icon mt-2 w-75 custom-btn" type="button" onclick="UploadFile(undefined)"><span class="ul-btn__icon"><i class="i-file">Successfull</i></span></button> ' });
+        let ChannelingStatusOriginal = Data[Count].ChannelingStatus.toLowerCase();
+        let ChannelingStatus = '-';
+
+        if (ChannelingStatusOriginal.includes('unsuccessful')) {
+            ChannelingStatus = 'Unsuccessful';
+
+        } else if (ChannelingStatusOriginal.includes('successful')) {
+            ChannelingStatus = 'Successful';
+
+        } else if (ChannelingStatusOriginal.includes('pending')) {
+            ChannelingStatus = 'Pending';
+        }
+
+        // console.log(ChannelingStatusOriginal, ChannelingStatus);
+
+        _ArrayAppointedPatientData.push(
+            {
+                // " ": " ",
+                "No": Data[Count].Number,
+                "Name": Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName,
+                "NIC": Data[Count].NIC,
+                "Mobile": Data[Count].Mobile,
+                "Gender": Data[Count].Gender,
+                "Payment": PaymentStatus,
+                // "Status": Data[Count].ChannelingStatus,
+                "Status": ChannelingStatus,
+                "Action": '<button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button"  onclick= "LoadVitals(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2">Vitals</i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button" onclick= "UploadFile(' + Data.Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-file">Upload</i></span>' +
+                    '</button>'
+                // '<button class="btn btn-success btn-icon mt-2 w-75 custom-btn" type="button" onclick="UploadFile(undefined)">' +
+                // '<span class="ul-btn__icon"><i class="i-file">Successfull</i></span>' +
+                // '</button> '
+            });
 
     }
 }
 
-function LoadVitals(Id)
-{
+function LoadVitals(Id) {
     _PatientId = Id;
     _AppointmentUser = _AppointmentDetails.filter(PId => PId.PatientId === GetPatientOriginalId(Id))[0];
 
@@ -483,48 +495,38 @@ function LoadVitals(Id)
     new AddVitals().Render(Containers.MainContent);
 }
 
-function GetPatientOriginalId(Id)
-{
+function GetPatientOriginalId(Id) {
     let PId;
     let IdString = Id.toString();
 
-    if (IdString.length >= 7)
-    {
+    if (IdString.length >= 7) {
         let A = IdString.substring(0, IdString.length - 2);
         PId = A.substring(4);
     }
     return parseInt(PId);
 }
 
-function LoadPatientDataForVitals_Success(Response)
-{
+function LoadPatientDataForVitals_Success(Response) {
     _PatientDetails = Response.Data;
 }
 
-function UploadFile(PatientId)
-{
+function UploadFile(PatientId) {
     new DocumentUploader().Render(Containers.MainContent);
     _PatientId = PatientId;
 }
 
-function LoadAppointmentedPatientList()
-{
+function LoadAppointmentedPatientList() {
     new TablePatientAppointment().Render('DivAppointedPatientTable', _ArrayAppointedPatientData);
     CreateDataTable('TableAppointedPatient');
-    if (_PatientId !== null && _PatientId !== undefined)
-    {
+    if (_PatientId !== null && _PatientId !== undefined) {
         $(".pres-img").hide();
     }
 }
 
-function UploadPatientReport()
-{
-    if ($("#FilePrescriptionChoosen")[0].files[0] == undefined)
-    {
+function UploadPatientReport() {
+    if ($("#FilePrescriptionChoosen")[0].files[0] == undefined) {
         return ShowMessage(Messages.EmptyFileUpload, MessageTypes.Error, "Error!");
-    }
-    else
-    {
+    } else {
         let Params = new Map();
         Params.set("file", $("#FilePrescriptionChoosen")[0].files[0]);
         Params.set("PatientId", _PatientId);
@@ -536,17 +538,15 @@ function UploadPatientReport()
     }
 }
 
-function Clear()
-{
+function Clear() {
     new Appoinments().Render(Containers.MainContent);
 }
 
-function SavePatientAnalytics(Data)
-{
+function SavePatientAnalytics(Data) {
     Height = parseInt(document.getElementById('TxtBMIHeight').value);
     Weight = parseInt(document.getElementById('TxtBMIWeight').value);
     BloodPressureSystolic = parseInt(document.getElementById('TxtPressureBpSystolic').value);
-    BloodPressureDiastolic = parseInt(document.getElementById('TxtPressureBpDiastolic').value); 
+    BloodPressureDiastolic = parseInt(document.getElementById('TxtPressureBpDiastolic').value);
     PulseRate = parseInt(document.getElementById('TxtPressurePulse').value);
     Temperature = parseInt(document.getElementById('TxtPressureTemp').value);
     let Patient = new SavePatientDetails(0, _PatientDetails.FirstName, _PatientDetails.LastName, _PatientDetails.NIC, _PatientDetails.Passport, _PatientDetails.Mobile, _PatientDetails.Gender, _PatientDetails.Title, undefined, _PatientDetails.DateOfBirth, _PatientDetails.UserSaved, undefined, _PatientDetails.ParentId, undefined, undefined, undefined, undefined);
@@ -554,28 +554,22 @@ function SavePatientAnalytics(Data)
     _Request.Post(ServiceMethods.SaveAnalaytics, new MedicalAnalytic(0, _AppointmentUser.Id, _AppointmentUser.PatientId, Weight, Height, PulseRate, BloodPressureSystolic, BloodPressureDiastolic, Temperature, Patient, Appoinment, _UserId), SavePatientAnalytics_Success);
 }
 
-function SavePatientAnalytics_Success(Response)
-{
-    if (Response.Status !== 1000)
-    {
+function SavePatientAnalytics_Success(Response) {
+    if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    }
-    else
-    {
+    } else {
         return ShowMessage(Response.Message, MessageTypes.Success, "Done!");
     }
 }
 
-function SaveReportFile_Success(Response)
-{
+function SaveReportFile_Success(Response) {
     if (Response.Status != 0)
         return ShowMessage(Messages.ReportUploadFailed, MessageTypes.Error, "Error!");
     return ShowMessage(Messages.ReportUploadSuccess, MessageTypes.Success, "Success!");
 }
 
-function BMICalculator()
-{
-    var height =document.getElementById('TxtBMIHeight').value;
+function BMICalculator() {
+    var height = document.getElementById('TxtBMIHeight').value;
     var weight = document.getElementById('TxtBMIWeight').value;
 
     var finalWeight = weight * .45;
@@ -591,32 +585,27 @@ function BMICalculator()
 		Pharmacy Methods
  =================================*/
 
-function GetPrescriptionList()
-{
-    _Request.Post(ServiceMethods.PrescriptionRecords, new Prescription(0,_UserBranchId), GetPrescriptionList_Success)
+function GetPrescriptionList() {
+    _Request.Post(ServiceMethods.PrescriptionRecords, new Prescription(0, _UserBranchId), GetPrescriptionList_Success)
 }
 
-function GetPrescriptionList_Success(Response)
-{
+function GetPrescriptionList_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     else
         FilterPrescriptionData(Response.Data);
 }
 
-function FilterPrescriptionData(Data)
-{
+function FilterPrescriptionData(Data) {
     _ArrayPrescriptionData = Data;
     let DataLength = Data.length;
     let Count = 0;
     let ArrayPrescriptionData = [];
-   
-    for (Count; Count < DataLength; Count++)
-    {
+
+    for (Count; Count < DataLength; Count++) {
         let Status;
         let NextStatus;
-        switch (Data[Count].Status)
-        {
+        switch (Data[Count].Status) {
             case 1:
                 Status = "New";
                 NextStatus = "Ready";
@@ -631,35 +620,46 @@ function FilterPrescriptionData(Data)
                 break;
         }
 
-        ArrayPrescriptionData.push({ " ": " ", "No": Count + 1, "PrescriptionId": Data[Count].PrescriptionId, "Name": Data[Count].PatientFullName, "HealthId": Data[Count].HealthId, "Status": '<button class="btn btn-info btn-icon" type="button"  ">' + Status + '</button>   <button class="btn btn-primary btn-icon" type="button" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')  ">View</button> <button class="btn btn-info btn-icon" type="button" onclick= "LoadContactData(' + Data[Count].Id + ')"  ">Contact</button> <button class="btn btn-info btn-icon" type="button" onclick= "UpdateIssueStatus_Click(' + Data[Count].Id + ')"  ">' + NextStatus +'</button>'});
+        ArrayPrescriptionData.push({
+            " ": " ",
+            "No": Count + 1,
+            "PrescriptionId": Data[Count].PrescriptionId,
+            "Name": Data[Count].PatientFullName,
+            "HealthId": Data[Count].HealthId,
+            "Status": '<button class="btn btn-info btn-icon" type="button"  ">' + Status + '</button>   <button class="btn btn-primary btn-icon" type="button" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')  ">View</button> <button class="btn btn-info btn-icon" type="button" onclick= "LoadContactData(' + Data[Count].Id + ')"  ">Contact</button> <button class="btn btn-info btn-icon" type="button" onclick= "UpdateIssueStatus_Click(' + Data[Count].Id + ')"  ">' + NextStatus + '</button>'
+        });
     }
     new Pharmacy().Render(Containers.MainContent, ArrayPrescriptionData);
     CreateDataTable('TablePharmacyPrescription');
 }
 
-function LoadPrescriptionRecordDrugs_Success(Response)
-{
+function LoadPrescriptionRecordDrugs_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     else
         FilterPrescriptionRecordDrugs(Response.Data);
 }
 
-function FilterPrescriptionRecordDrugs(Data)
-{
+function FilterPrescriptionRecordDrugs(Data) {
     _ArrayDrugData = Data;
     let DataLength = Data.length;
     let Count = 0;
     let ArrayDrugsData = [];
-    for (Count; Count < DataLength; Count++)
-    {
-        ArrayDrugsData.push({ " ": " ", "No": Count + 1, "BrandName": Data[Count].GenericName + " (" + Data[Count].TradeName + ")", "Dosage": Data[Count].WeightType, "Frequency": Data[Count].Frequency, "Duration": Data[Count].Duration, "Available": '<label class="switch pr-5 switch-primary mr-3"><span></span><input type="checkbox" Id="AvailableRecordDrug_' +Count+'" DrugId="' + Data[Count].DrugId + '" RecordDrugId="' + Data[Count].Id +'"> <span class="slider"></span></label>'});
+    for (Count; Count < DataLength; Count++) {
+        ArrayDrugsData.push({
+            " ": " ",
+            "No": Count + 1,
+            "BrandName": Data[Count].GenericName + " (" + Data[Count].TradeName + ")",
+            "Dosage": Data[Count].WeightType,
+            "Frequency": Data[Count].Frequency,
+            "Duration": Data[Count].Duration,
+            "Available": '<label class="switch pr-5 switch-primary mr-3"><span></span><input type="checkbox" Id="AvailableRecordDrug_' + Count + '" DrugId="' + Data[Count].DrugId + '" RecordDrugId="' + Data[Count].Id + '"> <span class="slider"></span></label>'
+        });
     }
     new PharmacyPrescription().Render(Containers.MainContent, ArrayDrugsData);
     CreateDataTable('TableDrugList');
 
-    switch (_ArrayPrescriptionData[0].Status)
-    {
+    switch (_ArrayPrescriptionData[0].Status) {
         case 1:
             document.getElementById("BtnStatusUpdate").value = "Ready";
             break;
@@ -669,21 +669,18 @@ function FilterPrescriptionRecordDrugs(Data)
         case 3:
             document.getElementById("BtnStatusUpdate").value = "Issued";
             break;
-    } 
+    }
 }
 
-function AvailableDrugStatusSave(RecordDrugs, Id, PrescriptionId, AppointmentId, PatientId, Status, UserSaved)
-{
+function AvailableDrugStatusSave(RecordDrugs, Id, PrescriptionId, AppointmentId, PatientId, Status, UserSaved) {
     let Entity = new RecordDrugsUpdatesDetails(RecordDrugs, Id, PrescriptionId, AppointmentId, PatientId, Status, UserSaved);
     _Request.Post("AppointmentPrescriptionRecord/Update", Entity, AvailableDrugStatusSave_Success);
 }
 
-function AvailableDrugStatusSave_Success(Response)
-{
+function AvailableDrugStatusSave_Success(Response) {
     if (Response.Status !== 1000)
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-    {
+    else {
         ShowMessage(Response.Message, MessageTypes.Success, "Success!");
         GetPrescriptionList();
     }
