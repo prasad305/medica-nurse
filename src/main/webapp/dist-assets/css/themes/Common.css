@@ -250,14 +250,15 @@ input[type=number] {
 }
 
 .Width200 {
-
     width: 200%;
 }
 
 .LoginTitle {
     text-align: center;
-    color: #663399;
+    /*color: #663399;*/
+    color: #1759a7;
     font-family: Source Sans Pro, sans-serif;
+    margin: 20px 0 13px 0 !important;
 }
 
 .j-c {
