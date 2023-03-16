@@ -1208,6 +1208,8 @@ function TablePatientAppointment()
     {
         let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Status", "Action"];
 
+        /*x*/
+
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12 mt-4");
 
