@@ -1206,7 +1206,8 @@ function TablePatientAppointment()
 {
     this.Render = function (Container, Data)
     {
-        let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Status", "Action"];
+        // let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Status", "Action"];
+        let Headers = ["No", "Name", "Mobile", "Gender", "Payment", "Status", "Action"];
 
         /*x*/
 
@@ -1224,6 +1225,43 @@ function TablePatientAppointment()
 
         DivMainAppointmnetTable.appendChild(DivTablePrescriptions);
         BindView(Container, DivMainAppointmnetTable);
+    }
+}
+
+function MedicalBill()
+{
+    this.Render = function (Container)
+    {
+
+        console.log('MedicalBill.Container',Container);
+
+        const MedicalBillModal = new Div("ModalMedicalBill", "modal");
+        MedicalBillModal.setAttribute('data-backdrop','static');
+        MedicalBillModal.setAttribute('data-keyboard','false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+        
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Medical Bill", undefined));
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button("BtnCloseMedicalBill", "Close", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
+        ModalContentFooter.appendChild(new Button("BtnSaveMedicalBill", "Save", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
+
+        ModalDialogContent.appendChild(ModalContentHeader);
+        ModalDialogContent.appendChild(ModalContentBody);
+        ModalDialogContent.appendChild(ModalContentFooter);
+        
+        ModalDialog.appendChild(ModalDialogContent);
+        MedicalBillModal.appendChild(ModalDialog);
+
+        console.log('MedicalBill.MedicalBillModal',MedicalBillModal);
+
+        BindView(Container, MedicalBillModal);
     }
 }
 

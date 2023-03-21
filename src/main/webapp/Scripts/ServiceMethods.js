@@ -465,19 +465,33 @@ function FilterAppointedPatientData(Data) {
             {
                 // " ": " ",
                 "No": Data[Count].Number,
-                "Name": Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName,
-                "NIC": Data[Count].NIC,
+                "Name": Data[Count].Title + " " + Data[Count].FirstName + " " + Data[Count].LastName,
+                // "NIC": Data[Count].NIC,
                 "Mobile": Data[Count].Mobile,
                 "Gender": Data[Count].Gender,
                 "Payment": PaymentStatus,
                 // "Status": Data[Count].ChannelingStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button"  onclick= "LoadVitals(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2">Vitals</i></span>' +
+                // "Action": '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
+                //     '<span class="ul-btn__icon"><i class="i-Pen-2"> Vitals</i></span>' +
+                //     '</button>' +
+                //     '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                //     '<span class="ul-btn__icon"><i class="i-Upload"> Upload</i></span>' +
+                //     '</button>' +
+                //     '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                //     '<span class="ul-btn__icon"><i class="i-Billing"> Bill</i></span>' +
+                //     '</button>'
+
+                "Action": '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"> Vitals</i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon mt-2 w-75 custom-btn" type="button" onclick= "UploadFile(' + Data.Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-file">Upload</i></span>' +
+                    '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Upload"> Upload</i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Billing"> Bill</i></span>' +
                     '</button>'
+
                 // '<button class="btn btn-success btn-icon mt-2 w-75 custom-btn" type="button" onclick="UploadFile(undefined)">' +
                 // '<span class="ul-btn__icon"><i class="i-file">Successfull</i></span>' +
                 // '</button> '
@@ -515,6 +529,11 @@ function LoadPatientDataForVitals_Success(Response) {
 function UploadFile(PatientId) {
     new DocumentUploader().Render(Containers.MainContent);
     _PatientId = PatientId;
+}
+
+function MedicalBillDisplay(PatientId) {
+    console.log('MedicalBillDisplay.PatientId:', PatientId);
+    new MedicalBill().Render(Containers.MainContent);
 }
 
 function LoadAppointmentedPatientList() {
