@@ -434,12 +434,10 @@ m-auto {
     padding-right: 0;
 }
 
-/*#TableAppointedPatient thead tr th:nth-child(7) */
-/*{*/
-/*    color: white;*/
-/*}*/
-
-/*x*/
+#TableAppointedPatient tbody tr td:nth-child(7)
+{
+    text-align: center;
+}
 
 #TableAppointedPatient {
     width: 100% !important;

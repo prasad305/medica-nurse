@@ -463,41 +463,31 @@ function FilterAppointedPatientData(Data) {
 
         _ArrayAppointedPatientData.push(
             {
-                // " ": " ",
                 "No": Data[Count].Number,
                 "Name": Data[Count].Title + " " + Data[Count].FirstName + " " + Data[Count].LastName,
-                // "NIC": Data[Count].NIC,
                 "Mobile": Data[Count].Mobile,
                 "Gender": Data[Count].Gender,
                 "Payment": PaymentStatus,
-                // "Status": Data[Count].ChannelingStatus,
                 "Status": ChannelingStatus,
-                // "Action": '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
+                // "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
                 //     '<span class="ul-btn__icon"><i class="i-Pen-2"> Vitals</i></span>' +
                 //     '</button>' +
-                //     '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                //     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
                 //     '<span class="ul-btn__icon"><i class="i-Upload"> Upload</i></span>' +
                 //     '</button>' +
-                //     '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                //     '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
                 //     '<span class="ul-btn__icon"><i class="i-Billing"> Bill</i></span>' +
                 //     '</button>'
-
-                "Action": '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"> Vitals</i></span>' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Upload"> Upload</i></span>' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon mt-2 w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Billing"> Bill</i></span>' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
-
-                // '<button class="btn btn-success btn-icon mt-2 w-75 custom-btn" type="button" onclick="UploadFile(undefined)">' +
-                // '<span class="ul-btn__icon"><i class="i-file">Successfull</i></span>' +
-                // '</button> '
             });
-
-        /*x*/
 
     }
 }
@@ -532,8 +522,112 @@ function UploadFile(PatientId) {
 }
 
 function MedicalBillDisplay(PatientId) {
-    console.log('MedicalBillDisplay.PatientId:', PatientId);
-    new MedicalBill().Render(Containers.MainContent);
+    // console.log('MedicalBillDisplay.PatientId:', PatientId);
+    // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
+    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
+    new MedicalBill(PatientMatched).Render(Containers.Footer);
+}
+
+function medicalBillTableRowClassesAdd() {
+    const TableRows=$("#TblPatientInvoiceBody").find('tr');
+    let TableRow = '';
+    for (let i = 0; i < TableRows.length; i++) {
+        TableRow = TableRows[i];
+        console.log('medicalBillTableRowClassesAdd.TableRow',TableRow);
+        //add new class(es)
+        $(TableRow).attr('class','TblRow');
+        $(TableRow).find('td:eq(5)').attr('class','ButtonHolderColumn');
+        //remove existing id(s)
+        $(TableRow).attr('id','');
+        $(TableRow).find('td').attr('id','');
+    }
+}
+
+function medicalBillTableFirstRowReset() {
+    $("#TblPatientInvoiceBody").html('');
+    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+}
+
+function medicalBillTableRowAdd() {
+    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    medicalBillTableRowCountReset();
+    medicalBillTableButtonsReset();
+}
+
+function medicalBillTableAllRowsRemove() {
+    $("#TblPatientInvoiceBody").html('');
+    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+    medicalBillTableButtonsReset();
+    $('#TxtDiscount').val(0);
+    $('#TxtTotal').text(0);
+}
+
+function medicalBillTableRowDelete(TableRowElement) {
+    $(TableRowElement).closest('tr').remove();
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+    medicalBillTableButtonsReset();
+}
+
+function medicalBillTableTotalSumGet() {
+    let FeeAmounts = document.getElementsByName('TxtFeeAmount');
+    let Sum = 0;
+    let TableRow = '';
+    let TableRowValue = '';
+    for (let i = 0; i < FeeAmounts.length; i++) {
+        TableRow = FeeAmounts[i].value;
+        TableRowValue = TableRow != NaN && TableRow != '' ? parseInt(TableRow) : 0;
+        Sum += TableRowValue;
+    }
+    let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseInt($('#TxtDiscount').val()) : 0;
+    let Total = Sum - Discount;
+    if (Total < 0) {
+        Total = 0;
+    } else {
+        Total = Sum - Discount;
+    }
+    $('#TxtTotal').text(Total);
+    $('#TxtDiscount').attr('max', (Sum));
+}
+
+function medicalBillTableRowCountReset() {
+    let TableRows = $('#TblPatientInvoiceBody .TblRow');
+    // let TableRows = $('#TblPatientInvoiceBody').find('tr');
+    let TableRow = '';
+    let FirstColumnValue = 0;
+    for (let i = 0; i < TableRows.length; i++) {
+        TableRow = TableRows[i];
+        FirstColumnValue = $(TableRow).find('td:eq(0)').text((i + 1));
+    }
+}
+
+function medicalBillTableButtonsReset() {
+    let Columns = $('#TblPatientInvoiceBody .ButtonHolderColumn');
+    // let Columns = $('#TblPatientInvoiceBody').find('td:eq(5)');
+    if (Columns.length === 1) {
+        $(Columns[0]).html(_MedicalBillTableButtonAddRow);
+    } else {
+        let Column = '';
+        for (let i = 0; i < Columns.length; i++) {
+            Column = Columns[i];
+            if (i === Columns.length - 1) {
+                $(Column).html(_MedicalBillTableButtonDelete + _MedicalBillTableButtonAddRow);
+            } else {
+                $(Column).html(_MedicalBillTableButtonDelete);
+            }
+        }
+    }
+}
+
+function AddVitals(PatientId) {
+    // console.log('AddVitals.PatientId:', PatientId);
+    // console.log('AddVitals._AppointmentDetails:', _AppointmentDetails);
+    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('AddVitals.PatientMatched:', PatientMatched);
+    new Vitals(PatientMatched).Render(Containers.MainContent);
 }
 
 function LoadAppointmentedPatientList() {

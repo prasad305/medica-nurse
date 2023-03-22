@@ -1206,10 +1206,9 @@ function TablePatientAppointment()
 {
     this.Render = function (Container, Data)
     {
-        // let Headers = ["No", "Name", "NIC", "Mobile", "Gender", "Payment", "Status", "Action"];
-        let Headers = ["No", "Name", "Mobile", "Gender", "Payment", "Status", "Action"];
+        // console.log('TablePatientAppointment.Data',Data);
 
-        /*x*/
+        let Headers = ["No", "Name", "Mobile", "Gender", "Payment", "Status", "Action"];
 
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12 mt-4");
@@ -1228,12 +1227,11 @@ function TablePatientAppointment()
     }
 }
 
-function MedicalBill()
+function MedicalBill(Patient)
 {
     this.Render = function (Container)
     {
-
-        console.log('MedicalBill.Container',Container);
+        // console.log('MedicalBill.Patient:',Patient);
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
         MedicalBillModal.setAttribute('data-backdrop','static');
@@ -1241,27 +1239,161 @@ function MedicalBill()
 
         const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
         const ModalDialogContent = new Div(undefined, "modal-content");
-        
+
         const ModalContentHeader = new Div(undefined, "modal-header");
         ModalContentHeader.appendChild(new Heading4("Medical Bill", undefined));
 
         const ModalContentBody = new Div(undefined, "modal-body");
-        ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+        // ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+
+        const ModalContentBodyRowOne = new Div(undefined, "row");
+
+        const PatientDataToDisplay=[
+            ['Patient:','LabelPatientName'],
+            ['Age:','LabelPatientAge'],
+            ['Tel. No:','LabelPatientTelephoneNo'],
+            ['Date:','LabelMedicalBillDate']
+        ];
+
+        for (let i = 0; i < PatientDataToDisplay.length ; i++) {
+            let LabelValueText='-';
+            switch (i) {
+                case 0:LabelValueText=Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
+                    break;
+
+                case 1:LabelValueText='x';
+                    break;
+
+                case 2:LabelValueText=Patient.Mobile;
+                    break;
+
+                case 3:LabelValueText=new Date().toISOString().slice(0,10);
+                    break;
+            }
+
+            const InnerArray=PatientDataToDisplay[i];
+            const LabelText=InnerArray[0];
+            const LabelValueTextId=InnerArray[1];
+            // console.log('MedicalBill.PatientDataToDisplay:',i, LabelText, LabelValueTextId);
+
+            const ColumnOne = new Div(undefined, 'col-md-2');
+            ColumnOne.appendChild(new Label(undefined, LabelText, undefined));
+            ModalContentBodyRowOne.appendChild(ColumnOne);
+
+            const ColumnTwo = new Div(undefined, 'col-md-10');
+            ColumnTwo.appendChild(new Label(LabelValueTextId, LabelValueText, undefined));
+            ModalContentBodyRowOne.appendChild(ColumnTwo);
+        }
+
+        //modal content body > row one
+        ModalContentBody.appendChild(ModalContentBodyRowOne);
+        //modal content body > row two
+        const ModalContentBodyRowTwo = MedicalBillTableWithDynamicRowsGet();
+        ModalContentBody.appendChild(ModalContentBodyRowTwo);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button("BtnCloseMedicalBill", "Close", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
+        ModalContentFooter.appendChild(new Button("BtnPrintMedicalBill", "Print", "btn btn-primary mx-2", [new Attribute('data-dismiss', "modal")]));
         ModalContentFooter.appendChild(new Button("BtnSaveMedicalBill", "Save", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
 
         ModalDialogContent.appendChild(ModalContentHeader);
         ModalDialogContent.appendChild(ModalContentBody);
         ModalDialogContent.appendChild(ModalContentFooter);
-        
+
         ModalDialog.appendChild(ModalDialogContent);
         MedicalBillModal.appendChild(ModalDialog);
 
-        console.log('MedicalBill.MedicalBillModal',MedicalBillModal);
+        // console.log('MedicalBill.MedicalBillModal',MedicalBillModal);
 
         BindView(Container, MedicalBillModal);
+
+        //replace the first empty table row with the pre-defined row
+        medicalBillTableFirstRowReset();
+
+        $('#ModalMedicalBill').modal('show');
+    }
+}
+
+function MedicalBillTableWithDynamicRowsGet(){
+    const ParentRow = new Div(undefined, "row");
+
+    const ParentRowColumnOne = new Div(undefined, 'col-md-12');
+    ParentRowColumnOne.appendChild(new Button(undefined, 'Remove All Rows', 'btn btn-danger btn-sm float-right mb-3', [new Attribute(_AttributeOnClick, 'medicalBillTableAllRowsRemove()')]));
+
+    const ParentRowColumnTwo = new Div(undefined, 'col-md-12');
+
+    const TableWrapper = new Div(undefined, 'table-responsive');
+    const TableHeaders = ["#", "Item", "Fee Type", "Fee Amount (Rs.)", "Actions"];
+    const TableData=[
+        {
+            '#': '',
+            'Item': '',
+            'Fee Type': '',
+            'Fee Amount (Rs.)': '',
+            'Actions': ''
+        }
+    ];
+    const Table = new TableView("TblPatientInvoice", "table", TableHeaders, TableData, undefined);
+    TableWrapper.appendChild(Table);
+    ParentRowColumnTwo.appendChild(TableWrapper);
+
+    const ParentRowColumnThree = new Div(undefined, 'col-md-12');
+
+    const InnerRowOne = new Div(undefined, "row d-flex justify-content-end");
+    const RowOneInnerColumnOne = new Div(undefined, 'col-md-2');
+    RowOneInnerColumnOne.appendChild(new Label(undefined, 'Discount (Rs.):', undefined));
+    InnerRowOne.appendChild(RowOneInnerColumnOne);
+    const RowOneInnerColumnTwo = new Div(undefined, 'col-md-3');
+    const Discount=new Textbox("TxtDiscount", "form-control form-control",
+        [
+            new Attribute(_AttributeType, "number"),
+            new Attribute(_AttributeOnChange, 'medicalBillTableTotalSumGet()'),
+            new Attribute('min', '0'),
+            new Attribute('max', ''),
+            new Attribute('value', '0')
+        ]
+    );
+    RowOneInnerColumnTwo.appendChild(Discount);
+    InnerRowOne.appendChild(RowOneInnerColumnTwo);
+
+    ParentRowColumnThree.appendChild(InnerRowOne);
+
+    const InnerRowTwo = new Div(undefined, "row d-flex justify-content-end");
+    const RowTwoInnerColumnOne = new Div(undefined, 'col-md-2 mt-2');
+    RowTwoInnerColumnOne.appendChild(new Label(undefined, 'Total Fee (Rs.):', undefined));
+    InnerRowTwo.appendChild(RowTwoInnerColumnOne);
+    const RowTwoInnerColumnTwo = new Div(undefined, 'col-md-3 mt-2 pl-4');
+    RowTwoInnerColumnTwo.appendChild(new Span('TxtTotal', '0', undefined));
+    InnerRowTwo.appendChild(RowTwoInnerColumnTwo);
+
+    ParentRowColumnThree.appendChild(InnerRowTwo);
+
+    ParentRow.appendChild(ParentRowColumnOne);
+    ParentRow.appendChild(ParentRowColumnTwo);
+    ParentRow.appendChild(ParentRowColumnThree);
+
+    return ParentRow;
+}
+
+function Vitals(Patient)
+{
+    this.Render = function (Container)
+    {
+        console.log('Vitals.Patient:',Patient);
+
+        const CardVitals = new Div(undefined, "card text-left");
+        const CardBody = new Div(undefined, "card-body");
+
+        let CardBodyRow = new Div(undefined, "row");
+        let CardBodyRowColumn = new Div(undefined, "col-md-12");
+        CardBodyRow.appendChild(CardBodyRowColumn);
+
+        CardBody.appendChild(CardBodyRow);
+        CardVitals.appendChild(CardBody);
+
+        console.log('Vitals.CardVitals',CardVitals);
+
+        BindView(Container, CardVitals);
     }
 }
 

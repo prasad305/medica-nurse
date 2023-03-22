@@ -311,3 +311,32 @@ function Page_Load()
        _LayoutCommon.Render();
     });
 }
+
+/*=============================================================================================
+		Nurse > Appointments > Table > Rows > 'Bill' Button > Dynamic Table > Constants
+===============================================================================================*/
+
+const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm mr-2" onclick="medicalBillTableRowDelete(this)">Delete</button>';
+const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm" onclick="medicalBillTableRowAdd()">Add Row</button>';
+
+const _MedicalBillTableRow = '<tr class="TblRow">' +
+    '<td>1</td>' +
+    '<td> ' +
+    '<input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text"> ' +
+    '</td> ' +
+    '<td> ' +
+    '<select class="form-control" name="TxtFeeType" id="TxtFeeType"> ' +
+    '<option value="" selected>Select A Fee Type</option> ' +
+    '<option value="Hospital Fee"> Hospital Fee</option> ' +
+    '<option value="Doctor Fee">Doctor Fee</option> ' +
+    '<option value="Investigation Fee">Investigation Fee</option> ' +
+    '<option value="Other Fee">Other Fee</option>' +
+    '</select> ' +
+    '</td> ' +
+    '<td> ' +
+    '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
+    '</td> ' +
+    '<td class="ButtonHolderColumn"> ' +
+    _MedicalBillTableButtonAddRow +
+    '</td> ' +
+    '</tr> ';
