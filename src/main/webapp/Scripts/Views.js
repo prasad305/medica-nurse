@@ -1255,13 +1255,16 @@ function MedicalBill(Patient)
             ['Date:','LabelMedicalBillDate']
         ];
 
+        const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(Patient.DateOfBirth.split('-')[0]);
+        // console.log('PatientsAge:', PatientsAge);
+
         for (let i = 0; i < PatientDataToDisplay.length ; i++) {
             let LabelValueText='-';
             switch (i) {
                 case 0:LabelValueText=Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
                     break;
 
-                case 1:LabelValueText='x';
+                case 1:LabelValueText=PatientsAge;
                     break;
 
                 case 2:LabelValueText=Patient.Mobile;
@@ -1292,9 +1295,19 @@ function MedicalBill(Patient)
         ModalContentBody.appendChild(ModalContentBodyRowTwo);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
-        ModalContentFooter.appendChild(new Button("BtnCloseMedicalBill", "Close", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
-        ModalContentFooter.appendChild(new Button("BtnPrintMedicalBill", "Print", "btn btn-primary mx-2", [new Attribute('data-dismiss', "modal")]));
-        ModalContentFooter.appendChild(new Button("BtnSaveMedicalBill", "Save", "btn btn-primary", [new Attribute('data-dismiss', "modal")]));
+        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate('+Patient.Id+')')
+            ]
+        ));
+        ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate('+Patient.Id+')')
+            ]
+        ));
 
         ModalDialogContent.appendChild(ModalContentHeader);
         ModalDialogContent.appendChild(ModalContentBody);
@@ -1318,18 +1331,19 @@ function MedicalBillTableWithDynamicRowsGet(){
     const ParentRow = new Div(undefined, "row");
 
     const ParentRowColumnOne = new Div(undefined, 'col-md-12');
-    ParentRowColumnOne.appendChild(new Button(undefined, 'Remove All Rows', 'btn btn-danger btn-sm float-right mb-3', [new Attribute(_AttributeOnClick, 'medicalBillTableAllRowsRemove()')]));
+    ParentRowColumnOne.appendChild(new Button(undefined, 'Remove All Rows', 'btn btn-danger btn-sm float-right mb-3',
+        [new Attribute(_AttributeOnClick, 'medicalBillTableAllRowsRemove()')]));
 
     const ParentRowColumnTwo = new Div(undefined, 'col-md-12');
 
     const TableWrapper = new Div(undefined, 'table-responsive');
-    const TableHeaders = ["#", "Item", "Fee Type", "Fee Amount (Rs.)", "Actions"];
+    const TableHeaders = ["#", "Item", "Fee Type", "Amount (Rs.)", "Actions"];
     const TableData=[
         {
             '#': '',
             'Item': '',
             'Fee Type': '',
-            'Fee Amount (Rs.)': '',
+            'Amount (Rs.)': '',
             'Actions': ''
         }
     ];
@@ -1349,8 +1363,7 @@ function MedicalBillTableWithDynamicRowsGet(){
             new Attribute(_AttributeType, "number"),
             new Attribute(_AttributeOnChange, 'medicalBillTableTotalSumGet()'),
             new Attribute('min', '0'),
-            new Attribute('max', ''),
-            new Attribute('value', '0')
+            new Attribute('max', '')
         ]
     );
     RowOneInnerColumnTwo.appendChild(Discount);

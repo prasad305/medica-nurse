@@ -316,8 +316,8 @@ function Page_Load()
 		Nurse > Appointments > Table > Rows > 'Bill' Button > Dynamic Table > Constants
 ===============================================================================================*/
 
-const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm mr-2" onclick="medicalBillTableRowDelete(this)">Delete</button>';
-const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm" onclick="medicalBillTableRowAdd()">Add Row</button>';
+const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)">Delete</button>';
+const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()">Add Row</button>';
 
 const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td>1</td>' +
@@ -336,7 +336,7 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td> ' +
     '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
     '</td> ' +
-    '<td class="ButtonHolderColumn"> ' +
+    '<td class="ButtonHolderColumn d-flex justify-content-end"> ' +
     _MedicalBillTableButtonAddRow +
     '</td> ' +
     '</tr> ';
