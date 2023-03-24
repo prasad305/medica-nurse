@@ -1406,7 +1406,7 @@ function MedicalBillPrintPageIframeModal()
         IframeModal.appendChild(ModalDialog);
 
         // console.log('MedicalBillPrintPageIframeModal.IframeModal',IframeModal);
-
+        //
         BindView(Container, IframeModal);
     }
 }

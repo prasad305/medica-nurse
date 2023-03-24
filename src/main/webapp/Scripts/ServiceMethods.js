@@ -738,7 +738,7 @@ function medicalBillSaveInLocalStorage(JsonString) {
 
 function medicalBillPrintPreviewModalDisplay() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
-
+    //
     $('#ModalForMedicalBillIframe .modal-body').html('');
     const Iframe = '<iframe src="http://localhost:8081/MedicaNurse/medical-bill.html" class="w-100 h-100" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
