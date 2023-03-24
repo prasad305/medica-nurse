@@ -1321,7 +1321,7 @@ function MedicalBill(Patient)
         BindView(Container, MedicalBillModal);
 
         //replace the first empty table row with the pre-defined row
-        medicalBillTableFirstRowReset();
+        medicalBillTableFirstRowReplace();
 
         $('#ModalMedicalBill').modal('show');
     }
@@ -1386,6 +1386,29 @@ function MedicalBillTableWithDynamicRowsGet(){
     ParentRow.appendChild(ParentRowColumnThree);
 
     return ParentRow;
+}
+
+function MedicalBillPrintPageIframeModal()
+{
+    this.Render = function (Container)
+    {
+
+        const IframeModal = new Div("ModalForMedicalBillIframe", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        // ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        IframeModal.appendChild(ModalDialog);
+
+        // console.log('MedicalBillPrintPageIframeModal.IframeModal',IframeModal);
+
+        BindView(Container, IframeModal);
+    }
 }
 
 function Vitals(Patient)

@@ -446,7 +446,9 @@ function FilterAppointedPatientData(Data) {
 
         }
 
-        let ChannelingStatusOriginal = Data[Count].ChannelingStatus.toLowerCase();
+        // console.log('Data:',Data[Count]);
+
+        let ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
 
         if (ChannelingStatusOriginal.includes('unsuccessful')) {
@@ -530,21 +532,21 @@ function MedicalBillDisplay(PatientId) {
 }
 
 function medicalBillTableRowClassesAdd() {
-    const TableRows=$("#TblPatientInvoiceBody").find('tr');
+    const TableRows = $("#TblPatientInvoiceBody").find('tr');
     let TableRow = '';
     for (let i = 0; i < TableRows.length; i++) {
         TableRow = TableRows[i];
         // console.log('medicalBillTableRowClassesAdd.TableRow',TableRow);
         //add new class(es)
-        $(TableRow).attr('class','TblRow');
-        $(TableRow).find('td:eq(5)').attr('class','ButtonHolderColumn');
+        $(TableRow).attr('class', 'TblRow');
+        $(TableRow).find('td:eq(5)').attr('class', 'ButtonHolderColumn');
         //remove existing id(s)
-        $(TableRow).attr('id','');
-        $(TableRow).find('td').attr('id','');
+        $(TableRow).attr('id', '');
+        $(TableRow).find('td').attr('id', '');
     }
 }
 
-function medicalBillTableFirstRowReset() {
+function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
 }
@@ -561,7 +563,7 @@ function medicalBillTableAllRowsRemove() {
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
     medicalBillTableButtonsReset();
-    $('#TxtDiscount').val(0);
+    $('#TxtDiscount').val('');
     $('#TxtTotal').text(0);
 }
 
@@ -683,7 +685,7 @@ function medicalBillInputsValidate(PatientId) {
     };
     const MedicalBill = {
         'Items': MedicalBillItems,
-        'Discount': $('#TxtDiscount').val(),
+        'Discount': $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0,
         'Total': $('#TxtTotal').text(),
         'AppDate': DateTime,
         'AppNumber': 1,
@@ -721,9 +723,26 @@ function medicalBillSaveInLocalStorage(JsonString) {
     }
     localStorage.setItem('MedicalBill', JsonString);
 
-    window.open('http://localhost:8081/MedicaNurse/medical-bill.html', '_blank').focus();
+    // const WindowLocation = window.location;
+    // const context = WindowLocation.href.split('/')[3];
+    // console.log('medicalBillSaveInLocalStorage.context:', context);
+    // console.log(WindowLocation.protocol + '//' + WindowLocation.hostname + ':' + WindowLocation.port + '/' + WindowLocation.pathname);
+    // const url = WindowLocation.protocol + '//' + WindowLocation.hostname + ':' + WindowLocation.port + '/' + 'medical-bill.html';
+    // window.open(url, '_blank').focus();
+    // window.open('http://localhost:8081/MedicaNurse/medical-bill.html', '_blank').focus();
+
     $('#ModalMedicalBill').modal('hide');
-    // $('#ModalMedicalBillWithIframe').modal('show');
+
+    medicalBillPrintPreviewModalDisplay();
+}
+
+function medicalBillPrintPreviewModalDisplay() {
+    new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
+
+    $('#ModalForMedicalBillIframe .modal-body').html('');
+    const Iframe = '<iframe src="http://localhost:8081/MedicaNurse/medical-bill.html" class="w-100 h-100" frameborder="0" allowfullscreen></iframe>';
+    $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
+    $('#ModalForMedicalBillIframe').modal('show');
 }
 
 function AddVitals(PatientId) {

@@ -29,7 +29,11 @@
             width: 20%;
         }
 
-        @media print {}
+        @media print {
+            #ButtonWrapper {
+                display: none;
+            }
+        }
     </style>
 
 </head>
@@ -38,18 +42,18 @@
 
 <div class="container-fluid">
 
+    <div class="row my-3" id="ButtonWrapper">
+        <div class="col-sm-12">
+            <button class="btn btn-primary btn-sm float-right" onclick="window.print()">Print The Bill</button>
+        </div>
+    </div>
+
     <div class="row my-3">
         <div class="col-sm-12 text-center">
-            <label>-</label>
-        </div>
-        <div class="col-sm-12 text-center">
-            <label>-</label>
-        </div>
-        <div class="col-sm-12 text-center">
-            <label>-</label>
+            <img src="https://docnote.medica.lk/Images/6.png" class="img-fluid" alt="#">
         </div>
         <div class="col-sm-12">
-            <h2 class="text-center my-3">Medical Bill</h2>
+            <h2 class="text-center mb-4">Medical Bill</h2>
         </div>
     </div>
 
@@ -80,7 +84,9 @@
         </div>
     </div>
 
-    <div class="row my-3">
+    <hr class="border">
+
+    <div class="row my-4">
         <div class="col-sm-2">
             <label>Doctor:</label>
         </div>
@@ -191,7 +197,7 @@
 
         for (let i = 0; i < Bill.Items.length; i++) {
             BillItem = Bill.Items[i];
-            console.log('BillItem:', BillItem.Item, BillItem.FeeType, BillItem.FeeAmount);
+            // console.log('BillItem:', BillItem.Item, BillItem.FeeType, BillItem.FeeAmount);
             TableRow = '<tr>' +
                 '<td class="w-5"><label>' + (i + 1) + '</label></td>' +
                 '<td class=""><label>' + BillItem.Item + '</label></td>' +
@@ -226,6 +232,9 @@
         $('#TxtBillDate').text(Bill.BillDate);
         $('#TxtBillUser').text(Bill.BillUser);
         $('#TxtBillTime').text(Bill.BillTime);
+
+        //print
+        window.print();
 
     }
 
