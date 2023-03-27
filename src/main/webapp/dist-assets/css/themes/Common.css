@@ -447,5 +447,6 @@ m-auto {
     width: 100% !important;
 }
 
-
-
+.h-700{
+    height: 700px;
+}

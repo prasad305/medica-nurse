@@ -702,15 +702,11 @@ function medicalBillInputsValidate(PatientId) {
     // console.log('medicalBillInputsValidate.JsonObjectToSave:', JsonObjectToSave);
 
     if (FilledInputElements === TotalInputElements) {
-        //passed
         // alert('Success!');
-        //close the modal
-        // $('#ModalMedicalBill').modal('hide');
         //save data to local storage
         // console.log('medicalBillInputsValidate.JsonObjectToSave.String:', JSON.stringify(JsonObjectToSave));
         medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
     } else {
-        //failed
         // alert('Failed! There are ' + EmptyInputElements + ' empty input fields.');
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
@@ -723,14 +719,6 @@ function medicalBillSaveInLocalStorage(JsonString) {
     }
     localStorage.setItem('MedicalBill', JsonString);
 
-    // const WindowLocation = window.location;
-    // const context = WindowLocation.href.split('/')[3];
-    // console.log('medicalBillSaveInLocalStorage.context:', context);
-    // console.log(WindowLocation.protocol + '//' + WindowLocation.hostname + ':' + WindowLocation.port + '/' + WindowLocation.pathname);
-    // const url = WindowLocation.protocol + '//' + WindowLocation.hostname + ':' + WindowLocation.port + '/' + 'medical-bill.html';
-    // window.open(url, '_blank').focus();
-    // window.open('http://localhost:8081/MedicaNurse/medical-bill.html', '_blank').focus();
-
     $('#ModalMedicalBill').modal('hide');
 
     medicalBillPrintPreviewModalDisplay();
@@ -738,9 +726,9 @@ function medicalBillSaveInLocalStorage(JsonString) {
 
 function medicalBillPrintPreviewModalDisplay() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
-    //
+
     $('#ModalForMedicalBillIframe .modal-body').html('');
-    const Iframe = '<iframe src="http://localhost:8081/MedicaNurse/medical-bill.html" class="w-100 h-100" frameborder="0" allowfullscreen></iframe>';
+    const Iframe = '<iframe src="http://localhost:8081/MedicaNurse/medical-bill.html" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
 }
@@ -858,17 +846,38 @@ function FilterPrescriptionData(Data) {
                 break;
         }
 
+        // console.log('HealthId:', Data[Count].HealthId);
+
         ArrayPrescriptionData.push({
-            " ": " ",
             "No": Count + 1,
-            "PrescriptionId": Data[Count].PrescriptionId,
+            "Prescription Id": Data[Count].PrescriptionId,
             "Name": Data[Count].PatientFullName,
-            "HealthId": Data[Count].HealthId,
-            "Status": '<button class="btn btn-info btn-icon" type="button"  ">' + Status + '</button>   <button class="btn btn-primary btn-icon" type="button" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')  ">View</button> <button class="btn btn-info btn-icon" type="button" onclick= "LoadContactData(' + Data[Count].Id + ')"  ">Contact</button> <button class="btn btn-info btn-icon" type="button" onclick= "UpdateIssueStatus_Click(' + Data[Count].Id + ')"  ">' + NextStatus + '</button>'
+            "Health Id": Data[Count].HealthId !== null ? Data[Count].HealthId : '-',
+            "Status": '<button class="btn btn-info btn-icon mr-2">' + Status + '</button>' +
+                '<button class="btn btn-primary btn-icon mr-2" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')">View</button>' +
+                '<button class="btn btn-info btn-icon mr-2" onclick= "LoadContactData(' + Data[Count].Id + ')">Contact</button>' +
+                '<button class="btn btn-info btn-icon mr-2" onclick= "UpdateIssueStatus(' + Data[Count].Id + ')">' + NextStatus + '</button>' +
+                '<button class="btn btn-info btn-icon" onclick= "ClinicMedicalBillPrint(' + Data[Count].Id + ')">Print</button>'
         });
     }
     new Pharmacy().Render(Containers.MainContent, ArrayPrescriptionData);
     CreateDataTable('TablePharmacyPrescription');
+}
+
+function ClinicMedicalBillPrint(PrescriptionId) {
+    // console.log('ClinicMedicalBillPrint.PrescriptionId:', PrescriptionId);
+    // console.log('MedicalBillDisplay._ArrayPrescriptionData:', _ArrayPrescriptionData);
+    const PrescriptionMatched = _ArrayPrescriptionData.filter((Prescription) => Prescription.Id === PrescriptionId)[0];
+    console.log('MedicalBillDisplay.PatientMatched:', PrescriptionMatched);
+    new ClinicMedicalBillPrintPageIframeModal(PrescriptionMatched).Render(Containers.Footer);
+}
+
+function LoadContactData(PrescriptionId) {
+    // console.log('LoadContactData.PrescriptionId:', PrescriptionId);
+}
+
+function UpdateIssueStatus(PrescriptionId) {
+    // console.log('UpdateIssueStatus.PrescriptionId:', PrescriptionId);
 }
 
 function LoadPrescriptionRecordDrugs_Success(Response) {

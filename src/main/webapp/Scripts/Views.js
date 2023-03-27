@@ -2,13 +2,11 @@
             Layouts
  =================================*/
 
-function LayoutCommon()
-{
+function LayoutCommon() {
     this.IdHolder = "DivHolder";
     this.IdLoader = "DivLoader";
 
-    this.Render = function ()
-    {
+    this.Render = function () {
         let LayoutDivRow = new Div(undefined, "row");
         LayoutDivRow.appendChild(new Div(this.IdHolder, "col-md-12"));
 
@@ -35,8 +33,7 @@ function LayoutCommon()
 
     };
 
-    this.RenderLoader = function ()
-    {
+    this.RenderLoader = function () {
         let DivContentLoader = new Div(this.IdLoader, "row zindex-10 w-100 align-items-center");
         let DivLoadingIconLoader = new Div("DivLoadingIconLoader", "mx-auto justify-content-center");
         DivLoadingIconLoader.appendChild(new Imagebox("imageLoader", "dist-assets/images/Spinner-1s-204px.gif", undefined, undefined, [new Attribute(_AttributeClass, "c-default w-50")]));
@@ -44,16 +41,13 @@ function LayoutCommon()
         document.getElementById(_Body).appendChild(DivContentLoader);
     };
 
-    this.DerenderLoader = function ()
-    {
+    this.DerenderLoader = function () {
         document.getElementById(_Body).removeChild(document.getElementById(this.IdLoader));
     };
 }
 
-function LayoutMain()
-{
-    this.Render = function ()
-    {
+function LayoutMain() {
+    this.Render = function () {
         let DivMain = new Div(undefined, "app-admin-wrap layout-sidebar-large");
         let DivNavBar = new Div(Containers.Header, undefined);
         DivMain.appendChild(DivNavBar);
@@ -98,16 +92,14 @@ function LayoutMain()
             Views
  =================================*/
 
-function Login()
-{
-    this.Render = function (Container)
-    {
+function Login() {
+    this.Render = function (Container) {
         let DivContent = new Div(undefined, "p-4");
 
         let DivRow = new Div(undefined, "row justify-content-center");
 
-         DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/LogoNurse.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default mr-5  medicanurse")]));
-         DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/docnote.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default ml-2 docnote")]));
+        DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/LogoNurse.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default mr-5  medicanurse")]));
+        DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/docnote.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default ml-2 docnote")]));
         DivContent.appendChild(DivRow);
         DivContent.appendChild(new Heading4("MEDICA Reception Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ")]));
 
@@ -148,10 +140,8 @@ function Login()
     };
 }
 
-function Welcome()
-{
-    this.Render = function (Container)
-    {
+function Welcome() {
+    this.Render = function (Container) {
         let DivWelcome = new Div(undefined, "CustomMarginTop FontColorWhite text-center");
 
         let WelcomeHeadingLine1 = new Heading2("Welcome to");
@@ -182,10 +172,8 @@ function Welcome()
     }
 }
 
-function SiteNavigation()
-{
-    this.Render = function (Container)
-    {
+function SiteNavigation() {
+    this.Render = function (Container) {
         let DivMainHeader = new Div(undefined, "main-header");
 
         let DivLogo = new Div(undefined, "logo");
@@ -207,7 +195,7 @@ function SiteNavigation()
         let DropDownRemainder = new Div(undefined, "dropown");
         let DivBadgeTop = new Div("dropdownNotification", "badge-top-container", [new Attribute(_AttributeDataToggle, "dropdown"), new Attribute(_AttributeAriaHaspopup, "true"), new Attribute(_AttributeAriaExpand, "false")]);
         DropDownRemainder.appendChild(DivBadgeTop);
-        let BellIcon = new Span(undefined, undefined, "i-Bell header-icon",[new Attribute("style", "color: #175aa9 ;")]);
+        let BellIcon = new Span(undefined, undefined, "i-Bell header-icon", [new Attribute("style", "color: #175aa9 ;")]);
         DivBadgeTop.appendChild(BellIcon);
         DivRightHeaderPart.appendChild(DropDownRemainder);
 
@@ -239,10 +227,8 @@ function SiteNavigation()
     }
 }
 
-function SiteButtonBar()
-{
-    this.Render = function (Container)
-    {
+function SiteButtonBar() {
+    this.Render = function (Container) {
         let DivRowMainButtonBar = Div(undefined, "row");
         DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
         let RowCelRowCellSite = Div(undefined, "col-lg-2 col-3 pd-lr-5");
@@ -337,7 +323,7 @@ function SiteButtonBar()
         let ImageAllergies = new Imagebox(undefined, "dist-assets/images/Nurse/Pharmacy.png", undefined, "Allergies Image");
 
         let DivWidgetContentAllergies = new Div("AllergiesHeading", "ul-widget__content-v2");
-        let HeadingAllergies = new Heading4("Pharmacy", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingAllergies = new Heading4("Prescription", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageAllergies.appendChild(ImageAllergies);
         DivWidgetRowAllergies.appendChild(DivWidgetImageAllergies);
@@ -359,10 +345,8 @@ function SiteButtonBar()
     }
 }
 
-function Profile()
-{
-    this.Render = function (Container)
-    {
+function Profile() {
+    this.Render = function (Container) {
         let CardProfile = new Div(undefined, "card");
         let CardBodyEditProfile = new Div(undefined, "card-body");
         let UserProfile = new Div(undefined, "user-profile mb-4");
@@ -385,10 +369,8 @@ function Profile()
     }
 }
 
-function AboutUs()
-{
-    this.Render = function (Container)
-    {
+function AboutUs() {
+    this.Render = function (Container) {
         let CardProfile = new Div(undefined, "card");
         let CardBodyEditProfile = new Div(undefined, "card-body");
         let UserProfile = new Div(undefined, "user-profile mb-4");
@@ -416,10 +398,8 @@ function AboutUs()
          Patient UIs
  =================================*/
 
-function PatientSearch()
-{
-    this.Render = function (Container)
-    {
+function PatientSearch() {
+    this.Render = function (Container) {
         let CardPatient = new Div(undefined, "card text-left");
 
         let CardBodyPatient = new Div(undefined, "card-body");
@@ -503,10 +483,8 @@ function PatientSearch()
     }
 }
 
-function PatientTable()
-{
-    this.Render = function (Container, Data)
-    {
+function PatientTable() {
+    this.Render = function (Container, Data) {
         let Headers = ["Name", "NIC", "Mobile", "Gender", "Dep", "Action"];
         let CardPrescriptions = new Div(undefined, "card text-left");
         let CardBodyPrescriptions = new Div(undefined, "card-body");
@@ -527,10 +505,8 @@ function PatientTable()
     }
 }
 
-function NavEditPatient()
-{
-    this.Render = function (Container)
-    {
+function NavEditPatient() {
+    this.Render = function (Container) {
         let CardEditPatient = new Div(undefined, "card text-left");
         let CardBodyEditPatient = new Div(undefined, "card-body");
         let HeadingEditPatient = new Heading4("Edit Patient", [new Attribute(_AttributeClass, "card-title mb-3")]);
@@ -557,10 +533,8 @@ function NavEditPatient()
     }
 }
 
-function EditPatient()
-{
-    this.Render = function (Container)
-    {
+function EditPatient() {
+    this.Render = function (Container) {
         let FormEditPatient = new Form(undefined);
 
         let FormGroupRowPatient = new Div(undefined, "form-group row");
@@ -642,10 +616,8 @@ function EditPatient()
     }
 }
 
-function AddPatient()
-{
-    this.Render = function (Container)
-    {
+function AddPatient() {
+    this.Render = function (Container) {
         let FormEditPatient = new Form(undefined);
 
         let FormGroupRowPatient = new Div(undefined, "form-group row");
@@ -772,10 +744,8 @@ function AddPatient()
             Session UIs
  =================================*/
 
-function Session()
-{
-    this.Render = function (Container)
-    {
+function Session() {
+    this.Render = function (Container) {
         let CardSession = new Div(undefined, "card text-left");
         let CardBodySession = new Div(undefined, "card-body");
 
@@ -839,11 +809,9 @@ function Session()
     }
 }
 
-function DoctorSessionTable()
-{
-    this.Render = function (Container, Data)
-    {
-        let Headers = ["Date", "StartTime","EndTime", "Room", "Type", "Action"];
+function DoctorSessionTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ["Date", "StartTime", "EndTime", "Room", "Type", "Action"];
 
         let DivMain = new Div(undefined, "card-body");
 
@@ -856,10 +824,8 @@ function DoctorSessionTable()
     }
 }
 
-function AddNewSession()
-{
-    this.Render = function (Container)
-    {
+function AddNewSession() {
+    this.Render = function (Container) {
         let CardAddSession = new Div(undefined, "card text-left");
         let CardBodyAddSession = new Div(undefined, "card-body");
 
@@ -930,10 +896,8 @@ function AddNewSession()
     }
 }
 
-function SessionTable()
-{
-    this.Render = function (Container)
-    {
+function SessionTable() {
+    this.Render = function (Container) {
         let Headers = ["Date", "Time", "Gender", "Dep"];
 
         let CardSessionTable = new Div(undefined, "card text-left");
@@ -966,10 +930,8 @@ function SessionTable()
             Appoinment UIs
  =================================*/
 
-function Appoinments()
-{
-    this.Render = function (Container)
-    {
+function Appoinments() {
+    this.Render = function (Container) {
         let CardAppoinments = new Div(undefined, "card text-left");
         let CardBodyAppoinments = new Div(undefined, "card-body");
 
@@ -1024,10 +986,8 @@ function Appoinments()
     }
 }
 
-function NewAppoinment()
-{
-    this.Render = function (Container)
-    {
+function NewAppoinment() {
+    this.Render = function (Container) {
         let CardAddAppoinment = new Div(undefined, "card text-left");
         let CardBodyAddAppoinment = new Div(undefined, "card-body");
 
@@ -1076,10 +1036,8 @@ function NewAppoinment()
     }
 }
 
-function VitalsEditor()
-{
-    this.Render = function (Container)
-    {
+function VitalsEditor() {
+    this.Render = function (Container) {
         let CardAddAppoinment = new Div(undefined, "card text-left");
         let CardBodyAddAppoinment = new Div(undefined, "card-body");
 
@@ -1158,10 +1116,8 @@ function VitalsEditor()
 }
 
 
-function DocumentUploader()
-{
-    this.Render = function (Container)
-    {
+function DocumentUploader() {
+    this.Render = function (Container) {
         let CardAddAppoinment = new Div(undefined, "card text-left");
         let CardBodyAddAppoinment = new Div(undefined, "card-body");
 
@@ -1202,10 +1158,8 @@ function DocumentUploader()
     }
 }
 
-function TablePatientAppointment()
-{
-    this.Render = function (Container, Data)
-    {
+function TablePatientAppointment() {
+    this.Render = function (Container, Data) {
         // console.log('TablePatientAppointment.Data',Data);
 
         let Headers = ["No", "Name", "Mobile", "Gender", "Payment", "Status", "Action"];
@@ -1227,15 +1181,13 @@ function TablePatientAppointment()
     }
 }
 
-function MedicalBill(Patient)
-{
-    this.Render = function (Container)
-    {
+function MedicalBill(Patient) {
+    this.Render = function (Container) {
         // console.log('MedicalBill.Patient:',Patient);
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
-        MedicalBillModal.setAttribute('data-backdrop','static');
-        MedicalBillModal.setAttribute('data-keyboard','false');
+        MedicalBillModal.setAttribute('data-backdrop', 'static');
+        MedicalBillModal.setAttribute('data-keyboard', 'false');
 
         const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
         const ModalDialogContent = new Div(undefined, "modal-content");
@@ -1248,35 +1200,39 @@ function MedicalBill(Patient)
 
         const ModalContentBodyRowOne = new Div(undefined, "row");
 
-        const PatientDataToDisplay=[
-            ['Patient:','LabelPatientName'],
-            ['Age:','LabelPatientAge'],
-            ['Tel. No:','LabelPatientTelephoneNo'],
-            ['Date:','LabelMedicalBillDate']
+        const PatientDataToDisplay = [
+            ['Patient:', 'LabelPatientName'],
+            ['Age:', 'LabelPatientAge'],
+            ['Tel. No:', 'LabelPatientTelephoneNo'],
+            ['Date:', 'LabelMedicalBillDate']
         ];
 
         const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(Patient.DateOfBirth.split('-')[0]);
         // console.log('PatientsAge:', PatientsAge);
 
-        for (let i = 0; i < PatientDataToDisplay.length ; i++) {
-            let LabelValueText='-';
+        for (let i = 0; i < PatientDataToDisplay.length; i++) {
+            let LabelValueText = '-';
             switch (i) {
-                case 0:LabelValueText=Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
+                case 0:
+                    LabelValueText = Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
                     break;
 
-                case 1:LabelValueText=PatientsAge;
+                case 1:
+                    LabelValueText = PatientsAge;
                     break;
 
-                case 2:LabelValueText=Patient.Mobile;
+                case 2:
+                    LabelValueText = Patient.Mobile;
                     break;
 
-                case 3:LabelValueText=new Date().toISOString().slice(0,10);
+                case 3:
+                    LabelValueText = new Date().toISOString().slice(0, 10);
                     break;
             }
 
-            const InnerArray=PatientDataToDisplay[i];
-            const LabelText=InnerArray[0];
-            const LabelValueTextId=InnerArray[1];
+            const InnerArray = PatientDataToDisplay[i];
+            const LabelText = InnerArray[0];
+            const LabelValueTextId = InnerArray[1];
             // console.log('MedicalBill.PatientDataToDisplay:',i, LabelText, LabelValueTextId);
 
             const ColumnOne = new Div(undefined, 'col-md-2');
@@ -1299,13 +1255,13 @@ function MedicalBill(Patient)
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate('+Patient.Id+')')
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate('+Patient.Id+')')
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ')')
             ]
         ));
 
@@ -1327,7 +1283,7 @@ function MedicalBill(Patient)
     }
 }
 
-function MedicalBillTableWithDynamicRowsGet(){
+function MedicalBillTableWithDynamicRowsGet() {
     const ParentRow = new Div(undefined, "row");
 
     const ParentRowColumnOne = new Div(undefined, 'col-md-12');
@@ -1338,7 +1294,7 @@ function MedicalBillTableWithDynamicRowsGet(){
 
     const TableWrapper = new Div(undefined, 'table-responsive');
     const TableHeaders = ["#", "Item", "Fee Type", "Amount (Rs.)", "Actions"];
-    const TableData=[
+    const TableData = [
         {
             '#': '',
             'Item': '',
@@ -1358,7 +1314,7 @@ function MedicalBillTableWithDynamicRowsGet(){
     RowOneInnerColumnOne.appendChild(new Label(undefined, 'Discount (Rs.):', undefined));
     InnerRowOne.appendChild(RowOneInnerColumnOne);
     const RowOneInnerColumnTwo = new Div(undefined, 'col-md-3');
-    const Discount=new Textbox("TxtDiscount", "form-control form-control",
+    const Discount = new Textbox("TxtDiscount", "form-control form-control",
         [
             new Attribute(_AttributeType, "number"),
             new Attribute(_AttributeOnChange, 'medicalBillTableTotalSumGet()'),
@@ -1388,10 +1344,8 @@ function MedicalBillTableWithDynamicRowsGet(){
     return ParentRow;
 }
 
-function MedicalBillPrintPageIframeModal()
-{
-    this.Render = function (Container)
-    {
+function MedicalBillPrintPageIframeModal() {
+    this.Render = function (Container) {
 
         const IframeModal = new Div("ModalForMedicalBillIframe", "modal");
 
@@ -1406,16 +1360,35 @@ function MedicalBillPrintPageIframeModal()
         IframeModal.appendChild(ModalDialog);
 
         // console.log('MedicalBillPrintPageIframeModal.IframeModal',IframeModal);
-        //
+
         BindView(Container, IframeModal);
     }
 }
 
-function Vitals(Patient)
-{
-    this.Render = function (Container)
-    {
-        console.log('Vitals.Patient:',Patient);
+function ClinicMedicalBillPrintPageIframeModal(Prescription) {
+    this.Render = function (Container) {
+
+        const Modal = new Div("ClinicModalForMedicalBillIframe", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        console.log('ClinicMedicalBillPrintPageIframeModal.Modal',Modal);
+
+        BindView(Container, Modal);
+    }
+}
+
+function Vitals(Patient) {
+    this.Render = function (Container) {
+        console.log('Vitals.Patient:', Patient);
 
         const CardVitals = new Div(undefined, "card text-left");
         const CardBody = new Div(undefined, "card-body");
@@ -1427,7 +1400,7 @@ function Vitals(Patient)
         CardBody.appendChild(CardBodyRow);
         CardVitals.appendChild(CardBody);
 
-        console.log('Vitals.CardVitals',CardVitals);
+        console.log('Vitals.CardVitals', CardVitals);
 
         BindView(Container, CardVitals);
     }
@@ -1438,11 +1411,9 @@ function Vitals(Patient)
             Pharmacy UIs
  =================================*/
 
-function Pharmacy()
-{
-    this.Render = function (Container, Data)
-    {
-        let Headers = ["No", "PrescriptionId", "Name", "HealthId", "Status"];
+function Pharmacy() {
+    this.Render = function (Container, Data) {
+        let Headers = ["No", "Prescription Id", "Name", "Health Id", "Status"];
 
         let CardPrescriptions = new Div(undefined, "card text-left");
         let CardBodyPrescriptions = new Div(undefined, "card-body");
@@ -1462,10 +1433,8 @@ function Pharmacy()
     }
 }
 
-function PharmacyPrescription()
-{
-    this.Render = function (Container, Data)
-    {
+function PharmacyPrescription() {
+    this.Render = function (Container, Data) {
         let Headers = ["No", "BrandName", "Dosage", "Frequency", "Duration", "Available"];
 
         let CardPrescriptions = new Div(undefined, "card text-left");
@@ -1508,10 +1477,8 @@ function PharmacyPrescription()
 
 
 //Footer
-function Footer()
-{
-    this.Render = function (Container)
-    {
+function Footer() {
+    this.Render = function (Container) {
         let DivPopup = new Div("DivPopup");
         let CardFooter = new Div(undefined, "col-12 footer-1");
         CardFooter.appendChild(DivPopup);
