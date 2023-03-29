@@ -1,33 +1,27 @@
-﻿
-/*=================================
+﻿/*=================================
 		Common Methods
  =================================*/
 
-function GetStringUpperCase(String)
-{
+function GetStringUpperCase(String) {
     return String.charAt(0).toUpperCase() + String.slice(1);
 }
 
-function GetStringAge(String)
-{
+function GetStringAge(String) {
     let date = new Date();
     return date.getFullYear() - (String.toString().substring(0, 4));
 }
 
 // Warning -Need to Refactor-
-function FileChoosenValidate(Id)
-{
+function FileChoosenValidate(Id) {
     let FileDetails = "";
     FileDetails = $('#' + Id)[0].files[0];
     const AllowedExtensions = ['jpg', 'png', 'pdf', 'PDF', 'JPG', 'jpeg', 'JPEG', 'PNG'],
         sizeLimit = 5000000; // 5 megabyte
     // destructuring file name and size from file object
-    const { name: fileName, size: fileSize } = FileDetails;
+    const {name: fileName, size: fileSize} = FileDetails;
     const FileExtension = fileName.split(".").pop();
-    for (var i = 0; i <= AllowedExtensions.length; i++)
-    {
-        if (AllowedExtensions[i] == FileExtension)
-        {
+    for (var i = 0; i <= AllowedExtensions.length; i++) {
+        if (AllowedExtensions[i] == FileExtension) {
             return true; // valid file extension
         }
 
@@ -48,86 +42,77 @@ function FileChoosenValidate(Id)
 }
 
 
-function CreateDataTable(Id)
-{
+function CreateDataTable(Id) {
     $('#' + Id).DataTable(
         {
-        dom: 'Bfrtip',
+            dom: 'Bfrtip',
 
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             responsive:
-            {
-                details:
                 {
-                type: 'column',
-                target: 'tr'
-            }
-        },
+                    details:
+                        {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                },
             columnDefs:
                 [
-            { ClassName: 'control', "orderable": false, "targets": '_all' },
-            { responsivePriority: 1, targets: 0 },
-            { responsivePriority: 2, targets: 4 }
-        ],
+                    {ClassName: 'control', "orderable": false, "targets": '_all'},
+                    {responsivePriority: 1, targets: 0},
+                    {responsivePriority: 2, targets: 4}
+                ],
 
-        "aaSorting": [],
-        "ordering": false,
-        "bPaginate": false,
-        "bFilter": false,
-        "bInfo": false,
+            "aaSorting": [],
+            "ordering": false,
+            "bPaginate": false,
+            "bFilter": false,
+            "bInfo": false,
 
-    });
+        });
 }
 
-function ConvertDate(StringDate)
-{
+function ConvertDate(StringDate) {
     return StringDate.split("T")[0];
 }
 
-function DatePicker()
-{
+function DatePicker() {
     $('.Date-Picker').datepicker
-        ({
-            changeMonth: true,
-            changeYear: true,
-            yearRange: "1950:today"
-        });
+    ({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1950:today"
+    });
 }
-function TimePicker()
-{
+
+function TimePicker() {
     var Minite = 1000 * 60 * 30;
 
     $('.Time-Picker').timepicker
-        ({
-            timeFormat: 'h:mm:ss p',
-            startTime: new Date(Math.round(new Date().getTime() / Minite) * Minite),
-        });
+    ({
+        timeFormat: 'h:mm:ss p',
+        startTime: new Date(Math.round(new Date().getTime() / Minite) * Minite),
+    });
 }
 
-function ValidateMobileNumber(Number)
-{
-    if (Number.length === 10 || Number.length === 9)
-    {
+function ValidateMobileNumber(Number) {
+    if (Number.length === 10 || Number.length === 9) {
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
 
-function GetAge()
-{
+function GetAge() {
     let Age = AgeCalculate(FormatDate(document.getElementById('PatientDOB').value, "dd/MM/yyyy", "yyyy-MM-dd"));
 
     $('#age').val(Age[0]);
     $('#age1').val(Age[1]);
 }
 
-function GetDateOfBirthByNIC(NIC)
-{
+function GetDateOfBirthByNIC(NIC) {
     if (NIC === null || NIC === "")
         return null;
 
@@ -146,86 +131,58 @@ function GetDateOfBirthByNIC(NIC)
     if (NIC.length === 10) {
         Year = "19" + NIC.substr(0, 2);
         DayText = parseInt(NIC.substr(2, 3));
-    }
-    else {
+    } else {
         Year = NIC.substr(0, 4);
         DayText = parseInt(NIC.substr(4, 3));
     }
 
     // Gender
-    if (DayText > 500)
-    {
+    if (DayText > 500) {
         Gender = "Female";
         DayText = DayText - 500;
-    }
-    else
-    {
+    } else {
         Gender = "Male";
     }
 
     // Day Digit Validation
-    if (DayText < 1 && DayText > 366)
-    {
+    if (DayText < 1 && DayText > 366) {
         return null
     }
 
-    if (DayText > 335)
-    {
+    if (DayText > 335) {
         Day = DayText - 335;
         Month = "12";
-    }
-    else if (DayText > 305)
-    {
+    } else if (DayText > 305) {
         Day = DayText - 305;
         Month = "11";
-    }
-    else if (DayText > 274)
-    {
+    } else if (DayText > 274) {
         Day = DayText - 274;
         Month = "10";
-    }
-    else if (DayText > 244)
-    {
+    } else if (DayText > 244) {
         Day = DayText - 244;
         Month = "09";
-    }
-    else if (DayText > 213)
-    {
+    } else if (DayText > 213) {
         Day = DayText - 213;
         Month = "08";
-    }
-    else if (DayText > 182)
-    {
+    } else if (DayText > 182) {
         Day = DayText - 182;
         Month = "07";
-    }
-    else if (DayText > 152)
-    {
+    } else if (DayText > 152) {
         Day = DayText - 152;
         Month = "06";
-    }
-    else if (DayText > 121)
-    {
+    } else if (DayText > 121) {
         Day = DayText - 121;
         Month = "05";
-    }
-    else if (DayText > 91)
-    {
+    } else if (DayText > 91) {
         Day = DayText - 91;
         Month = "04";
-    }
-    else if (DayText > 60)
-    {
+    } else if (DayText > 60) {
         Day = DayText - 60;
         Month = "03";
-    }
-    else if (DayText < 32)
-    {
+    } else if (DayText < 32) {
         Month = "01";
         Day = DayText;
-    }
-    else if (DayText > 31)
-    {
+    } else if (DayText > 31) {
         Day = DayText - 31;
         Month = "02";
     }
@@ -233,8 +190,7 @@ function GetDateOfBirthByNIC(NIC)
     return Year + "/" + Month + "/" + Day + "/" + Gender;
 }
 
-function ValidateNIC(NICNo)
-{
+function ValidateNIC(NICNo) {
     if (NICNo === 0 || NICNo === "")
         return false;
 
@@ -256,8 +212,7 @@ function ValidateNIC(NICNo)
     return true;
 }
 
-function ValidateMobile(MobileNo)
-{
+function ValidateMobile(MobileNo) {
     if (MobileNo === null || MobileNo === undefined)
         return false;
 

@@ -70,6 +70,7 @@ var _ArrayPrescriptionData = [];
 var _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 var _ArrayAppointedMentNumber = [];
+let _ArrayClinicBillsSearchResultsData = [];
 
 
 var _NurseNIC;
@@ -130,7 +131,7 @@ const Messages =
     SessionSaveSuccess: "The Session Has Been Saved Successfully",
     NoSession: "No Session Found!",
     ApoointmentSaveSuccess: "The Appointment Has Been Saved Successfully!",
-    EmptyFields: "All Fields Must Be Filled!",
+    InvalidDate: "Invalid Date!",
     ReportUploadSuccess: "Report Upload Success!",
     ReportUploadFailed: "Report Upload Failed!",
     ResetPassword: "Please call to reset password!",

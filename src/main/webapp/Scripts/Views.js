@@ -159,7 +159,7 @@ function Welcome() {
         DivWelcome.appendChild(DivLoader);
 
         let DivFooter = new Div(undefined, "Footer FontColorWhite");
-        let CreditsHeading = new Heading6("Pwered By mobiOs", [new Attribute(_AttributeClass, "text-center")]);
+        let CreditsHeading = new Heading6("Powered By mobiOs", [new Attribute(_AttributeClass, "text-center")]);
         DivFooter.appendChild(CreditsHeading);
         DivWelcome.appendChild(DivFooter);
 
@@ -1160,7 +1160,6 @@ function DocumentUploader() {
 
 function TablePatientAppointment() {
     this.Render = function (Container, Data) {
-        // console.log('TablePatientAppointment.Data',Data);
 
         let Headers = ["No", "Name", "Mobile", "Gender", "Payment", "Status", "Action"];
 
@@ -1183,7 +1182,6 @@ function TablePatientAppointment() {
 
 function MedicalBill(Patient) {
     this.Render = function (Container) {
-        // console.log('MedicalBill.Patient:',Patient);
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
         MedicalBillModal.setAttribute('data-backdrop', 'static');
@@ -1194,9 +1192,9 @@ function MedicalBill(Patient) {
 
         const ModalContentHeader = new Div(undefined, "modal-header");
         ModalContentHeader.appendChild(new Heading4("Medical Bill", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
 
         const ModalContentBody = new Div(undefined, "modal-body");
-        // ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
 
         const ModalContentBodyRowOne = new Div(undefined, "row");
 
@@ -1208,7 +1206,6 @@ function MedicalBill(Patient) {
         ];
 
         const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(Patient.DateOfBirth.split('-')[0]);
-        // console.log('PatientsAge:', PatientsAge);
 
         for (let i = 0; i < PatientDataToDisplay.length; i++) {
             let LabelValueText = '-';
@@ -1233,7 +1230,6 @@ function MedicalBill(Patient) {
             const InnerArray = PatientDataToDisplay[i];
             const LabelText = InnerArray[0];
             const LabelValueTextId = InnerArray[1];
-            // console.log('MedicalBill.PatientDataToDisplay:',i, LabelText, LabelValueTextId);
 
             const ColumnOne = new Div(undefined, 'col-md-2');
             ColumnOne.appendChild(new Label(undefined, LabelText, undefined));
@@ -1249,6 +1245,7 @@ function MedicalBill(Patient) {
         //modal content body > row two
         const ModalContentBodyRowTwo = MedicalBillTableWithDynamicRowsGet();
         ModalContentBody.appendChild(ModalContentBodyRowTwo);
+        ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
@@ -1264,15 +1261,10 @@ function MedicalBill(Patient) {
                 new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ')')
             ]
         ));
-
-        ModalDialogContent.appendChild(ModalContentHeader);
-        ModalDialogContent.appendChild(ModalContentBody);
         ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);
         MedicalBillModal.appendChild(ModalDialog);
-
-        // console.log('MedicalBill.MedicalBillModal',MedicalBillModal);
 
         BindView(Container, MedicalBillModal);
 
@@ -1368,21 +1360,123 @@ function MedicalBillPrintPageIframeModal() {
 function ClinicMedicalBillPrintPageIframeModal(Prescription) {
     this.Render = function (Container) {
 
-        const Modal = new Div("ClinicModalForMedicalBillIframe", "modal");
+        // console.log('ClinicMedicalBillPrintPageIframeModal.Prescription', Prescription);
+
+        const Modal = new Div("ModalForMedicalClinicBillIframe", "modal");
 
         const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
         const ModalDialogContent = new Div(undefined, "modal-content");
 
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Clinic Medical Bill", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
         const ModalContentBody = new Div(undefined, "modal-body");
-        ModalContentBody.appendChild(new Label(undefined, "Modal body..", undefined));
+        const TestText = Prescription.AppointmentId + ', ' + Prescription.PatientId + ', ' + Prescription.PatientFullName;
+        ModalContentBody.appendChild(new Label(undefined, TestText, undefined));
         ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+            ]
+        ));
+        ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+            ]
+        ));
+        ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);
         Modal.appendChild(ModalDialog);
 
-        console.log('ClinicMedicalBillPrintPageIframeModal.Modal',Modal);
+        // console.log('ClinicMedicalBillPrintPageIframeModal.Modal',Modal);
 
         BindView(Container, Modal);
+
+        $('#ModalForMedicalClinicBillIframe').modal('show');
+    }
+}
+
+function ClinicMedicalBillsSearchModal() {
+    this.Render = function (Container) {
+
+        const Modal = new Div("ModalForClinicMedicalBill", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Clinic Medical Bills", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        // ModalContentBody.appendChild(new Label(undefined, 'Text', undefined));
+
+        const BodyRowOne = new Div(undefined, "row");
+
+        const RowOneColumnOne = new Div('ClinicMedicalBillsSearch', 'col-md-12');
+        RowOneColumnOne.appendChild(new Label(undefined, 'Text', undefined));
+        BodyRowOne.appendChild(RowOneColumnOne);
+
+        const RowOneColumnTwo = new Div('ClinicMedicalBillsSearchResults', 'col-md-12');
+        RowOneColumnTwo.appendChild(new Label(undefined, 'Text', undefined));
+        BodyRowOne.appendChild(RowOneColumnTwo);
+
+        ModalContentBody.appendChild(BodyRowOne);
+
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+            ]
+        ));
+        ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
+            [
+                // new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+            ]
+        ));
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        //append 'search'
+        ClinicMedicalBillsSearchFormRender();
+
+        const Response = {
+            "Status": 1000,
+            "Data": [],
+            "Message": "Success"
+        };
+
+        //append an 'empty' 'search' results table
+        ClinicMedicalBillsSearchResultsTableDisplay(Response.Data);
+
+        $('#ModalForClinicMedicalBill').modal('show');
+    }
+}
+
+function FooterDefaultContent() {
+    this.Render = function (Container) {
+
+        let DivFooter = new Div(undefined, "Footer FontColorWhite");
+        let CreditsHeading = new Heading6("Powered By mobiOs", [new Attribute(_AttributeClass, "text-center")]);
+        DivFooter.appendChild(CreditsHeading);
+
+        BindView(Container, DivFooter);
     }
 }
 
@@ -1418,9 +1512,17 @@ function Pharmacy() {
         let CardPrescriptions = new Div(undefined, "card text-left");
         let CardBodyPrescriptions = new Div(undefined, "card-body");
 
-        let HeadingPrescriptions = new Heading4("Prescription", undefined);
+        const RowOne = new Div(undefined, "row");
+        const RowOneColumnOne = new Div(undefined, "col-md-12 d-flex justify-content-between mb-2");
 
-        CardBodyPrescriptions.appendChild(HeadingPrescriptions);
+        let HeadingPrescriptions = new Heading4("Prescription", undefined);
+        RowOneColumnOne.appendChild(HeadingPrescriptions);
+
+        const ButtonClinicBills = new Button(undefined, "Clinic Bills", "btn btn-primary", [new Attribute(_AttributeOnClick, "ClinicMedicalBillsModalDisplay()")]);
+        RowOneColumnOne.appendChild(ButtonClinicBills);
+
+        RowOne.appendChild(RowOneColumnOne);
+        CardBodyPrescriptions.appendChild(RowOne);
 
         let DivTablePrescriptions = new Div(undefined, "table-responsive");
         DivTablePrescriptions.appendChild(new TableView("TablePharmacyPrescription", "table table-striped", Headers, Data, undefined));
@@ -1475,6 +1577,100 @@ function PharmacyPrescription() {
     }
 }
 
+function ClinicBillSearch() {
+    this.Render = function (Container) {
+
+        const ParentRow = new Div(undefined, "row");
+
+        const ParentRowColumnOne = new Div(undefined, "col-md-12");
+        const Heading = new Heading5("Search", [new Attribute(_AttributeClass, undefined)]);
+        ParentRowColumnOne.appendChild(Heading);
+        ParentRow.appendChild(ParentRowColumnOne);
+
+        let ParentRowColumnTwo = new Div(undefined, "col-md-12");
+        ParentRow.appendChild(ParentRowColumnTwo);
+
+        const DateToday = new Date().toISOString().slice(0, 10);
+        const DateSixMonthsPrior = new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()).toISOString().slice(0, 10);
+
+        let FormSearch = new Form(undefined);
+
+        let FormRowOne = new Div(undefined, "form-group row");
+
+        let FormRowColumnOne = new Div(undefined, "col-sm-6 col-12 mt-2");
+        FormRowColumnOne.appendChild(new Label(undefined, "From Date",
+            [
+                new Attribute(_AttributeClass, "col-form-label"),
+                new Attribute(_AttributeFor, "TxtClinicBillSearchFromDate")
+            ]
+        ));
+        FormRowColumnOne.appendChild(new Textbox("TxtClinicBillSearchFromDate", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, 'date'),
+                new Attribute(_AttributeFor, 'TxtClinicBillSearchFromDate'),
+                new Attribute('min', DateSixMonthsPrior),
+                new Attribute('value', DateToday)
+            ]
+        ));
+        FormRowOne.appendChild(FormRowColumnOne);
+
+        let FormRowColumnTwo = new Div(undefined, "col-sm-6 col-12 mt-2");
+        FormRowColumnTwo.appendChild(new Label(undefined, "To Date",
+            [
+                new Attribute(_AttributeClass, "col-form-label"),
+                new Attribute(_AttributeFor, "TxtClinicBillSearchToDate")
+            ]
+        ));
+        FormRowColumnTwo.appendChild(new Textbox("TxtClinicBillSearchToDate", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, 'date'),
+                new Attribute(_AttributeOnChange, 'ClinicMedicalBillsSearchDatesValidate()'),
+                new Attribute('min', DateSixMonthsPrior),
+                new Attribute('value', DateToday)
+            ]
+        ));
+        FormRowOne.appendChild(FormRowColumnTwo);
+        FormSearch.appendChild(FormRowOne);
+
+        let FormRowTwo = new Div(undefined, "form-group row");
+        let FormRowTwoColumnOne = new Div(undefined, "col-sm-12 col-12 mt-2");
+        FormRowTwoColumnOne.appendChild(new Button("CmdSearch", "Search", "btn btn-info btn-primary btn-rounded w-100",
+            [new Attribute(_AttributeOnClick, "ClinicMedicalBillsSearch()")]));
+        FormRowTwo.appendChild(FormRowTwoColumnOne);
+        FormSearch.appendChild(FormRowTwo);
+
+        let FormRowThree = new Div(undefined, "form-group row");
+        let FormRowThreeColumnOne = new Div(undefined, "col-sm-12 col-12");
+        FormRowThreeColumnOne.appendChild(new Button("CmdClear", "Clear", "btn btn-info btn-primary btn-rounded w-100",
+            [new Attribute(_AttributeOnClick, "ClinicMedicalBillsSearchFieldsClear()")]));
+        FormRowThree.appendChild(FormRowThreeColumnOne);
+        FormSearch.appendChild(FormRowThree);
+
+        ParentRowColumnTwo.appendChild(FormSearch);
+
+        BindView(Container, ParentRow);
+    }
+}
+
+function ClinicBillSearchResultsTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ['No', 'Name', 'Mobile', 'Gender', 'Payment', 'Status', 'Action'];
+
+        let ParentRow = new Div(undefined, "row");
+        let ColumnOne = new Div(undefined, "col-md-12 mt-2");
+
+        let Heading = new Heading5("Search Results", undefined);
+        ColumnOne.appendChild(Heading);
+
+        let DivTablePrescriptions = new Div(undefined, "table-responsive mt-3");
+        DivTablePrescriptions.appendChild(new TableView("TableClinicMedicalBillsSearchResults", "table table-striped", Headers, Data, undefined));
+        ColumnOne.appendChild(DivTablePrescriptions);
+
+        ParentRow.appendChild(ColumnOne);
+
+        BindView(Container, ParentRow);
+    }
+}
 
 //Footer
 function Footer() {
