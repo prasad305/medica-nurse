@@ -29,18 +29,13 @@ function Login_Success(Response) {
 }
 
 function Welcome_Success(PatientData) {
-    if (Response.Status == 1001 && Response.Data.length == 0)
-        return ShowMessage(Messages.Error, MessageTypes.Warning, "Warning!");
-    else
-        _PatientData = PatientData;
+    if (Response.Status == 1001 && Response.Data.length == 0) return ShowMessage(Messages.Error, MessageTypes.Warning, "Warning!"); else _PatientData = PatientData;
 }
 
 function SaveDetails_Success(Response) {
     _PatientNIC = undefined;
 
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
@@ -85,28 +80,26 @@ function GetNurseBranches_Success(Response) {
 
 function GetPatientData_Success(Response) {
     if (Response.Data.length === 0 || Response.Status != 1000) {
-        swal(
-            {
-                title: 'Ooops!',
-                text: "No Patient Found! Please Add a New Patient",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#0CC27E',
-                cancelButtonColor: '#FF586B',
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                confirmButtonClass: 'btn btn-success mr-5',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false
+        swal({
+            title: 'Ooops!',
+            text: "No Patient Found! Please Add a New Patient",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0CC27E',
+            cancelButtonColor: '#FF586B',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonClass: 'btn btn-success mr-5',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
 
-            }).then(function () {
-                AddPatient_Click();
-            },
-            function (dismiss) {
-                if (dismiss === 'cancel') {
+        }).then(function () {
+            AddPatient_Click();
+        }, function (dismiss) {
+            if (dismiss === 'cancel') {
 
-                }
-            });
+            }
+        });
     } else {
         _PatientDetails = Response.Data[0];
         FilterPatientData(Response.Data);
@@ -186,9 +179,7 @@ function LoadPatientData_Success(Response) {
  =================================*/
 
 function SaveSession_Success(Response) {
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         CmdCancelSession_Click();
         return ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
     }
@@ -200,9 +191,7 @@ function GetSessionDoctorId() {
 
 function GetSessionDoctorId_Success(Response) {
     _DoctorSessionData = [];
-    if (Response.Data === 0 || Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Data === 0 || Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let Count;
         let DataLength = Response.Data.length;
         for (Count = 0; Count < DataLength; Count++) {
@@ -224,12 +213,8 @@ function SetDoctorData(Id) {
 }
 
 function GetDoctorSessionData_Success(Response) {
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    if (Response.Data.length === 0)
-        return ShowMessage(Messages.NoSession, MessageTypes.Warning, "Warning!");
-    else
-        FilterDoctorSessionData(Response.Data);
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    if (Response.Data.length === 0) return ShowMessage(Messages.NoSession, MessageTypes.Warning, "Warning!"); else FilterDoctorSessionData(Response.Data);
 }
 
 function FilterDoctorSessionData(Data) {
@@ -246,27 +231,16 @@ function FilterDoctorSessionData(Data) {
         let TimeStartSplit = Data[Count].TimeStart.split("T")[1].split(":");
         let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
         const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-            timeZone: 'UTC',
-            hour12: true,
-            hour: 'numeric',
-            minute: 'numeric'
+            timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
         });
 
         let TimeEndSplit = Data[Count].TimeEnd.split("T")[1].split(":");
         let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
         const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-            timeZone: 'UTC',
-            hour12: true,
-            hour: 'numeric',
-            minute: 'numeric'
+            timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
         });
 
-        if (Data[Count].Type === 1)
-            Type = "Virtual";
-        else if (Data[Count].Type === 2)
-            Type = "Physical";
-        else
-            Type = "Both";
+        if (Data[Count].Type === 1) Type = "Virtual"; else if (Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
 
 
         ArrayDoctorSessionData.push({
@@ -293,9 +267,7 @@ function LoadSessionData(Id) {
 }
 
 function LoadSessionData_Success(Response) {
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _SessionId = Response.Data.Id;
         document.getElementById('TxtSessionRoomNumber').value = Response.Data.RoomNumber;
         document.getElementById('TxtSessionDate').value = Response.Data.TimeStart.split("T")[0];
@@ -326,15 +298,11 @@ function GetInstituteBranches_Success(Response) {
 function GetDoctorSessionDataForAppoinment_Success(Response) {
     $("#DrpSessionDateDoctor").empty();
 
-    if (Response.Status != 1000)
-        $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-    else {
+    if (Response.Status != 1000) $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>'); else {
         let DataLength = Response.Data.length;
         let Count = 0;
         let Type;
-        if (DataLength === 0)
-            $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-        else {
+        if (DataLength === 0) $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>'); else {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
             for (Count = 0; Count < DataLength; Count++) {
                 let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
@@ -342,27 +310,16 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
 
                 let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
                 const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-                    timeZone: 'UTC',
-                    hour12: true,
-                    hour: 'numeric',
-                    minute: 'numeric'
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
                 });
 
                 let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
                 let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
                 const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-                    timeZone: 'UTC',
-                    hour12: true,
-                    hour: 'numeric',
-                    minute: 'numeric'
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
                 });
 
-                if (Response.Data[Count].Type === 1)
-                    Type = "Virtual";
-                else if (Response.Data[Count].Type === 2)
-                    Type = "Physical";
-                else
-                    Type = "Both";
+                if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
 
                 $('#DrpSessionDateDoctor').append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
             }
@@ -391,16 +348,11 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
 }
 
 function GetNextAppoinmentNumber_Sucess(Response) {
-    if (Response.Status !== 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-        document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
 }
 
 function SaveAppointment_Success(Response) {
-    if (Response.Status !== 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _PatientId = null;
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
@@ -416,9 +368,7 @@ function GetDoctorAppoinmentList() {
 }
 
 function GetDoctorAppoinmentList_Success(Response) {
-    if (Response.Status !== 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         LoopCount = 0;
         _AppointmentDetails = Response.Data;
         //GetAppointedPatients(Response.Data);
@@ -430,12 +380,14 @@ function GetDoctorAppoinmentList_Success(Response) {
 }
 
 function FilterAppointedPatientData(Data) {
-    let PaymentStatus = '-';
 
     let DataLength = Data.length;
     let Count;
 
     for (Count = 0; Count < DataLength; Count++) {
+
+        let PaymentStatus = '-';
+
         switch (Data[Count].Status) {
             case 2:
                 PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
@@ -445,8 +397,6 @@ function FilterAppointedPatientData(Data) {
                 break;
 
         }
-
-        // console.log('Data:',Data[Count]);
 
         let ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
@@ -532,21 +482,6 @@ function MedicalBillDisplay(PatientId,appId) {
     new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
 }
 
-function medicalBillTableRowClassesAdd() {
-    const TableRows = $("#TblPatientInvoiceBody").find('tr');
-    let TableRow = '';
-    for (let i = 0; i < TableRows.length; i++) {
-        TableRow = TableRows[i];
-        // console.log('medicalBillTableRowClassesAdd.TableRow',TableRow);
-        //add new class(es)
-        $(TableRow).attr('class', 'TblRow');
-        $(TableRow).find('td:eq(5)').attr('class', 'ButtonHolderColumn');
-        //remove existing id(s)
-        $(TableRow).attr('id', '');
-        $(TableRow).find('td').attr('id', '');
-    }
-}
-
 function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
@@ -598,7 +533,6 @@ function medicalBillTableTotalSumGet() {
 
 function medicalBillTableRowCountReset() {
     let TableRows = $('#TblPatientInvoiceBody .TblRow');
-    // let TableRows = $('#TblPatientInvoiceBody').find('tr');
     let TableRow = '';
     let FirstColumnValue = 0;
     for (let i = 0; i < TableRows.length; i++) {
@@ -609,7 +543,6 @@ function medicalBillTableRowCountReset() {
 
 function medicalBillTableButtonsReset() {
     let Columns = $('#TblPatientInvoiceBody .ButtonHolderColumn');
-    // let Columns = $('#TblPatientInvoiceBody').find('td:eq(5)');
     if (Columns.length === 1) {
         $(Columns[0]).html(_MedicalBillTableButtonAddRow);
     } else {
@@ -629,7 +562,6 @@ function medicalBillInputsValidate(PatientId,appId) {
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-    // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
 
     let TableRows = $('#TblPatientInvoiceBody .TblRow');
     let TableRow = '';
@@ -643,11 +575,9 @@ function medicalBillInputsValidate(PatientId,appId) {
 
     for (let i = 0; i < TableRows.length; i++) {
         TableRow = TableRows[i];
-        // console.log('medicalBillInputsValidate.TableRow:', TableRow);
         Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
         FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
         FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
-        // console.log('medicalBillInputsValidate:', Item, FeeType, FeeAmount);
         TotalInputElements += 3;
         if (Item !== '') {
             FilledInputElements++;
@@ -659,9 +589,7 @@ function medicalBillInputsValidate(PatientId,appId) {
             FilledInputElements++;
         }
         MedicalBillItem = {
-            'Item': Item,
-            'FeeType': FeeType,
-            'FeeAmount': FeeAmount
+            'Item': Item, 'FeeType': FeeType, 'FeeAmount': FeeAmount
         };
         MedicalBillItems.push(MedicalBillItem);
     }
@@ -701,15 +629,9 @@ let month = parseInt(date.getMonth())+1;
         'UserId': _UserId,
     }
 
-    // console.log('medicalBillInputsValidate.JsonObjectToSave:', JsonObjectToSave);
-
     if (FilledInputElements === TotalInputElements) {
-        // alert('Success!');
-        //save data to local storage
-        // console.log('medicalBillInputsValidate.JsonObjectToSave.String:', JSON.stringify(JsonObjectToSave));
         medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
     } else {
-        // alert('Failed! There are ' + EmptyInputElements + ' empty input fields.');
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
 }
@@ -723,10 +645,10 @@ function medicalBillSaveInLocalStorage(JsonString) {
 
     $('#ModalMedicalBill').modal('hide');
 
-    medicalBillPrintPreviewModalDisplay();
+    medicalBillPrint();
 }
 
-function medicalBillPrintPreviewModalDisplay() {
+function medicalBillPrint() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
 
     $('#ModalForMedicalBillIframe .modal-body').html('');
@@ -736,10 +658,7 @@ function medicalBillPrintPreviewModalDisplay() {
 }
 
 function AddVitals(PatientId) {
-    // console.log('AddVitals.PatientId:', PatientId);
-    // console.log('AddVitals._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-    // console.log('AddVitals.PatientMatched:', PatientMatched);
     new Vitals(PatientMatched).Render(Containers.MainContent);
 }
 
@@ -791,8 +710,7 @@ function SavePatientAnalytics_Success(Response) {
 }
 
 function SaveReportFile_Success(Response) {
-    if (Response.Status != 0)
-        return ShowMessage(Messages.ReportUploadFailed, MessageTypes.Error, "Error!");
+    if (Response.Status != 0) return ShowMessage(Messages.ReportUploadFailed, MessageTypes.Error, "Error!");
     return ShowMessage(Messages.ReportUploadSuccess, MessageTypes.Success, "Success!");
 }
 
@@ -818,10 +736,7 @@ function GetPrescriptionList() {
 }
 
 function GetPrescriptionList_Success(Response) {
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-        FilterPrescriptionData(Response.Data);
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else FilterPrescriptionData(Response.Data);
 }
 
 function FilterPrescriptionData(Data) {
@@ -848,8 +763,6 @@ function FilterPrescriptionData(Data) {
                 break;
         }
 
-        // console.log('HealthId:', Data[Count].HealthId);
-
         ArrayPrescriptionData.push({
             "No": Count + 1,
             "Prescription Id": Data[Count].PrescriptionId,
@@ -867,11 +780,121 @@ function FilterPrescriptionData(Data) {
 }
 
 function ClinicMedicalBillPrint(PrescriptionId) {
-    // console.log('ClinicMedicalBillPrint.PrescriptionId:', PrescriptionId);
-    // console.log('MedicalBillDisplay._ArrayPrescriptionData:', _ArrayPrescriptionData);
     const PrescriptionMatched = _ArrayPrescriptionData.filter((Prescription) => Prescription.Id === PrescriptionId)[0];
-    console.log('MedicalBillDisplay.PatientMatched:', PrescriptionMatched);
     new ClinicMedicalBillPrintPageIframeModal(PrescriptionMatched).Render(Containers.Footer);
+}
+
+function ClinicMedicalBillsSearchFormRender() {
+    new ClinicBillSearch().Render('ClinicMedicalBillsSearch');
+}
+
+function ClinicMedicalBillsSearch_Success(Response) {
+    if (Response.Data.length === 0 || Response.Status !== 1000) {
+        swal({
+            title: 'Oops!',
+            text: "No Bills Found!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0CC27E',
+            cancelButtonColor: '#FF586B',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonClass: 'btn btn-success mr-5',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+
+        }).then(function () {
+            // AddPatient_Click();
+        }, function (dismiss) {
+            if (dismiss === 'cancel') {
+
+            }
+        });
+    } else {
+        // console.log('ClinicMedicalBillsSearch_Success.Response.Data:', Response.Data);
+        _ArrayClinicBillsSearchResultsData = Response.Data;
+        ClinicMedicalBillsSearchResultsTableDisplay(Response.Data);
+    }
+}
+
+function ClinicMedicalBillsSearchResultsTableDisplay(Data) {
+    const ArrayBillSearchResultsData = [];
+
+    // console.log('ClinicMedicalBillsSearchResultsTableDisplay.Data:', Data);
+
+    if (Data.length > 0) {
+
+        for (let Count = 0; Count < Data.length; Count++) {
+
+            let PaymentStatus = '-';
+
+            switch (Data[Count].Status) {
+                case 2:
+                    PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
+                    break;
+                case 3:
+                    PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
+                    break;
+            }
+
+            let ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
+            let ChannelingStatus = '-';
+
+            if (ChannelingStatusOriginal.includes('unsuccessful')) {
+                ChannelingStatus = 'Unsuccessful';
+
+            } else if (ChannelingStatusOriginal.includes('successful')) {
+                ChannelingStatus = 'Successful';
+
+            } else if (ChannelingStatusOriginal.includes('pending')) {
+                ChannelingStatus = 'Pending';
+            }
+
+            ArrayBillSearchResultsData.push({
+                "No": Data[Count].Number,
+                "Name": Data[Count].Title + " " + Data[Count].FirstName + " " + Data[Count].LastName,
+                "Mobile": Data[Count].Mobile,
+                "Gender": Data[Count].Gender,
+                "Payment": PaymentStatus,
+                "Status": ChannelingStatus,
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicPrescriptionDisplay(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicReferenceLetterDisplay(' + Data[Count].Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Letter-Open"></i></span>' +
+                    '</button>'
+            });
+
+        }
+    }
+
+    new ClinicBillSearchResultsTable().Render('ClinicMedicalBillsSearchResults', ArrayBillSearchResultsData);
+    CreateDataTable('TableClinicMedicalBillsSearchResults');
+
+    //add pagination
+    // TablePaginationAdd('TableClinicMedicalBillsSearchResults', 'desc', 10);
+}
+
+function TablePaginationAdd(TableId, DisplayOrder, MinimumRowCount) {
+    $(TableId).DataTable({
+        order: [[0, DisplayOrder]],
+        "pageLength": MinimumRowCount
+    });
+}
+
+function ClinicPrescriptionDisplay(PrescriptionId) {
+    console.log('ClinicPrescriptionDisplay.PrescriptionId:', PrescriptionId);
+}
+
+function ClinicReferenceLetterDisplay(PrescriptionId) {
+    console.log('ClinicReferenceLetterDisplay.PrescriptionId:', PrescriptionId);
+}
+
+function ClinicMedicalBillDisplay(PrescriptionId) {
+    console.log('ClinicMedicalBillDisplay.PrescriptionId:', PrescriptionId);
 }
 
 function LoadContactData(PrescriptionId) {
@@ -882,11 +905,12 @@ function UpdateIssueStatus(PrescriptionId) {
     // console.log('UpdateIssueStatus.PrescriptionId:', PrescriptionId);
 }
 
+function ClinicMedicalBillsModalDisplay() {
+    new ClinicMedicalBillsSearchModal().Render(Containers.Footer);
+}
+
 function LoadPrescriptionRecordDrugs_Success(Response) {
-    if (Response.Status != 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else
-        FilterPrescriptionRecordDrugs(Response.Data);
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else FilterPrescriptionRecordDrugs(Response.Data);
 }
 
 function FilterPrescriptionRecordDrugs(Data) {
@@ -927,11 +951,12 @@ function AvailableDrugStatusSave(RecordDrugs, Id, PrescriptionId, AppointmentId,
 }
 
 function AvailableDrugStatusSave_Success(Response) {
-    if (Response.Status !== 1000)
-        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else {
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         ShowMessage(Response.Message, MessageTypes.Success, "Success!");
         GetPrescriptionList();
     }
 }
 
+function FooterDefaultContentReset() {
+    new Footer().Render(Containers.Footer);
+}
