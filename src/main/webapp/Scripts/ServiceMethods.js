@@ -421,9 +421,9 @@ function GetDoctorAppoinmentList_Success(Response) {
     else {
         LoopCount = 0;
         _AppointmentDetails = Response.Data;
-        //GetAppointedPatients(Response.Data); 
+        //GetAppointedPatients(Response.Data);
 
-        //*******new 
+        //*******new
         FilterAppointedPatientData(Response.Data);
         LoadAppointmentedPatientList();
     }
@@ -486,7 +486,7 @@ function FilterAppointedPatientData(Data) {
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ','+Data[Count].Number+')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
             });
@@ -523,12 +523,13 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(PatientId) {
+function MedicalBillDisplay(PatientId,appId) {
+    console.log(appId)
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
-    new MedicalBill(PatientMatched).Render(Containers.Footer);
+    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
 }
 
 function medicalBillTableRowClassesAdd() {
@@ -624,7 +625,7 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillInputsValidate(PatientId) {
+function medicalBillInputsValidate(PatientId,appId) {
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
@@ -666,15 +667,15 @@ function medicalBillInputsValidate(PatientId) {
     }
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
+    let date = new Date();
+let month = parseInt(date.getMonth())+1;
+    const DateTime = date.getFullYear() + '-' +
+        ("0" + month).slice(-2) + '-' +
+        ("0" + date.getDate()).slice(-2) + ' ' +
+        ("0" + date.getHours()).slice(-2) + ':' +
+        ("0" + date.getMinutes()).slice(-2);
 
-    const DateTime = new Date().getFullYear() + '-' +
-        ("0" + new Date().getMonth()).slice(-2) + '-' +
-        ("0" + new Date().getDate()).slice(-2) + ' ' +
-        ("0" + new Date().getHours()).slice(-2) + '-' +
-        ("0" + new Date().getMinutes()).slice(-2) + '-' +
-        ("0" + new Date().getSeconds()).slice(-2);
-
-    const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
+    const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
     // console.log('PatientsAge:', PatientsAge);
 
     const Patient = {
@@ -688,7 +689,7 @@ function medicalBillInputsValidate(PatientId) {
         'Discount': $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0,
         'Total': $('#TxtTotal').text(),
         'AppDate': DateTime,
-        'AppNumber': 1,
+        'AppNumber': appId,
         'BillNumber': 'SO/SC/57333',
         'BillDate': DateTime.split(' ')[0],
         'BillUser': 'Margery',
@@ -697,6 +698,7 @@ function medicalBillInputsValidate(PatientId) {
     const JsonObjectToSave = {
         'Patient': Patient,
         'Bill': MedicalBill,
+        'UserId': _UserId,
     }
 
     // console.log('medicalBillInputsValidate.JsonObjectToSave:', JsonObjectToSave);
@@ -728,7 +730,7 @@ function medicalBillPrintPreviewModalDisplay() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
 
     $('#ModalForMedicalBillIframe .modal-body').html('');
-    const Iframe = '<iframe src="http://localhost:8081/MedicaNurse/medical-bill.html" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
+    const Iframe = '<iframe height="650px" src="medical-bill.html?v1=1" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
 }

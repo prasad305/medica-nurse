@@ -317,7 +317,7 @@ function Page_Load()
 ===============================================================================================*/
 
 const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)">Delete</button>';
-const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()">Add Row</button>';
+const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()"><i class="i-Add"></i></button>';
 
 const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td>1</td>' +
