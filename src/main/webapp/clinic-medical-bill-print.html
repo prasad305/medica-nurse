@@ -4,7 +4,7 @@
     <meta charSet="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <title>mn-medical-bill-print-preview</title>
+    <title>Clinic Medical Bill</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -40,82 +40,82 @@
 
 <body>
 
-<div className="container-fluid mb-4">
+<div class="container-fluid mb-4">
 
-    <div className="row my-3" id="ButtonWrapper">
-        <div className="col-sm-12">
-            <button className="btn btn-primary btn-sm float-right" onClick="window.print()">Print The Bill</button>
+    <div class="row my-3" id="ButtonWrapper">
+        <div class="col-sm-12">
+            <button class="btn btn-primary btn-sm float-right" onClick="window.print()">Print The Bill</button>
         </div>
     </div>
 
-    <div className="row my-3">
-        <div className="col-sm-12 text-center">
+    <div class="row my-3">
+        <div class="col-sm-12 text-center">
             <!-- <img src="https://docnote.medica.lk/Images/6.png" class="img-fluid" alt="#"> -->
-            <img src="dist-assets/images/DoctorDetails/Header.png" className="img-fluid" alt="#">
+            <img src="dist-assets/images/DoctorDetails/Header.png" class="img-fluid" alt="#">
         </div>
-        <div className="col-sm-12">
-            <h2 className="text-center mb-4">Medical Bill</h2>
+        <div class="col-sm-12">
+            <h2 class="text-center mb-4">Medical Bill</h2>
         </div>
     </div>
 
-    <div className="form-group row">
-        <div className="col-12 col-md-12 col-xs-12">
-            <span className="col-form-label">Home address:</span>
-            <textarea id="TxtHomeAddressPreview" className="form-control"></textarea>
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Home address:</span>
+            <textarea id="TxtHomeAddressPreview" class="form-control"></textarea>
         </div>
     </div>
-    <div className="form-group row">
-        <div className="col-12 col-md-12 col-xs-12">
-            <span className="col-form-label">Office address: </span>
-            <textarea id="TxtOfficeAddressPreview" className="form-control"></textarea>
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Office address: </span>
+            <textarea id="TxtOfficeAddressPreview" class="form-control"></textarea>
         </div>
     </div>
-    <div className="form-group row justify-content-center">
-        <div className="modal-header">
-            <h5 className="modal-title mb-3">Charges</h5>
+    <div class="form-group row justify-content-center">
+        <div class="modal-header">
+            <h5 class="modal-title mb-3">Charges</h5>
         </div>
     </div>
-    <div className="form-group row">
-        <div className="col-6 col-md-6 col-xs-6">
-            <span className="col-form-label">Drug: </span>
-            <input id="TxtDrugPreview" className="form-control" type="text">
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Drug: </span>
+            <input id="TxtDrugPreview" class="form-control" type="text">
         </div>
-        <div className="col-6 col-md-6 col-xs-6">
-            <span className="col-form-label">Doctor fee: </span>
-            <input id="TxtDoctorFeePreview" className="form-control" type="text">
-        </div>
-    </div>
-    <div className="form-group row">
-        <div className="col-6 col-md-6 col-xs-6">
-            <span className="col-form-label">Investigation: </span>
-            <input id="TxtInvestigationPreview" className="form-control" type="text">
-        </div>
-        <div className="col-6 col-md-6 col-xs-6">
-            <span className="col-form-label">Other: </span>
-            <input id="TxtOtherPreview" className="form-control" type="text">
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Doctor fee: </span>
+            <input id="TxtDoctorFeePreview" class="form-control" type="text">
         </div>
     </div>
-    <div className="form-group row">
-        <div className="col-6 col-md-6 col-xs-6"></div>
-        <div className="col-6 col-md-6 col-xs-6">
-            <span className="col-form-label">Total: </span>
-            <input id="TxtTotalPreview" className="form-control" type="text">
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Investigation: </span>
+            <input id="TxtInvestigationPreview" class="form-control" type="text">
+        </div>
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Other: </span>
+            <input id="TxtOtherPreview" class="form-control" type="text">
         </div>
     </div>
-    <div className="form-group row">
-        <div className="col-12 col-md-12 col-xs-12">
-            <span className="col-form-label">Issuing date: </span>
-            <input id="TxtIssuingDatePreview" className="form-control Date-Picker" type="text">
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6"></div>
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Total: </span>
+            <input id="TxtTotalPreview" class="form-control" type="text">
         </div>
     </div>
-    <div className="row">
-        <div className="col-4 col-md-4 col-xs-4">
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Issuing date: </span>
+            <input id="TxtIssuingDatePreview" class="form-control Date-Picker" type="text">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 col-md-4 col-xs-4">
             <img style="width:80px; height:80px;" src="dist-assets/images/DoctorDetails/logo.png" alt="Patient QR">
         </div>
-        <div className="col-4 col-md-4 col-xs-4">
+        <div class="col-4 col-md-4 col-xs-4">
             <img style="width:80px; height:80px;" src="dist-assets/images/DoctorDetails/qr.png" alt="Patient QR">
         </div>
-        <div className="col-4 col-md-4 col-xs-4">
+        <div class="col-4 col-md-4 col-xs-4">
             <img style="width:280px; height:80px;" src="dist-assets/images/DoctorDetails/6.png" alt="Patient QR">
         </div>
     </div>
@@ -131,19 +131,19 @@
 
 <script type="text/javascript">
 
-    medicalBillDataFromLocalStorageGet();
+    ClinicMedicalBillDataFromLocalStorageGet();
 
-    function medicalBillDataFromLocalStorageGet() {
+    function ClinicMedicalBillDataFromLocalStorageGet() {
         if (localStorage.getItem('ClinicMedicalBill') != null) {
             const JsonString = localStorage.getItem('ClinicMedicalBill');
-            medicalBillCreate(JsonString);
+            ClinicMedicalBillCreate(JsonString);
         } else {
             // console.log('No Clinic Medical Bill in the local storage!');
             throw Error('No Clinic Medical Bill in the local storage!');
         }
     }
 
-    function medicalBillCreate(JsonString) {
+    function ClinicMedicalBillCreate(JsonString) {
         // console.log('medicalBillCreate.JsonString:', JsonString);
         const ClinicBill = JSON.parse(JsonString);
         // console.log('medicalBillCreate.ClinicBill:', ClinicBill);

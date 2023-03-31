@@ -689,7 +689,7 @@ function ClinicMedicalBillGet(Id) {
         "Message": "Success"
     };
 
-    // console.log('ClinicMedicalBillsSearch.Response:', Response);
+    console.log('ClinicMedicalBillsSearch.Response:', Response);
     ClinicMedicalBillGet_Success(Response);
 
     // _Request.Post(

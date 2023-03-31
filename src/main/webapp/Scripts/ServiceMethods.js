@@ -674,7 +674,8 @@ function ClinicMedicalBillNestedPrint(ResponseData) {
     new ClinicMedicalBillNestedPrintPageIframeModal().Render(Containers.Footer);
 
     $('#ModalForClinicMedicalBillIframe .modal-body').html('');
-    const Iframe = '<iframe src="clinic-medical-bill.html" class="w-100 h-650" frameborder="0" allowfullscreen></iframe>';
+    // const Iframe = '<label>Test</label>';
+    const Iframe = '<iframe src="clinic-medical-bill-print.html" class="w-100 h-650" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForClinicMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForClinicMedicalBillIframe').modal('show');
 }
