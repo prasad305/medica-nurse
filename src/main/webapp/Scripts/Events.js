@@ -490,7 +490,7 @@ function DateFromIsValid() {
     // console.log('DateFromIsValid.FromDate:', FromDate);
     const DateSixMonthsPrior = new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()).toISOString().slice(0, 10);
     const IsValid = DateIsValid(DateSixMonthsPrior, FromDate);
-    console.log('DateFromIsValid:', IsValid);
+    // console.log('DateFromIsValid:', IsValid);
     return IsValid;
 }
 
@@ -500,7 +500,7 @@ function DateToIsValid() {
     // console.log('IsToSearchDateValid.ToDate:', ToDate);
     const DateSixMonthsPrior = new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()).toISOString().slice(0, 10);
     const IsValid = DateIsValid(DateSixMonthsPrior, ToDate) && DateIsValid(FromDate, ToDate);
-    console.log('DateToIsValid:', IsValid);
+    // console.log('DateToIsValid:', IsValid);
     return IsValid;
 }
 
@@ -549,7 +549,7 @@ function ClinicMedicalBillsSearch() {
         if (ToDate === "")
             ToDate = undefined;
 
-        console.log('ClinicMedicalBillsSearch:', FromDate, ToDate);
+        // console.log('ClinicMedicalBillsSearch:', FromDate, ToDate);
 
         const Response = {
             "Status": 1000,
@@ -658,7 +658,7 @@ function ClinicMedicalBillsSearch() {
 }
 
 function ClinicMedicalBillGet(Id) {
-    console.log('ClinicMedicalBillGet.Id:', Id);
+    // console.log('ClinicMedicalBillGet.Id:', Id);
 
     const Response = {
         "Status": 1000,
@@ -689,7 +689,7 @@ function ClinicMedicalBillGet(Id) {
         "Message": "Success"
     };
 
-    console.log('ClinicMedicalBillsSearch.Response:', Response);
+    // console.log('ClinicMedicalBillsSearch.Response:', Response);
     ClinicMedicalBillGet_Success(Response);
 
     // _Request.Post(

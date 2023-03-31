@@ -1434,18 +1434,6 @@ function ClinicMedicalBillsSearchModal() {
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
-            [
-                // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
-            ]
-        ));
-        ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
-            [
-                // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
-            ]
-        ));
         ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);

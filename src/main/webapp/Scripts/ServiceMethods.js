@@ -658,7 +658,7 @@ function medicalBillPrint() {
 }
 
 function ClinicMedicalBillNestedPrint(ResponseData) {
-    console.log('ClinicMedicalBillNestedPrint.ResponseData:', ResponseData);
+    // console.log('ClinicMedicalBillNestedPrint.ResponseData:', ResponseData);
 
     //hide currently opened modal
     $('#ModalForClinicMedicalBill').modal('hide');
@@ -684,7 +684,7 @@ function ClinicMedicalBillGet_Success(Response) {
     if (Response.Data.length === 0 || Response.Status !== 1000) {
         return ShowMessage(Messages.NoData, MessageTypes.Warning, "Oops!");
     } else {
-        console.log('ClinicMedicalBillGet_Success.Response.Data:', Response.Data[0]);
+        // console.log('ClinicMedicalBillGet_Success.Response.Data:', Response.Data[0]);
         ClinicMedicalBillNestedPrint(Response.Data[0]);
     }
 }
