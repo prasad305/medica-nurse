@@ -436,7 +436,7 @@ function FilterAppointedPatientData(Data) {
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ','+Data[Count].Number+')">' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
             });
@@ -473,13 +473,13 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(PatientId,appId) {
+function MedicalBillDisplay(PatientId, appId) {
     console.log(appId)
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
-    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
+    new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
 }
 
 function medicalBillTableFirstRowReplace() {
@@ -558,7 +558,7 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillInputsValidate(PatientId,appId) {
+function medicalBillInputsValidate(PatientId, appId) {
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
@@ -596,7 +596,7 @@ function medicalBillInputsValidate(PatientId,appId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-let month = parseInt(date.getMonth())+1;
+    let month = parseInt(date.getMonth()) + 1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
@@ -655,6 +655,41 @@ function medicalBillPrint() {
     const Iframe = '<iframe height="650px" src="medical-bill.html?v1=1" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
+}
+
+function ClinicMedicalBillNestedPrint(ResponseData) {
+    console.log('ClinicMedicalBillNestedPrint.ResponseData:', ResponseData);
+
+    //hide currently opened modal
+    $('#ModalForClinicMedicalBill').modal('hide');
+
+    //save api response in local-storage
+    if (localStorage.getItem('ClinicMedicalBill') == null) {
+        localStorage.setItem('ClinicMedicalBill', '{}');
+    } else {
+        localStorage.setItem('ClinicMedicalBill', JSON.stringify(ResponseData));
+    }
+
+    //display the modal with the iframe
+    new ClinicMedicalBillNestedPrintPageIframeModal().Render(Containers.Footer);
+
+    $('#ModalForClinicMedicalBillIframe .modal-body').html('');
+    const Iframe = '<iframe src="clinic-medical-bill.html" class="w-100 h-650" frameborder="0" allowfullscreen></iframe>';
+    $('#ModalForClinicMedicalBillIframe .modal-body').append(Iframe);
+    $('#ModalForClinicMedicalBillIframe').modal('show');
+}
+
+function ClinicMedicalBillGet_Success(Response) {
+    if (Response.Data.length === 0 || Response.Status !== 1000) {
+        return ShowMessage(Messages.NoData, MessageTypes.Warning, "Oops!");
+    } else {
+        console.log('ClinicMedicalBillGet_Success.Response.Data:', Response.Data[0]);
+        ClinicMedicalBillNestedPrint(Response.Data[0]);
+    }
+}
+
+function LoadPrescriptionRecordDrugs_Success(Response) {
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else FilterPrescriptionRecordDrugs(Response.Data);
 }
 
 function AddVitals(PatientId) {
@@ -785,7 +820,7 @@ function ClinicMedicalBillPrint(PrescriptionId) {
 }
 
 function ClinicMedicalBillsSearchFormRender() {
-    new ClinicBillSearch().Render('ClinicMedicalBillsSearch');
+    new ClinicBillSearchForm().Render('ClinicMedicalBillsSearch');
 }
 
 function ClinicMedicalBillsSearch_Success(Response) {
@@ -860,7 +895,7 @@ function ClinicMedicalBillsSearchResultsTableDisplay(Data) {
                 "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicPrescriptionDisplay(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillGet(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicReferenceLetterDisplay(' + Data[Count].Id + ')">' +

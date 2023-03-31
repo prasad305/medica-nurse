@@ -1469,6 +1469,26 @@ function ClinicMedicalBillsSearchModal() {
     }
 }
 
+function ClinicMedicalBillNestedPrintPageIframeModal() {
+    this.Render = function (Container) {
+
+        const IframeModal = new Div("ModalForClinicMedicalBillIframe", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        IframeModal.appendChild(ModalDialog);
+
+        // console.log('ClinicMedicalBillNestedPrintPageIframeModal.IframeModal',IframeModal);
+
+        BindView(Container, IframeModal);
+    }
+}
+
 function FooterDefaultContent() {
     this.Render = function (Container) {
 
@@ -1577,7 +1597,7 @@ function PharmacyPrescription() {
     }
 }
 
-function ClinicBillSearch() {
+function ClinicBillSearchForm() {
     this.Render = function (Container) {
 
         const ParentRow = new Div(undefined, "row");
@@ -1609,7 +1629,8 @@ function ClinicBillSearch() {
                 new Attribute(_AttributeType, 'date'),
                 new Attribute(_AttributeFor, 'TxtClinicBillSearchFromDate'),
                 new Attribute('min', DateSixMonthsPrior),
-                new Attribute('value', DateToday)
+                new Attribute('value', DateToday),
+                new Attribute(_AttributeOnChange, 'DateFromIsValid')
             ]
         ));
         FormRowOne.appendChild(FormRowColumnOne);
@@ -1624,9 +1645,9 @@ function ClinicBillSearch() {
         FormRowColumnTwo.appendChild(new Textbox("TxtClinicBillSearchToDate", "form-control form-control-rounded",
             [
                 new Attribute(_AttributeType, 'date'),
-                new Attribute(_AttributeOnChange, 'ClinicMedicalBillsSearchDatesValidate()'),
                 new Attribute('min', DateSixMonthsPrior),
-                new Attribute('value', DateToday)
+                new Attribute('value', DateToday),
+                new Attribute(_AttributeOnChange, 'DateToIsValid')
             ]
         ));
         FormRowOne.appendChild(FormRowColumnTwo);

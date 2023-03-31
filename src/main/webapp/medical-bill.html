@@ -173,7 +173,8 @@
             const JsonString = localStorage.getItem('MedicalBill');
             medicalBillCreate(JsonString);
         } else {
-            console.log('No MedicalBill in the local storage!');
+            // console.log('No Medical Bill in the local storage!');
+            throw Error('No Medical Bill in the local storage!');
         }
     }
 
