@@ -1252,13 +1252,15 @@ function MedicalBill(Patient,appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                // new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                // new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
@@ -1381,13 +1383,13 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+                new Attribute(_AttributeOnClick, 'X(' + Prescription.Id + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+                new Attribute(_AttributeOnClick, 'X(' + Prescription.Id + ')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
