@@ -212,6 +212,8 @@ function SiteNavigation() {
         DropDownProfileMenu.appendChild(HyperlinkSignOut);
         let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch Id", "dropdown-item");
         DropDownProfileMenu.appendChild(HyperlinkBranchId);
+        let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
+        DropDownProfileMenu.appendChild(HyperlinkSettings);
 
         let DropDownProfileName = new Div(undefined, "dropdown");
         let ProfileName = new Heading6(undefined, [new Attribute(_AttributeClass, "card-title m-unset"), new Attribute(_AttributeId, "ProfileName")]);
@@ -242,7 +244,7 @@ function SiteButtonBar() {
         let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Patientn.png", undefined, "Prescription Image");
 
         let DivWidgetContentPrescription = new Div("PrescriptionHeading", "ul-widget__content-v2");
-        let HeadingPrescription = new Heading4("Patient", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingPrescription = new Heading4("Patients", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImagePrescription.appendChild(ImagePrescription);
         DivWidgetRowPrescription.appendChild(DivWidgetImagePrescription);
@@ -269,7 +271,7 @@ function SiteButtonBar() {
         let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Appointment.png", undefined, "Report Image");
 
         let DivWidgetContentReport = new Div("ReportsHeading", "ul-widget__content-v2");
-        let HeadingReport = new Heading4("Appoinments", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingReport = new Heading4("Institutes", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageReport.appendChild(ImageReport);
         DivWidgetRowReport.appendChild(DivWidgetImageReport);
@@ -296,7 +298,7 @@ function SiteButtonBar() {
         let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Schedule.png", undefined, "History Image");
 
         let DivWidgetContentHistory = new Div("HistoryHeading", "ul-widget__content-v2");
-        let HeadingHistory = new Heading4("Session", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingHistory = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageHistory.appendChild(ImageHistory);
         DivWidgetRowHistory.appendChild(DivWidgetImageHistory);
@@ -323,7 +325,7 @@ function SiteButtonBar() {
         let ImageAllergies = new Imagebox(undefined, "dist-assets/images/Nurse/Pharmacy.png", undefined, "Allergies Image");
 
         let DivWidgetContentAllergies = new Div("AllergiesHeading", "ul-widget__content-v2");
-        let HeadingAllergies = new Heading4("Prescription", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingAllergies = new Heading4("Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageAllergies.appendChild(ImageAllergies);
         DivWidgetRowAllergies.appendChild(DivWidgetImageAllergies);
@@ -490,8 +492,8 @@ function PatientTable() {
         let CardBodyPrescriptions = new Div(undefined, "card-body");
 
         let HeadingPrescriptions = new Heading4("Patient Data", undefined);
-        let ImagePrescriptions = new Imagebox(undefined, "images/add-icon.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
-        HeadingPrescriptions.appendChild(ImagePrescriptions);
+        // let ImagePrescriptions = new Imagebox(undefined, "images/add-icon.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
+        // HeadingPrescriptions.appendChild(ImagePrescriptions);
         CardBodyPrescriptions.appendChild(HeadingPrescriptions);
 
         let DivTablePrescriptions = new Div(undefined, "table-responsive");
@@ -736,6 +738,101 @@ function AddPatient() {
         FormEditPatient.appendChild(FormGroupRowSave);
 
         BindView(Container, FormEditPatient);
+    }
+}
+
+function PatientMedicalBillModal(Patient) {
+    this.Render = function (Container) {
+
+        const MedicalBillModal = new Div("PatientMedicalBillModal", "modal");
+        MedicalBillModal.setAttribute('data-backdrop', 'static');
+        MedicalBillModal.setAttribute('data-keyboard', 'false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Medical Bill", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const ModalContentBodyRowOne = new Div(undefined, "row");
+
+        const PatientDataToDisplay = [
+            ['Patient:', 'LabelPatientName'],
+            ['Age:', 'LabelPatientAge'],
+            ['Tel. No:', 'LabelPatientTelephoneNo'],
+            ['Date:', 'LabelMedicalBillDate']
+        ];
+
+        const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(Patient.DateOfBirth.split('-')[0]);
+
+        for (let i = 0; i < PatientDataToDisplay.length; i++) {
+            let LabelValueText = '-';
+            switch (i) {
+                case 0:
+                    LabelValueText = Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
+                    break;
+
+                case 1:
+                    LabelValueText = PatientsAge;
+                    break;
+
+                case 2:
+                    LabelValueText = Patient.Mobile;
+                    break;
+
+                case 3:
+                    LabelValueText = new Date().toISOString().slice(0, 10);
+                    break;
+            }
+
+            const InnerArray = PatientDataToDisplay[i];
+            const LabelText = InnerArray[0];
+            const LabelValueTextId = InnerArray[1];
+
+            const ColumnOne = new Div(undefined, 'col-md-2');
+            ColumnOne.appendChild(new Label(undefined, LabelText, undefined));
+            ModalContentBodyRowOne.appendChild(ColumnOne);
+
+            const ColumnTwo = new Div(undefined, 'col-md-10');
+            ColumnTwo.appendChild(new Label(LabelValueTextId, LabelValueText, undefined));
+            ModalContentBodyRowOne.appendChild(ColumnTwo);
+        }
+
+        //modal content body > row one
+        ModalContentBody.appendChild(ModalContentBodyRowOne);
+        //modal content body > row two
+        const ModalContentBodyRowTwo = MedicalBillTableWithDynamicRowsGet();
+        ModalContentBody.appendChild(ModalContentBodyRowTwo);
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        // ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
+        //     [
+        //         // new Attribute('data-dismiss', 'modal'),
+        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
+        //     ]
+        // ));
+        // ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
+        //     [
+        //         // new Attribute('data-dismiss', 'modal'),
+        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
+        //     ]
+        // ));
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        MedicalBillModal.appendChild(ModalDialog);
+
+        BindView(Container, MedicalBillModal);
+
+        //replace the first empty table row with the pre-defined row
+        medicalBillTableFirstRowReplace();
+
+        $('#PatientMedicalBillModal').modal('show');
     }
 }
 
@@ -1180,7 +1277,7 @@ function TablePatientAppointment() {
     }
 }
 
-function MedicalBill(Patient,appId) {
+function MedicalBill(Patient, appId) {
     this.Render = function (Container) {
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
@@ -1252,13 +1349,13 @@ function MedicalBill(Patient,appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
@@ -1692,5 +1789,35 @@ function Footer() {
         CardFooter.appendChild(CardBodyFooter);
 
         BindView(Container, CardFooter);
+    }
+}
+
+/*=================================
+         Admin UIs
+ =================================*/
+
+function Settings() {
+    this.Render = function (Container) {
+        this.Render = function (Container) {
+            let CardProfile = new Div(undefined, "card");
+            let CardBodyEditProfile = new Div(undefined, "card-body");
+            let UserProfile = new Div(undefined, "user-profile mb-4");
+            let WidgetProfileCard = new Div(undefined, "ul-widget-card__user-info");
+            let UserFullName = new Paragraph(undefined, [new Attribute(_AttributeClass, "m-0 text-24"), new Attribute(_AttributeId, "UserFullName")]);
+            let UserAge = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserNIC")]);
+            let UserGender = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserGender")]);
+            WidgetProfileCard.appendChild(UserFullName);
+            WidgetProfileCard.appendChild(UserAge);
+            WidgetProfileCard.appendChild(UserGender);
+            UserProfile.appendChild(WidgetProfileCard);
+            CardBodyEditProfile.appendChild(UserProfile);
+            CardProfile.appendChild(CardBodyEditProfile);
+
+            let DivProfile = new Div("DependentDetails", undefined);
+
+            CardBodyEditProfile.appendChild(DivProfile);
+
+            BindView(Container, CardProfile);
+        }
     }
 }

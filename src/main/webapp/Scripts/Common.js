@@ -223,3 +223,19 @@ function ValidateMobile(MobileNo) {
         && MobileNo.startsWith("077") === false && MobileNo.startsWith("078") === false)
         return false;
 }
+
+// function isInvalid(String) {
+//     return String !== null || String.trim() !== '' || String !== undefined ? String : '-';
+// }
+
+function isNull(String) {
+    return String !== null ? String : '-';
+}
+
+// function isUndefined(String) {
+//     return String !== undefined ? String : '-';
+// }
+//
+// function isEmpty(String) {
+//     return String.trim() !== '' ? String : '-';
+// }

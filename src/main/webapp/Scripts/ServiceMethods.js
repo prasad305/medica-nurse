@@ -421,15 +421,6 @@ function FilterAppointedPatientData(Data) {
                 "Gender": Data[Count].Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                // "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
-                //     '<span class="ul-btn__icon"><i class="i-Pen-2"> Vitals</i></span>' +
-                //     '</button>' +
-                //     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
-                //     '<span class="ul-btn__icon"><i class="i-Upload"> Upload</i></span>' +
-                //     '</button>' +
-                //     '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ')">' +
-                //     '<span class="ul-btn__icon"><i class="i-Billing"> Bill</i></span>' +
-                //     '</button>'
                 "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +

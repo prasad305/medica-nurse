@@ -680,6 +680,10 @@ function CmdAboutUs_Click() {
     new AboutUs().Render(Containers.MainContent);
 }
 
+function LnkSettings_Click() {
+    new Settings().Render(Containers.MainContent);
+}
+
 function LnkSignOut_Click() {
     location.reload();
 }
