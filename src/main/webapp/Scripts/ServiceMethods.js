@@ -615,6 +615,7 @@ function medicalBillSave(PatientId, appId) {
             };
             MedicalBillItems.push(MedicalBillItem);
         }
+    }
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
