@@ -1180,7 +1180,7 @@ function TablePatientAppointment() {
     }
 }
 
-function MedicalBill(Patient,appId) {
+function MedicalBill(Patient,appId,FeeTypes) {
     this.Render = function (Container) {
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
@@ -1270,6 +1270,7 @@ function MedicalBill(Patient,appId) {
 
         BindView(Container, MedicalBillModal);
 
+        // console.log('MedicalBill._ArrayAppointmentMedicalBillFeeTypes:', _ArrayAppointmentMedicalBillFeeTypes);
         //replace the first empty table row with the pre-defined row
         medicalBillTableFirstRowReplace();
 

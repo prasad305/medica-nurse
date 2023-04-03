@@ -71,6 +71,7 @@ var _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
+let _ArrayAppointmentMedicalBillFeeTypes = [];
 
 
 var _NurseNIC;

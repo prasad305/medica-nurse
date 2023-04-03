@@ -443,7 +443,7 @@ function FilterAppointedPatientData(Data) {
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ','+Data[Count].Number+')">' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
             });
@@ -481,7 +481,7 @@ function UploadFile(PatientId) {
 }
 
 function MedicalBillDisplay(PatientId, appId) {
-    console.log(appId)
+    // console.log(appId)
     selectedAppId = appId;
     selectedPatientId = PatientId;
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
@@ -489,32 +489,77 @@ function MedicalBillDisplay(PatientId, appId) {
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
 
-    var allData  = new Bill(undefined,selectedSessionId,selectedDoctorId,selectedPatientId
-        ,undefined
-        ,undefined,selectedAppId,undefined)
-    _Request.Post(ServiceMethods.BillGet,allData,function (res) {
-        console.log(res);
+    var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId
+        , undefined
+        , undefined, selectedAppId, undefined);
 
-        if(res.Data?.Id){
+    let FeeTypes = [];
+
+    _Request.Post(ServiceMethods.BillGet, allData, function (res) {
+        // console.log(res);
+
+        _ArrayAppointmentMedicalBillFeeTypes = res.Data.BillData;
+        // console.log('MedicalBillDisplay._ArrayAppointmentMedicalBillFeeTypes:', _ArrayAppointmentMedicalBillFeeTypes);
+
+        new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
+
+        if (res.Data?.Id) {
             billId = res.Data.Id;
             //pass data to ui
-        }else {
+        } else {
             billId = 0;
         }
 
     });
 
-    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
+    // new MedicalBill(PatientMatched, appId, FeeTypes).Render(Containers.Footer);
 }
 
 function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
-    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    // $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    const RowNew = medicalBillTableFirstRowToReplaceGet();
+    $("#TblPatientInvoiceBody").append(RowNew);
+}
+
+function medicalBillTableFirstRowToReplaceGet() {
+    // console.log('medicalBillTableFirstRowToReplaceGet._ArrayAppointmentMedicalBillFeeTypes:', _ArrayAppointmentMedicalBillFeeTypes);
+    let Item = '';
+    let SelectOptions = '';
+    let Option = '';
+    for (let i = 0; i < _ArrayAppointmentMedicalBillFeeTypes.length; i++) {
+        Item = _ArrayAppointmentMedicalBillFeeTypes[i];
+        // console.log(i, Item);
+        Option = '<option value="' + Item.Id + '">' + Item.FeeType + '</option>';
+        // console.log(i, Item);
+        SelectOptions += Option;
+    }
+    const Row = '<tr class="TblRow">' +
+        '<td></td>' +
+        '<td> ' +
+        '<input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text"> ' +
+        '</td> ' +
+        '<td> ' +
+        '<select class="form-control" name="TxtFeeType" id="TxtFeeType"> ' +
+        '<option value="" selected>Select A Fee Type</option> ' +
+        SelectOptions +
+        '</select> ' +
+        '</td> ' +
+        '<td> ' +
+        '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
+        '</td> ' +
+        '<td class="ButtonHolderColumn"> ' +
+        _MedicalBillTableButtonAddRow +
+        '</td> ' +
+        '</tr> ';
+    return Row;
 }
 
 function medicalBillTableAllRowsRemove() {
     $("#TblPatientInvoiceBody").html('');
-    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    // $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    const RowNew = medicalBillTableFirstRowToReplaceGet();
+    $("#TblPatientInvoiceBody").append(RowNew);
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
     medicalBillTableButtonsReset();
@@ -577,9 +622,11 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillTableRowAdd(PatientId,appId) {
+function medicalBillTableRowAdd(PatientId, appId) {
     if (medicalBillInputsAreAllValid()) {
-        $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+        // $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+        const RowNew = medicalBillTableFirstRowToReplaceGet();
+        $("#TblPatientInvoiceBody").append(RowNew);
         medicalBillTableRowCountReset();
         medicalBillTableButtonsReset();
     } else {
@@ -587,22 +634,61 @@ function medicalBillTableRowAdd(PatientId,appId) {
     }
 }
 
+function medicalBillInputsAreAllValid() {
+    let TableRows = $('#TblPatientInvoiceBody .TblRow');
+    let TableRow = '';
+    let Item = '-';
+    let FeeType = '-';
+    let FeeAmount = 0;
+    let TotalInputElements = 0;
+    let FilledInputElements = 0;
+
+    for (let i = 0; i < TableRows.length; i++) {
+        TableRow = TableRows[i];
+        Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
+        FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
+        FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
+        TotalInputElements += 3;
+        if (Item !== '') {
+            FilledInputElements++;
+        }
+        if (FeeType !== '') {
+            FilledInputElements++;
+        }
+        if (FeeAmount > 0) {
+            FilledInputElements++;
+        }
+    }
+
+    // console.log('medicalBillInputsValidate:', 'FilledInputElements:', FilledInputElements, 'TotalInputElements:', TotalInputElements);
+
+    if (FilledInputElements === TotalInputElements) {
+        //passed
+        return true;
+    } else {
+        //failed
+        return false;
+    }
+}
+
 function medicalBillSave(PatientId, appId) {
+    // console.log('medicalBillSave.PatientId:', PatientId);
+    // console.log('medicalBillSave._AppointmentDetails:', _AppointmentDetails);
+    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+    const MedicalBillItems = [];
+    let TotalInputElements = 0;
+    let FilledInputElements = 0;
+
     if (!medicalBillInputsAreAllValid()) {
         //failed
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     } else {
         //passed
-        // console.log('medicalBillSave.PatientId:', PatientId);
-        // console.log('medicalBillSave._AppointmentDetails:', _AppointmentDetails);
-        const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-
         let TableRows = $('#TblPatientInvoiceBody .TblRow');
         let TableRow = '';
         let Item = '-';
         let FeeType = '-';
         let FeeAmount = 0;
-        const MedicalBillItems = [];
         let MedicalBillItem = {};
 
         for (let i = 0; i < TableRows.length; i++) {
@@ -610,6 +696,16 @@ function medicalBillSave(PatientId, appId) {
             Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
             FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
             FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
+            TotalInputElements += 3;
+            if (Item !== '') {
+                FilledInputElements++;
+            }
+            if (FeeType !== '') {
+                FilledInputElements++;
+            }
+            if (FeeAmount > 0) {
+                FilledInputElements++;
+            }
             MedicalBillItem = {
                 'Item': Item, 'FeeType': FeeType, 'FeeAmount': FeeAmount
             };
@@ -619,16 +715,16 @@ function medicalBillSave(PatientId, appId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-    let month = parseInt(date.getMonth())+1;
+    let month = parseInt(date.getMonth()) + 1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
         ("0" + date.getHours()).slice(-2) + ':' +
         ("0" + date.getMinutes()).slice(-2);
 
-        const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
+    const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
 
-        // console.log('medicalBillSave._DoctorSessionData:', _DoctorSessionData);
+    // console.log('medicalBillSave._DoctorSessionData:', _DoctorSessionData);
 
     const Patient = {
         'Doctor': 'Dr. Maester Luwin',
