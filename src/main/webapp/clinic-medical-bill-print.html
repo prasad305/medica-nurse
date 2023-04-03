@@ -1,0 +1,169 @@
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Clinic Medical Bill</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+        [class*="col-"] {
+            /* border: solid 1px #eee; */
+        }
+
+        .w-5 {
+            width: 5%;
+        }
+
+        .w-10 {
+            width: 10%;
+        }
+
+        .w-15 {
+            width: 15%;
+        }
+
+        .w-20 {
+            width: 20%;
+        }
+
+        @media print {
+            #ButtonWrapper {
+                display: none;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container-fluid mb-4">
+
+    <div class="row my-3" id="ButtonWrapper">
+        <div class="col-sm-12">
+            <button class="btn btn-primary btn-sm float-right" onClick="window.print()">Print The Bill</button>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-sm-12 text-center">
+            <!-- <img src="https://docnote.medica.lk/Images/6.png" class="img-fluid" alt="#"> -->
+            <img src="dist-assets/images/DoctorDetails/Header.png" class="img-fluid" alt="#">
+        </div>
+        <div class="col-sm-12">
+            <h2 class="text-center mb-4">Medical Bill</h2>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Home address:</span>
+            <textarea id="TxtHomeAddressPreview" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Office address: </span>
+            <textarea id="TxtOfficeAddressPreview" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group row justify-content-center">
+        <div class="modal-header">
+            <h5 class="modal-title mb-3">Charges</h5>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Drug: </span>
+            <input id="TxtDrugPreview" class="form-control" type="text">
+        </div>
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Doctor fee: </span>
+            <input id="TxtDoctorFeePreview" class="form-control" type="text">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Investigation: </span>
+            <input id="TxtInvestigationPreview" class="form-control" type="text">
+        </div>
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Other: </span>
+            <input id="TxtOtherPreview" class="form-control" type="text">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-6 col-md-6 col-xs-6"></div>
+        <div class="col-6 col-md-6 col-xs-6">
+            <span class="col-form-label">Total: </span>
+            <input id="TxtTotalPreview" class="form-control" type="text">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-12 col-md-12 col-xs-12">
+            <span class="col-form-label">Issuing date: </span>
+            <input id="TxtIssuingDatePreview" class="form-control Date-Picker" type="text">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 col-md-4 col-xs-4">
+            <img style="width:80px; height:80px;" src="dist-assets/images/DoctorDetails/logo.png" alt="Patient QR">
+        </div>
+        <div class="col-4 col-md-4 col-xs-4">
+            <img style="width:80px; height:80px;" src="dist-assets/images/DoctorDetails/qr.png" alt="Patient QR">
+        </div>
+        <div class="col-4 col-md-4 col-xs-4">
+            <img style="width:280px; height:80px;" src="dist-assets/images/DoctorDetails/6.png" alt="Patient QR">
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+    ClinicMedicalBillDataFromLocalStorageGet();
+
+    function ClinicMedicalBillDataFromLocalStorageGet() {
+        if (localStorage.getItem('ClinicMedicalBill') != null) {
+            const JsonString = localStorage.getItem('ClinicMedicalBill');
+            ClinicMedicalBillCreate(JsonString);
+        } else {
+            // console.log('No Clinic Medical Bill in the local storage!');
+            throw Error('No Clinic Medical Bill in the local storage!');
+        }
+    }
+
+    function ClinicMedicalBillCreate(JsonString) {
+        // console.log('medicalBillCreate.JsonString:', JsonString);
+        const ClinicBill = JSON.parse(JsonString);
+        // console.log('medicalBillCreate.ClinicBill:', ClinicBill);
+
+        $('#TxtHomeAddressPreview').val(ClinicBill.HomeAddress);
+        $('#TxtOfficeAddressPreview').val(ClinicBill.OfficeAddress);
+        $('#TxtDrugPreview').val(ClinicBill.ChargesForDrugs);
+        $('#TxtDoctorFeePreview').val(ClinicBill.ChargesForDoctor);
+        $('#TxtInvestigationPreview').val(ClinicBill.ChargesForInvestigations);
+        $('#TxtOtherPreview').val(ClinicBill.ChargesForOther);
+        $('#TxtTotalPreview').val('0');
+        $('#TxtIssuingDatePreview').val(ClinicBill.IssuingDate);
+
+        //print
+        window.print();
+
+    }
+
+</script>
+
+</body>
+
+</html>

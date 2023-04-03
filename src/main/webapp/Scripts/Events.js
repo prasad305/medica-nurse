@@ -509,13 +509,34 @@ function CmdReadyDrugUpdate_Click() {
     AvailableDrugStatusSave(RecordDrugs, PrescriptionRecordId, PrescriptionId, AppointmentId, PatientId, PrescriptionStatus, _UserId)
 }
 
-function IsSearchDatesValid(InputDate) {
-    // console.log('Events.IsSearchDatesValid.InputDate:', InputDate);
-    const DateToday = new Date().toISOString().slice(0, 10);
+function DateFromIsValid() {
+    const FromDate = $('#TxtClinicBillSearchFromDate').val();
+    // console.log('DateFromIsValid.FromDate:', FromDate);
     const DateSixMonthsPrior = new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()).toISOString().slice(0, 10);
+    const IsValid = DateIsValid(DateSixMonthsPrior, FromDate);
+    // console.log('DateFromIsValid:', IsValid);
+    return IsValid;
+}
+
+function DateToIsValid() {
     const FromDate = $('#TxtClinicBillSearchFromDate').val();
     const ToDate = $('#TxtClinicBillSearchToDate').val();
-    return true;
+    // console.log('IsToSearchDateValid.ToDate:', ToDate);
+    const DateSixMonthsPrior = new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()).toISOString().slice(0, 10);
+    const IsValid = DateIsValid(DateSixMonthsPrior, ToDate) && DateIsValid(FromDate, ToDate);
+    // console.log('DateToIsValid:', IsValid);
+    return IsValid;
+}
+
+function DateIsValid(MinimumDate, CheckDate) {
+    // console.log('DateIsValid:', MinimumDate, CheckDate);
+    const Minimum = new Date(MinimumDate);
+    const Check = new Date(CheckDate);
+    if (Check.getTime() >= Minimum.getTime()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function ClinicMedicalBillsSearchFieldsClear() {
@@ -541,20 +562,18 @@ function ClinicMedicalBillsSearch() {
     let FromDate = $('#TxtClinicBillSearchFromDate').val();
     let ToDate = $('#TxtClinicBillSearchToDate').val();
 
-    if (!IsSearchDatesValid(FromDate) && FromDate !== "") {
-        return ShowMessage(Messages.InvalidDate, MessageTypes.Warning, "Warning!");
-
-    } else if (!IsSearchDatesValid(ToDate) && ToDate !== "") {
-        return ShowMessage(Messages.InvalidDate, MessageTypes.Warning, "Warning!");
-
+    if (!DateToIsValid()) {
+        // alert('Failed! Invalid dates');
+        return ShowMessage(Messages.InvalidDate, MessageTypes.Warning, "Oops!");
     } else {
+        // alert('Success!');
         if (FromDate === "")
             FromDate = undefined;
 
         if (ToDate === "")
             ToDate = undefined;
 
-        console.log('Events.ClinicMedicalBillsSearch:', FromDate, ToDate);
+        // console.log('ClinicMedicalBillsSearch:', FromDate, ToDate);
 
         const Response = {
             "Status": 1000,
@@ -654,15 +673,55 @@ function ClinicMedicalBillsSearch() {
         // console.log('Events.ClinicMedicalBillsSearch.Response:', Response);
         ClinicMedicalBillsSearch_Success(Response);
 
-        _Request.Post(
-            ServiceMethods.GetPatient,
-            // new SearchPatient(PatientNicNumber, PatientMobileNumber, PatientDateBirth, PatientName, undefined, PatientHealthID),
-            Response,
-            ClinicMedicalBillsSearch_Success
-        );
+        // _Request.Post(
+        //     ServiceMethods.GetPatient,
+        //     // new SearchPatient(PatientNicNumber, PatientMobileNumber, PatientDateBirth, PatientName, undefined, PatientHealthID),
+        //     ClinicMedicalBillsSearch_Success
+        // );
     }
 }
 
+function ClinicMedicalBillGet(Id) {
+    // console.log('ClinicMedicalBillGet.Id:', Id);
+
+    const Response = {
+        "Status": 1000,
+        "Data": [
+            {
+                "Id": 12121,
+                "AppointmentId": 248455,
+                "PatientId": 10439,
+                "HomeAddress": "From address",
+                "OfficeAddress": "To address",
+                "ChargesForDrugs": 10,
+                "ChargesForDoctor": 12,
+                "ChargesForInvestigations": 13,
+                "ChargesForOther": 11,
+                "IssuingDate": "2023-03-30T00:00:00",
+                "Status": 1,
+                "Patient": null,
+                "Appointment": null,
+                "PrescriptionId": 0,
+                "IsDeleted": false,
+                "UserCreated": 0,
+                "DateCreated": "0001-01-01T00:00:00",
+                "UserModified": null,
+                "DateModified": null,
+                "UserSaved": 0
+            }
+        ],
+        "Message": "Success"
+    };
+
+    // console.log('ClinicMedicalBillsSearch.Response:', Response);
+    ClinicMedicalBillGet_Success(Response);
+
+    // _Request.Post(
+    //     ServiceMethods.GetPatient,
+    //     // new SearchPatient(PatientNicNumber, PatientMobileNumber, PatientDateBirth, PatientName, undefined, PatientHealthID),
+    //     ClinicMedicalBillGet_Success
+    // );
+}
 
 /*=================================
 			Common Events

@@ -480,7 +480,7 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(PatientId,appId) {
+function MedicalBillDisplay(PatientId, appId) {
     console.log(appId)
     selectedAppId = appId;
     selectedPatientId = PatientId;
@@ -510,12 +510,6 @@ function MedicalBillDisplay(PatientId,appId) {
 function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
-}
-
-function medicalBillTableRowAdd() {
-    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
-    medicalBillTableRowCountReset();
-    medicalBillTableButtonsReset();
 }
 
 function medicalBillTableAllRowsRemove() {
@@ -583,41 +577,44 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillInputsValidate(PatientId,appId) {
-    // console.log('MedicalBillDisplay.PatientId:', PatientId);
-    // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
-    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-
-    let TableRows = $('#TblPatientInvoiceBody .TblRow');
-    let TableRow = '';
-    let Item = '-';
-    let FeeType = '-';
-    let FeeAmount = 0;
-    let TotalInputElements = 0;
-    let FilledInputElements = 0;
-    const MedicalBillItems = [];
-    let MedicalBillItem = {};
-
-    for (let i = 0; i < TableRows.length; i++) {
-        TableRow = TableRows[i];
-        Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
-        FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
-        FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
-        TotalInputElements += 3;
-        if (Item !== '') {
-            FilledInputElements++;
-        }
-        if (FeeType !== '') {
-            FilledInputElements++;
-        }
-        if (FeeAmount > 0) {
-            FilledInputElements++;
-        }
-        MedicalBillItem = {
-            'Item': Item, 'FeeType': FeeType, 'FeeAmount': FeeAmount
-        };
-        MedicalBillItems.push(MedicalBillItem);
+function medicalBillTableRowAdd(PatientId,appId) {
+    if (medicalBillInputsAreAllValid()) {
+        $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+        medicalBillTableRowCountReset();
+        medicalBillTableButtonsReset();
+    } else {
+        return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
+}
+
+function medicalBillSave(PatientId, appId) {
+    if (!medicalBillInputsAreAllValid()) {
+        //failed
+        return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
+    } else {
+        //passed
+        // console.log('medicalBillSave.PatientId:', PatientId);
+        // console.log('medicalBillSave._AppointmentDetails:', _AppointmentDetails);
+        const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+
+        let TableRows = $('#TblPatientInvoiceBody .TblRow');
+        let TableRow = '';
+        let Item = '-';
+        let FeeType = '-';
+        let FeeAmount = 0;
+        const MedicalBillItems = [];
+        let MedicalBillItem = {};
+
+        for (let i = 0; i < TableRows.length; i++) {
+            TableRow = TableRows[i];
+            Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
+            FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
+            FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
+            MedicalBillItem = {
+                'Item': Item, 'FeeType': FeeType, 'FeeAmount': FeeAmount
+            };
+            MedicalBillItems.push(MedicalBillItem);
+        }
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
@@ -628,8 +625,9 @@ function medicalBillInputsValidate(PatientId,appId) {
         ("0" + date.getHours()).slice(-2) + ':' +
         ("0" + date.getMinutes()).slice(-2);
 
-    const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
-    // console.log('PatientsAge:', PatientsAge);
+        const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
+
+        // console.log('medicalBillSave._DoctorSessionData:', _DoctorSessionData);
 
     const Patient = {
         'Doctor': 'Dr. Maester Luwin',
@@ -657,7 +655,8 @@ function medicalBillInputsValidate(PatientId,appId) {
     if (FilledInputElements === TotalInputElements) {
         SaveBillData(JsonObjectToSave);
     } else {
-        return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
+        //failed
+        return false;
     }
 }
 
@@ -680,6 +679,42 @@ function medicalBillPrint() {
     const Iframe = '<iframe height="650px" src="medical-bill.html?v1=1" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
+}
+
+function ClinicMedicalBillNestedPrint(ResponseData) {
+    // console.log('ClinicMedicalBillNestedPrint.ResponseData:', ResponseData);
+
+    //hide currently opened modal
+    $('#ModalForClinicMedicalBill').modal('hide');
+
+    //save api response in local-storage
+    if (localStorage.getItem('ClinicMedicalBill') == null) {
+        localStorage.setItem('ClinicMedicalBill', '{}');
+    } else {
+        localStorage.setItem('ClinicMedicalBill', JSON.stringify(ResponseData));
+    }
+
+    //display the modal with the iframe
+    new ClinicMedicalBillNestedPrintPageIframeModal().Render(Containers.Footer);
+
+    $('#ModalForClinicMedicalBillIframe .modal-body').html('');
+    // const Iframe = '<label>Test</label>';
+    const Iframe = '<iframe src="clinic-medical-bill-print.html" class="w-100 h-650" frameborder="0" allowfullscreen></iframe>';
+    $('#ModalForClinicMedicalBillIframe .modal-body').append(Iframe);
+    $('#ModalForClinicMedicalBillIframe').modal('show');
+}
+
+function ClinicMedicalBillGet_Success(Response) {
+    if (Response.Data.length === 0 || Response.Status !== 1000) {
+        return ShowMessage(Messages.NoData, MessageTypes.Warning, "Oops!");
+    } else {
+        // console.log('ClinicMedicalBillGet_Success.Response.Data:', Response.Data[0]);
+        ClinicMedicalBillNestedPrint(Response.Data[0]);
+    }
+}
+
+function LoadPrescriptionRecordDrugs_Success(Response) {
+    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else FilterPrescriptionRecordDrugs(Response.Data);
 }
 
 function AddVitals(PatientId) {
@@ -810,7 +845,7 @@ function ClinicMedicalBillPrint(PrescriptionId) {
 }
 
 function ClinicMedicalBillsSearchFormRender() {
-    new ClinicBillSearch().Render('ClinicMedicalBillsSearch');
+    new ClinicBillSearchForm().Render('ClinicMedicalBillsSearch');
 }
 
 function ClinicMedicalBillsSearch_Success(Response) {
@@ -885,7 +920,7 @@ function ClinicMedicalBillsSearchResultsTableDisplay(Data) {
                 "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicPrescriptionDisplay(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillDisplay(' + Data[Count].Id + ')">' +
+                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillGet(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicReferenceLetterDisplay(' + Data[Count].Id + ')">' +

@@ -146,6 +146,7 @@ const Messages =
     InvalidFileType: "File format is Invalid only format that allowed Pdf,Jpg,Png",
     FileUploadSuccess: "File Uploaded SuccessFully",
     ConnectingError: "An error occured while communicating with the server",
+    NoData: "No data received from the server",
     NofileChoosen: "No file chosen, yet.",
     FileUploadFailed:"Upload Information Failed"
 };

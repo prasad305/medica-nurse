@@ -1252,13 +1252,15 @@ function MedicalBill(Patient,appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                // new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                // new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ','+appId+')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
@@ -1381,13 +1383,13 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+                new Attribute(_AttributeOnClick, 'X(' + Prescription.Id + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+                new Attribute(_AttributeOnClick, 'X(' + Prescription.Id + ')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
@@ -1434,18 +1436,6 @@ function ClinicMedicalBillsSearchModal() {
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
-            [
-                // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
-            ]
-        ));
-        ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
-            [
-                // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
-            ]
-        ));
         ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);
@@ -1466,6 +1456,26 @@ function ClinicMedicalBillsSearchModal() {
         ClinicMedicalBillsSearchResultsTableDisplay(Response.Data);
 
         $('#ModalForClinicMedicalBill').modal('show');
+    }
+}
+
+function ClinicMedicalBillNestedPrintPageIframeModal() {
+    this.Render = function (Container) {
+
+        const IframeModal = new Div("ModalForClinicMedicalBillIframe", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        IframeModal.appendChild(ModalDialog);
+
+        // console.log('ClinicMedicalBillNestedPrintPageIframeModal.IframeModal',IframeModal);
+
+        BindView(Container, IframeModal);
     }
 }
 
@@ -1577,7 +1587,7 @@ function PharmacyPrescription() {
     }
 }
 
-function ClinicBillSearch() {
+function ClinicBillSearchForm() {
     this.Render = function (Container) {
 
         const ParentRow = new Div(undefined, "row");
@@ -1609,7 +1619,8 @@ function ClinicBillSearch() {
                 new Attribute(_AttributeType, 'date'),
                 new Attribute(_AttributeFor, 'TxtClinicBillSearchFromDate'),
                 new Attribute('min', DateSixMonthsPrior),
-                new Attribute('value', DateToday)
+                new Attribute('value', DateToday),
+                new Attribute(_AttributeOnChange, 'DateFromIsValid')
             ]
         ));
         FormRowOne.appendChild(FormRowColumnOne);
@@ -1624,9 +1635,9 @@ function ClinicBillSearch() {
         FormRowColumnTwo.appendChild(new Textbox("TxtClinicBillSearchToDate", "form-control form-control-rounded",
             [
                 new Attribute(_AttributeType, 'date'),
-                new Attribute(_AttributeOnChange, 'ClinicMedicalBillsSearchDatesValidate()'),
                 new Attribute('min', DateSixMonthsPrior),
-                new Attribute('value', DateToday)
+                new Attribute('value', DateToday),
+                new Attribute(_AttributeOnChange, 'DateToIsValid')
             ]
         ));
         FormRowOne.appendChild(FormRowColumnTwo);
