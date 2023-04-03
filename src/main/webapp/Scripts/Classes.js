@@ -242,3 +242,23 @@ function PatientUploadInformation(PatientId, Type, FileName, Name, UserSaved)
     this.Name = Name;
     this.UserSaved = UserSaved;
 }
+
+
+function Bill(Id, SessionId, DoctorId, PatientId,Discount,Total, AppointmentNumber,BillData)
+{
+    this.Id = Id;
+    this.SessionId = SessionId;
+    this.DoctorId = DoctorId;
+    this.PatientId = PatientId;
+    this.Discount = Discount;
+    this.Total = Total;
+    this.AppointmentNumber = AppointmentNumber;
+    this.BillData = BillData;
+}
+
+function BillData(Amount, FeeType, ItemName)
+{
+    this.Amount = Amount;
+    this.FeeType = FeeType;
+    this.ItemName = ItemName;
+}

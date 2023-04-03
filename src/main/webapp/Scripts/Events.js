@@ -233,6 +233,27 @@ function SavePatient_Click() {
     _Request.Post(ServiceMethods.SavePatient, PatientData, SaveDetails_Success);
 }
 
+function SaveBillData(printData) {
+
+    var dataset = [];
+
+    $('#TblPatientInvoice > tbody  > tr').each(function(index, tr) {
+        dataset.push(new BillData(tr.cells[3].children[0].value,tr.cells[2].children[0].value,tr.cells[1].children[0].value))
+    });
+
+     var allData  = new Bill(billId,selectedSessionId,selectedDoctorId,selectedPatientId
+        ,$('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0
+        ,$('#TxtTotal').text(),selectedAppId,dataset)
+
+    console.log(allData);
+
+    _Request.Post(ServiceMethods.BillSave,allData,function (res) {
+        printData.Bill.BillNumber = 'SO/SC/'+String( res.Data.Id).padStart(5, '0');
+        medicalBillSaveInLocalStorage(JSON.stringify(printData));
+    });
+}
+
+
 function SetPatientDataByNIC() {
     let NIC = document.getElementById('TxtAddMobileNumber').value;
     if (GetDateOfBirthByNIC(NIC) === null)
@@ -335,7 +356,10 @@ function GetDoctorSessionDataForAppoinment() {
 function SetAppoinmentToDoctor_Click() {
     _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
+    selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
+
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
 
     if (document.getElementById('DrpSessionDateDoctor').value != " " && document.getElementById('DrpAppoinmentDoctor').value != " ") {
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);

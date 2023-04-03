@@ -108,7 +108,9 @@ const ServiceMethods =
     InstituteBranch: "InstituteBranch/GetInstituteBranch",
     InstituteBranchGet: "InstituteBranch/Get",
     GetNurse: "Nurse/Get",
-    PatientInformationSave:"PatientDiagnosisDocument/Post"
+    PatientInformationSave:"PatientDiagnosisDocument/Post",
+    BillSave:"Bill/Post",
+    BillGet:"Bill/Get"
 };
 
 const MessageTypes =

@@ -6,6 +6,13 @@
 let DataLength;
 let LoopCount = 0;
 
+
+var selectedDoctorId;
+var selectedSessionId;
+var selectedAppId;
+var selectedPatientId;
+var billId = 0;
+
 function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
         return ShowMessage(Messages.LoginInvalid, MessageTypes.Warning, "Warning!");
@@ -475,10 +482,28 @@ function UploadFile(PatientId) {
 
 function MedicalBillDisplay(PatientId,appId) {
     console.log(appId)
+    selectedAppId = appId;
+    selectedPatientId = PatientId;
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
+
+    var allData  = new Bill(undefined,selectedSessionId,selectedDoctorId,selectedPatientId
+        ,undefined
+        ,undefined,selectedAppId,undefined)
+    _Request.Post(ServiceMethods.BillGet,allData,function (res) {
+        console.log(res);
+
+        if(res.Data?.Id){
+            billId = res.Data.Id;
+            //pass data to ui
+        }else {
+            billId = 0;
+        }
+
+    });
+
     new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
 }
 
@@ -596,7 +621,7 @@ function medicalBillInputsValidate(PatientId,appId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-let month = parseInt(date.getMonth())+1;
+    let month = parseInt(date.getMonth())+1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
@@ -630,7 +655,7 @@ let month = parseInt(date.getMonth())+1;
     }
 
     if (FilledInputElements === TotalInputElements) {
-        medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
+        SaveBillData(JsonObjectToSave);
     } else {
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
