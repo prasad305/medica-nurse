@@ -298,7 +298,7 @@ function SiteButtonBar() {
         let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Schedule.png", undefined, "History Image");
 
         let DivWidgetContentHistory = new Div("HistoryHeading", "ul-widget__content-v2");
-        let HeadingHistory = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingHistory = new Heading4("Sessions", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageHistory.appendChild(ImageHistory);
         DivWidgetRowHistory.appendChild(DivWidgetImageHistory);
@@ -325,7 +325,7 @@ function SiteButtonBar() {
         let ImageAllergies = new Imagebox(undefined, "dist-assets/images/Nurse/Pharmacy.png", undefined, "Allergies Image");
 
         let DivWidgetContentAllergies = new Div("AllergiesHeading", "ul-widget__content-v2");
-        let HeadingAllergies = new Heading4("Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingAllergies = new Heading4("Pharmacy", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageAllergies.appendChild(ImageAllergies);
         DivWidgetRowAllergies.appendChild(DivWidgetImageAllergies);

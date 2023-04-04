@@ -447,7 +447,7 @@ function FilterAppointedPatientData(Data) {
 
         _ArrayAppointedPatientData.push(
             {
-                // "No": isNull(Data[Count]).Number,
+                // "No": isNull(Data[Count].Number),
                 "No": (Count + 1),
                 "Doctor": "-",
                 "Name": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
