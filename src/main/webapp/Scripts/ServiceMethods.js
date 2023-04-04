@@ -108,22 +108,29 @@ function GetPatientData_Success(Response) {
 
 function FilterPatientData(Data) {
     let DataLength = Data.length;
-    let Count = 0;
     let ArrayPatientData = [];
     let PatientType = "-";
+    _ArrayPatientSearchResultsData = Data;
 
     if (DataLength === undefined) {
+
         ArrayPatientData.push({
-            " ": " ",
             Name: Data.Title + Data.FirstName + " " + Data.LastName,
-            "NIC": Data.NIC,
-            "Mobile": Data.Mobile,
+            NIC: Data.NIC,
+            Mobile: Data.Mobile,
             Gender: Data.Gender,
             Dep: PatientType,
-            Action: '<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data.Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>'
+            Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + Data.Id + ')">' +
+                '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                '</button>' +
+                '<button class="btn btn-primary btn-icon" type="button" onclick="SetAppointmentPatient(this,' + Data.Id + ')">' +
+                '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' +
+                '</button>'
         });
+
     } else {
-        for (Count; Count < DataLength; Count++) {
+
+        for (let Count = 0; Count < DataLength; Count++) {
             switch (Data[Count].PatientTypeId) {
                 case 1:
                     PatientType = "Adult";
@@ -137,13 +144,20 @@ function FilterPatientData(Data) {
             }
 
             ArrayPatientData.push({
-                " ": " ",
-                Name: Data[Count].Title + Data[Count].FirstName + " " + Data[Count].LastName,
-                "NIC": Data[Count].NIC,
-                "Mobile": Data[Count].Mobile,
-                Gender: Data[Count].Gender,
+                Name: isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
+                NIC: isNull(Data[Count].NIC),
+                Mobile: isNull(Data[Count].Mobile),
+                Gender: isNull(Data[Count].Gender),
                 Dep: PatientType,
-                Action: '<button class="btn btn-info btn-icon" type="button" onclick= "LoadPatientData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>   <button class="btn btn-primary btn-icon" type="button" onclick= "SetAppointmentPatient(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span></button>'
+                Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + isNull(Data[Count].Id) + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-primary btn-icon mx-2" type="button" onclick="SetAppointmentPatient(this,' + isNull(Data[Count].Id) + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' +
+                    '</button>' +
+                    '<button class="btn btn-primary btn-icon" type="button" onclick="PatientMedicalBillModalDisplay(' + isNull(Data[Count].Id) + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
+                    '</button>'
             });
         }
     }
@@ -173,6 +187,14 @@ function LoadPatientData_Success(Response) {
     Response.Data.Gender.toUpperCase() === "MALE" ? document.getElementById('ChkPatientMale').checked = true : document.getElementById('ChkPatientFemale').checked = true;
 }
 
+function PatientMedicalBillModalDisplay(PatientId) {
+    // console.log(appId);
+    // console.log('PatientMedicalBillModalDisplay.PatientId:', PatientId);
+    // console.log('PatientMedicalBillModalDisplay._ArrayPatientSearchResultsData:', _ArrayPatientSearchResultsData);
+    const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('PatientMedicalBillModalDisplay.PatientMatched:', PatientMatched);
+    new MedicalBill(PatientMatched).Render(Containers.Footer);
+}
 
 /*=================================
 		Session Methods
@@ -427,7 +449,7 @@ function FilterAppointedPatientData(Data) {
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
                     '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ','+Data[Count].Number+')">' +
+                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
             });
@@ -464,13 +486,13 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(PatientId,appId) {
-    console.log(appId)
+function MedicalBillDisplay(PatientId, appId) {
+    console.log(appId);
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
-    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
+    new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
 }
 
 function medicalBillTableFirstRowReplace() {
@@ -549,7 +571,7 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillInputsValidate(PatientId,appId) {
+function medicalBillInputsValidate(PatientId, appId) {
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
     // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
@@ -587,7 +609,7 @@ function medicalBillInputsValidate(PatientId,appId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-let month = parseInt(date.getMonth())+1;
+    let month = parseInt(date.getMonth()) + 1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
