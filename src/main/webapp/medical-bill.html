@@ -170,11 +170,11 @@
     medicalBillDataFromLocalStorageGet();
 
     function medicalBillDataFromLocalStorageGet() {
-        if (localStorage.getItem('MedicalBill') != null) {
-            const JsonString = localStorage.getItem('MedicalBill');
+        if (localStorage.getItem('ReceptionMedicalBill') != null) {
+            const JsonString = localStorage.getItem('ReceptionMedicalBill');
             medicalBillCreate(JsonString);
         } else {
-            console.log('No MedicalBill in the local storage!');
+            console.log('No Reception Medical Bill in the local storage!');
         }
     }
 

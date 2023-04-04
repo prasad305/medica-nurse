@@ -1277,7 +1277,7 @@ function TablePatientAppointment() {
     }
 }
 
-function MedicalBill(Patient, appId) {
+function MedicalBill(Patient) {
     this.Render = function (Container) {
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
@@ -1349,13 +1349,15 @@ function MedicalBill(Patient, appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ')')
+                // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ')')
+                // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);
