@@ -69,10 +69,8 @@ var _DoctorSessionData = [];
 var _ArrayPrescriptionData = [];
 var _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
-var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
-
 
 var _NurseNIC;
 var _NurseLastName;

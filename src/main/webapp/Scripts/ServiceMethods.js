@@ -40,7 +40,7 @@ function SaveDetails_Success(Response) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
             new NewAppoinment().Render(Containers.MainContent);
-            GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+            // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
             GetDoctorAppoinmentList();
         }
 
@@ -370,13 +370,14 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
 }
 
 function GetNextAppoinmentNumber_Sucess(Response) {
-    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    // else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
 }
 
 function SaveAppointment_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _PatientId = null;
-        GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
 
         //SavePatientAnalytics(Response.Data);
@@ -404,9 +405,8 @@ function GetDoctorAppoinmentList_Success(Response) {
 function FilterAppointedPatientData(Data) {
 
     let DataLength = Data.length;
-    let Count;
 
-    for (Count = 0; Count < DataLength; Count++) {
+    for (let Count = 0; Count < DataLength; Count++) {
 
         let PaymentStatus = '-';
 
@@ -420,7 +420,7 @@ function FilterAppointedPatientData(Data) {
 
         }
 
-        let ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
+        const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
 
         if (ChannelingStatusOriginal.includes('unsuccessful')) {
@@ -435,12 +435,24 @@ function FilterAppointedPatientData(Data) {
 
         // console.log(ChannelingStatusOriginal, ChannelingStatus);
 
+        const GenderOriginal = Data[Count].Gender != null ? Data[Count].Gender.toLowerCase() : '-';
+        let Gender = '-';
+
+        if (GenderOriginal === 'female') {
+            Gender = 'F';
+
+        } else if (GenderOriginal === 'male') {
+            Gender = 'M';
+        }
+
         _ArrayAppointedPatientData.push(
             {
-                "No": Data[Count].Number,
-                "Name": Data[Count].Title + " " + Data[Count].FirstName + " " + Data[Count].LastName,
-                "Mobile": Data[Count].Mobile,
-                "Gender": Data[Count].Gender,
+                // "No": isNull(Data[Count]).Number,
+                "No": (Count + 1),
+                "Doctor": "-",
+                "Name": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
+                "Mobile": isNull(Data[Count].Mobile),
+                "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
                 "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
@@ -454,6 +466,21 @@ function FilterAppointedPatientData(Data) {
                     '</button>'
             });
 
+    }
+}
+
+function GetAllPatientAppointmentsList() {
+    _ArrayAppointedPatientData = [];
+    _Request.Post(ServiceMethods.GetAppoinment,
+        new AppointmentList(undefined, undefined, undefined, undefined),
+        GetAllPatientAppointmentsList_Success);
+}
+
+function GetAllPatientAppointmentsList_Success(Response) {
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+        _AppointmentDetails = Response.Data;
+        FilterAppointedPatientData(Response.Data);
+        LoadAppointmentedPatientList();
     }
 }
 
@@ -499,12 +526,6 @@ function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
 }
-
-// function medicalBillTableRowAdd() {
-//     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
-//     medicalBillTableRowCountReset();
-//     medicalBillTableButtonsReset();
-// }
 
 function medicalBillTableRowAdd() {
     if (medicalBillInputsAreAllValid()) {
@@ -698,7 +719,7 @@ function medicalBillSave(PatientId) {
     }
 
     // if (FilledInputElements === TotalInputElements) {
-        medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
+    medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
     // } else {
     //     return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     // }

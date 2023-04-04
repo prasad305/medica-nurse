@@ -67,7 +67,7 @@ function CreateDataTable(Id) {
 
             "aaSorting": [],
             "ordering": false,
-            "bPaginate": false,
+            "bPaginate": true,
             "bFilter": false,
             "bInfo": false,
 
