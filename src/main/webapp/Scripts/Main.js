@@ -72,110 +72,112 @@ var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
 
+let _AppointmentsForTodayCount = 0;
+let _AppointmentsForTodayResults = [];
+
 var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
-
+let _NurseLoggedIn = {};
 
 /*========================
      Enums
 =========================*/
 const ServiceMethods =
-{
-    OTPSend: "OTP/Send",
-    UserPost: "User/Post",
-    DoctorGet: "Doctor/Get/",
-    SavePatient: "Patient/Save",
-    Login: "Authenticate/Login",
-    GetPatient: "Patient/GetPatient",
-    UserPatient: "UserPatient/Post",
-    GetPatientData: "Patient/GET/",
-    SaveSession: "Session/POST",
-    NurseDoctor: "NurseDoctor/GET/",
-    SessionGet: "Session/GET/",
-    SessionsGet: "Session/GetSessions",
-    SessionGetByDate: "Session/GetByDate",
-    NextAppoinment: "Appointment/GetNext",
-    GetAppoinment: "Appointment/GetAppointment",
-    SaveAppoinmnet: "Appointment/Post",
-    SaveAnalaytics: "MedicalAnalytic/Save",
-    PatientReportUpload: "patientreport/uploads/",
-    PatientReportSave: "PatientReport/Save",
-    PrescriptionRecords: "PrescriptionRecord/GetPrescriptionByInstituteBranch",
-    DrugsPrescriptions: "PrescriptionRecord/PresciptionRcordDrugGet",
-    ReadyPrescription: "AppointmentPrescriptionRecord/Update",
-    InstituteBranch: "InstituteBranch/GetInstituteBranch",
-    InstituteBranchGet: "InstituteBranch/Get",
-    GetNurse: "Nurse/Get",
-    PatientInformationSave:"PatientDiagnosisDocument/Post"
-};
+    {
+        OTPSend: "OTP/Send",
+        UserPost: "User/Post",
+        DoctorGet: "Doctor/Get/",
+        SavePatient: "Patient/Save",
+        Login: "Authenticate/Login",
+        GetPatient: "Patient/GetPatient",
+        UserPatient: "UserPatient/Post",
+        GetPatientData: "Patient/GET/",
+        SaveSession: "Session/POST",
+        NurseDoctor: "NurseDoctor/GET/",
+        SessionGet: "Session/GET/",
+        SessionsGet: "Session/GetSessions",
+        SessionGetByDate: "Session/GetByDate",
+        NextAppoinment: "Appointment/GetNext",
+        GetAppoinment: "Appointment/GetAppointment",
+        SaveAppoinmnet: "Appointment/Post",
+        SaveAnalaytics: "MedicalAnalytic/Save",
+        PatientReportUpload: "patientreport/uploads/",
+        PatientReportSave: "PatientReport/Save",
+        PrescriptionRecords: "PrescriptionRecord/GetPrescriptionByInstituteBranch",
+        DrugsPrescriptions: "PrescriptionRecord/PresciptionRcordDrugGet",
+        ReadyPrescription: "AppointmentPrescriptionRecord/Update",
+        InstituteBranch: "InstituteBranch/GetInstituteBranch",
+        InstituteBranchGet: "InstituteBranch/Get",
+        GetNurse: "Nurse/Get",
+        PatientInformationSave: "PatientDiagnosisDocument/Post"
+    };
 
 const MessageTypes =
-{
-    Warning: "Warning",
-    Success: "Success",
-    Error: "Error",
-    Info: "Info"
-};
+    {
+        Warning: "Warning",
+        Success: "Success",
+        Error: "Error",
+        Info: "Info"
+    };
 
 const Messages =
-{
-    LoginInvalid: "Invalid Username or Password!",
-    InvalidMobileNumber: "Invalid Mobile Number!",
-    SearchFieldValidate: "Please Add at Least One Field",
-    UserSaveSuccess: "Patient Saved Successfully!",
-    EmptyFields: "All Fields Must Be Filled!",
-    SelectDrp: "Please select from dropdown",
-    UserNotFound: "Sorry no Patient Found!",
-    SessionSaveSuccess: "The Session Has Been Saved Successfully",
-    NoSession: "No Session Found!",
-    ApoointmentSaveSuccess: "The Appointment Has Been Saved Successfully!",
-    InvalidDate: "Invalid Date!",
-    ReportUploadSuccess: "Report Upload Success!",
-    ReportUploadFailed: "Report Upload Failed!",
-    ResetPassword: "Please call to reset password!",
-    SelectDoctor: "Please Select a Doctor",
-    NoMessage: "No New Message!",
-    NoAuthorizedSearch: "Sorry. You are not authorized for this search",
-    InvalidNIC: "Invalid NIC!",
-    FileExceed: "Upload File Size is Exceed Please Check File Size",
-    FileMaximumSize: "Fie size has been exceeded.maximum limit is 5 MB",
-    InvalidFileType: "File format is Invalid only format that allowed Pdf,Jpg,Png",
-    FileUploadSuccess: "File Uploaded SuccessFully",
-    ConnectingError: "An error occured while communicating with the server",
-    NofileChoosen: "No file chosen, yet.",
-    FileUploadFailed:"Upload Information Failed"
-};
+    {
+        LoginInvalid: "Invalid Username or Password!",
+        InvalidMobileNumber: "Invalid Mobile Number!",
+        SearchFieldValidate: "Please Add at Least One Field",
+        UserSaveSuccess: "Patient Saved Successfully!",
+        EmptyFields: "All Fields Must Be Filled!",
+        SelectDrp: "Please select from dropdown",
+        UserNotFound: "Sorry no Patient Found!",
+        SessionSaveSuccess: "The Session Has Been Saved Successfully",
+        NoSession: "No Session Found!",
+        ApoointmentSaveSuccess: "The Appointment Has Been Saved Successfully!",
+        InvalidDate: "Invalid Date!",
+        ReportUploadSuccess: "Report Upload Success!",
+        ReportUploadFailed: "Report Upload Failed!",
+        ResetPassword: "Please call to reset password!",
+        SelectDoctor: "Please Select a Doctor",
+        NoMessage: "No New Message!",
+        NoAuthorizedSearch: "Sorry. You are not authorized for this search",
+        InvalidNIC: "Invalid NIC!",
+        FileExceed: "Upload File Size is Exceed Please Check File Size",
+        FileMaximumSize: "Fie size has been exceeded.maximum limit is 5 MB",
+        InvalidFileType: "File format is Invalid only format that allowed Pdf,Jpg,Png",
+        FileUploadSuccess: "File Uploaded SuccessFully",
+        ConnectingError: "An error occured while communicating with the server",
+        NofileChoosen: "No file chosen, yet.",
+        FileUploadFailed: "Upload Information Failed"
+    };
 
 const Images =
-{
-    Logo: "./images/medica_logo.png"
-};
+    {
+        Logo: "./images/medica_logo.png"
+    };
 
 const TimeFormat =
-{
-    DateFormat: '1970-01-01T'
-}
+    {
+        DateFormat: '1970-01-01T'
+    }
 
 const Language =
-{
-    SelectLanguage: 'en-US'
-}
+    {
+        SelectLanguage: 'en-US'
+    }
 
 const Containers =
-{
-    Header: "DivHeader",
-    ButtonBar: "DivButtonBar",
-    MainContent: "DivContentMain",
-    AdContent: "DivContentAd",
-    Footer: "Divfooter"
-};
+    {
+        Header: "DivHeader",
+        ButtonBar: "DivButtonBar",
+        MainContent: "DivContentMain",
+        AdContent: "DivContentAd",
+        Footer: "Divfooter"
+    };
 
 /*========================
      Request Handler
 =========================*/
-var GlobalFail = function (Response)
-{
+var GlobalFail = function (Response) {
     if (Response.status === 401)
         location.reload();
     else
@@ -183,20 +185,17 @@ var GlobalFail = function (Response)
 };
 
 
-var ShowLoader = function ()
-{
+var ShowLoader = function () {
     if (_LayoutCommon !== undefined)
         _LayoutCommon.RenderLoader();
 };
 
-var HideLoader = function ()
-{
+var HideLoader = function () {
     if (_LayoutCommon !== undefined)
         _LayoutCommon.DerenderLoader();
 };
 
-function InitRequestHandler()
-{
+function InitRequestHandler() {
     _UserId = getCookie("UserId");
 
     let Headers = new Array();
@@ -209,7 +208,7 @@ function InitRequestHandler()
 
     _Request = GetRequest(_ServiceURL, Headers);
 
-   //_Request = new Request(_ServiceURL, new Array(), GlobalFail);
+    //_Request = new Request(_ServiceURL, new Array(), GlobalFail);
 
     _HttpRequestMultiPartWithoutAsync = new HttpRequestMultiPartWithoutAsync(_ServiceURL, new Array(), GlobalFail);
 
@@ -222,23 +221,20 @@ function InitRequestHandler()
 /*===========================
 		Methods
 ===========================*/
-function Wait(FnCondition, FncSuccess)
-{
+function Wait(FnCondition, FncSuccess) {
     if (FnCondition())
         setTimeout(Wait, 100, FnCondition, FncSuccess);
     else if (FncSuccess !== undefined)
         FncSuccess();
 }
 
-function BindView(Container, View)
-{
+function BindView(Container, View) {
     let Element = document.getElementById(Container);
     Element.innerHTML = "";
     Element.appendChild(View);
 }
 
-function ValidateFields(Selector)
-{
+function ValidateFields(Selector) {
     let Fields = document.getElementsByClassName(Selector);
     let Counter = 0, Count = Fields.length;
 
@@ -255,22 +251,20 @@ function ValidateFields(Selector)
  * @param {MessageTypes} Type
  * @param {string} Title
  */
-function ShowMessage(Message, Type, Title)
-{
+function ShowMessage(Message, Type, Title) {
     let TypeText = Type.toLowerCase();
 
     swal(
-    {
-        type: TypeText,
-        title: Title,
-        text: Message,
-        buttonsStyling: false,
-        confirmButtonText: 'OK',
-        confirmButtonClass: 'btn btn-lg btn-' + TypeText
-    });
+        {
+            type: TypeText,
+            title: Title,
+            text: Message,
+            buttonsStyling: false,
+            confirmButtonText: 'OK',
+            confirmButtonClass: 'btn btn-lg btn-' + TypeText
+        });
 
-    switch (Type)
-    {
+    switch (Type) {
         case MessageTypes.Info:
         case MessageTypes.Success:
             return true;
@@ -280,8 +274,7 @@ function ShowMessage(Message, Type, Title)
     }
 }
 
-function ShowImagePopup(Url)
-{
+function ShowImagePopup(Url) {
     swal(
         {
             imageUrl: Url,
@@ -297,19 +290,16 @@ function ShowImagePopup(Url)
 /*===========================
 		Event Handlers
 ===========================*/
-function Page_Load()
-{
+function Page_Load() {
     Wait(
-    function ()
-    {
-        return _GasBrowserId == null || _GasBrowserId == undefined;
-    },
-    function ()
-    {
-        InitRequestHandler();
-        _LayoutCommon = new LayoutCommon();
-       _LayoutCommon.Render();
-    });
+        function () {
+            return _GasBrowserId == null || _GasBrowserId == undefined;
+        },
+        function () {
+            InitRequestHandler();
+            _LayoutCommon = new LayoutCommon();
+            _LayoutCommon.Render();
+        });
 }
 
 /*=============================================================================================

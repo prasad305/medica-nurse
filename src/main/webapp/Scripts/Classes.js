@@ -1,8 +1,7 @@
 /*=================================
 		Proxy Classes
  =================================*/
-function UserCredential(Username, Password, RememberMe, UserAgent, AccessToken)
-{
+function UserCredential(Username, Password, RememberMe, UserAgent, AccessToken) {
     this.Username = Username;
     this.Password = Password;
     this.RememberMe = RememberMe;
@@ -10,20 +9,17 @@ function UserCredential(Username, Password, RememberMe, UserAgent, AccessToken)
     this.AccessToken = AccessToken;
 }
 
-function Patient(PatientId, ParentId, Id)
-{
+function Patient(PatientId, ParentId, Id) {
     this.PatientId = PatientId;
     this.ParentId = ParentId;
     this.Id = Id;
 }
 
-function GetPrescriptionDrugReport(PrescriptionRecordId)
-{
+function GetPrescriptionDrugReport(PrescriptionRecordId) {
     this.PrescriptionRecordId = PrescriptionRecordId;
 }
 
-function SavePatientDetails(Id, FirstName, MiddleName, LastName, NIC, Passport, Mobile, Gender, Title, DateOfBirth, PatientTypeId, UserSaved, UniqueId, ParentId, MaritalStatus, Occupation, Address, BloodGroup,number)
-{
+function SavePatientDetails(Id, FirstName, MiddleName, LastName, NIC, Passport, Mobile, Gender, Title, DateOfBirth, PatientTypeId, UserSaved, UniqueId, ParentId, MaritalStatus, Occupation, Address, BloodGroup, number) {
     this.Id = Id;
     this.FirstName = FirstName;
     this.MiddleName = MiddleName;
@@ -45,8 +41,7 @@ function SavePatientDetails(Id, FirstName, MiddleName, LastName, NIC, Passport, 
     this.number = number;
 }
 
-function UserSave(Username, Password, UserGroupId, UserCreated, UserModified, Status, ParentId)
-{
+function UserSave(Username, Password, UserGroupId, UserCreated, UserModified, Status, ParentId) {
     this.Username = Username;
     this.Password = Password;
     this.UserGroupId = UserGroupId;
@@ -56,8 +51,7 @@ function UserSave(Username, Password, UserGroupId, UserCreated, UserModified, St
     this.ParentId = ParentId;
 }
 
-function PatientReminder(PatientId, Subject, ReminderType, Description, Date, Time, Status)
-{
+function PatientReminder(PatientId, Subject, ReminderType, Description, Date, Time, Status) {
     this.PatientId = PatientId;
     this.Subject = Subject;
     this.ReminderType = ReminderType;
@@ -67,8 +61,7 @@ function PatientReminder(PatientId, Subject, ReminderType, Description, Date, Ti
     this.Status = Status;
 }
 
-function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved)
-{
+function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved) {
     this.AppointmentLimit = AppointmentLimit;
     this.DoctorId = DoctorId;
     this.Id = Id;
@@ -82,24 +75,20 @@ function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumb
     this.SelectedDate = Date;
 }
 
-function Nurse(UserId)
-{
+function Nurse(UserId) {
     this.UserId = UserId;
 }
 
-function Doctor(DoctorId, InstituteBranchId)
-{
+function Doctor(DoctorId, InstituteBranchId) {
     this.DoctorId = DoctorId;
     this.InstituteBranchId = InstituteBranchId;
 }
 
-function SessionId(Id)
-{
+function SessionId(Id) {
     this.SessionId = Id;
 }
 
-function SaveAppointment(Id, Number, SessionId, PatientId, Description, Status, UserId)
-{
+function SaveAppointment(Id, Number, SessionId, PatientId, Description, Status, UserId) {
     this.Id = Id;
     this.Number = Number;
     this.SessionId = SessionId;
@@ -109,51 +98,43 @@ function SaveAppointment(Id, Number, SessionId, PatientId, Description, Status, 
     this.UserId = UserId;
 }
 
-function AppointmentList(Id, UserId, Number, SessionId)
-{
+function AppointmentList(Id, UserId, Number, SessionId) {
     this.Id = Id;
     this.UserId = UserId;
     this.Number = Number;
     this.SessionId = SessionId;
 }
 
-function UserPatient(UserId, PatientId, UserSaved)
-{
+function UserPatient(UserId, PatientId, UserSaved) {
     this.UserId = UserId;
     this.PatientID = PatientId;
     this.UserSaved = UserSaved;
 }
 
-function PatientNIC(NIC)
-{
+function PatientNIC(NIC) {
     this.NIC = NIC;
 }
 
-function PatientPassport(Passport)
-{
+function PatientPassport(Passport) {
     this.Passport = Passport;
 }
 
-function MobileNumber(Mobile)
-{
+function MobileNumber(Mobile) {
     this.Mobile = Mobile;
 }
 
-function PatientReport(PatientId)
-{
+function PatientReport(PatientId) {
     this.PatientId = PatientId;
 }
 
-function PatientReportIdFileName(ReportId, FileName)
-{
+function PatientReportIdFileName(ReportId, FileName) {
     this.ReportId = ReportId;
     this.FileName = FileName;
     this.ReportType = ReportType;
     this.DateCreated = DateCreated;
 }
 
-function MedicalAnalytic(Id, AppointmentId, PatientId, Weight, Height, PulseRate, BloodPressureSystolic, BloodPressureDiastolic, Temperature, SavePatient, SaveAppointment, UserSaved)
-{
+function MedicalAnalytic(Id, AppointmentId, PatientId, Weight, Height, PulseRate, BloodPressureSystolic, BloodPressureDiastolic, Temperature, SavePatient, SaveAppointment, UserSaved) {
     this.Id = Id;
     this.AppointmentId = AppointmentId;
     this.PatientId = PatientId;
@@ -168,26 +149,22 @@ function MedicalAnalytic(Id, AppointmentId, PatientId, Weight, Height, PulseRate
     this.Appointment = SaveAppointment;
 }
 
-function Prescription(Id,InstituteBranchId)
-{
+function Prescription(Id, InstituteBranchId) {
     this.Id = Id;
     this.InstituteBranchId = InstituteBranchId;
 }
 
-function PrescriptionRecord(Id)
-{
+function PrescriptionRecord(Id) {
     this.PrescriptionRecordId = Id;
 }
 
-function RecordDrugsUpdates(Status, Id, DrugId)
-{
+function RecordDrugsUpdates(Status, Id, DrugId) {
     this.Status = Status;
     this.Id = Id;
     this.DrugId = DrugId;
 }
 
-function SearchPatient(NIC, Mobile, DateOfBirth, Name, Passport, UniqueId)
-{
+function SearchPatient(NIC, Mobile, DateOfBirth, Name, Passport, UniqueId) {
     this.NIC = NIC;
     this.Mobile = Mobile;
     this.DateOfBirth = DateOfBirth;
@@ -196,8 +173,7 @@ function SearchPatient(NIC, Mobile, DateOfBirth, Name, Passport, UniqueId)
     this.UniqueId = UniqueId;
 }
 
-function RecordDrugsUpdatesDetails(RecordDrugsUpdates, Id, PrescriptionId, AppointmentId, PatientId, Status, UserSaved)
-{
+function RecordDrugsUpdatesDetails(RecordDrugsUpdates, Id, PrescriptionId, AppointmentId, PatientId, Status, UserSaved) {
     this.RecordDrugsUpdates = RecordDrugsUpdates;
     this.Id = Id;
     this.PrescriptionId = PrescriptionId;
@@ -207,18 +183,15 @@ function RecordDrugsUpdatesDetails(RecordDrugsUpdates, Id, PrescriptionId, Appoi
     this.UserSaved = UserSaved;
 }
 
-function PatientNewGet(PatientId)
-{
+function PatientNewGet(PatientId) {
     this.PatientId = PatientId;
 }
 
-function GetMobileNumber(MobileNumber)
-{
+function GetMobileNumber(MobileNumber) {
     this.MobileNumber = MobileNumber;
 }
 
-function HttpRequestReq(ServiceUrl, Headers, GlobalFail, Silent, ShowLoadermethod, HideLoaderMethod)
-{
+function HttpRequestReq(ServiceUrl, Headers, GlobalFail, Silent, ShowLoadermethod, HideLoaderMethod) {
     this.ServiceUrl = ServiceUrl;
     this.Headers = Headers;
     this.GlobalFail = GlobalFail;
@@ -227,15 +200,18 @@ function HttpRequestReq(ServiceUrl, Headers, GlobalFail, Silent, ShowLoadermetho
     this.HideLoaderMethod = HideLoaderMethod;
 }
 
-function GetSessions(DoctorId, SelectedDate, Type)
-{
+function GetSessions(DoctorId, SelectedDate, Type) {
     this.DoctorId = DoctorId;
     this.SelectedDate = SelectedDate;
     this.Type = Type;
 }
 
-function PatientUploadInformation(PatientId, Type, FileName, Name, UserSaved)
-{
+function AllAppointmentsForToday(NurseId, SelectedDate) {
+    this.NurseId = NurseId
+    this.SelectedDate = SelectedDate;
+}
+
+function PatientUploadInformation(PatientId, Type, FileName, Name, UserSaved) {
     this.PatientId = PatientId;
     this.Type = Type;
     this.FileName = FileName;

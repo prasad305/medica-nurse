@@ -232,6 +232,10 @@ function isNull(String) {
     return String !== null ? String : '-';
 }
 
+function isNullOrUndefined(String) {
+    return String !== null || String !== undefined ? String : '-';
+}
+
 // function isUndefined(String) {
 //     return String !== undefined ? String : '-';
 // }

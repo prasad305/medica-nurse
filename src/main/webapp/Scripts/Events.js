@@ -330,14 +330,32 @@ function CmdAppoinments_Click() {
 function GetDoctorSessionDataForAppoinment() {
     // _Request.Post(ServiceMethods.SessionGetByDate, new Doctor(document.getElementById('DrpAppoinmentDoctor').value, null), GetDoctorSessionDataForAppoinment_Success);
     var GetCurrentDate = new Date();
-    var GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate();
+    var GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
     _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(document.getElementById('DrpAppoinmentDoctor').value, GetTodayDate, null), GetDoctorSessionDataForAppoinment_Success);
 }
+
+// function GetDoctorSessionDataForAppoinment() {
+//     // _Request.Post(ServiceMethods.SessionGetByDate, new Doctor(document.getElementById('DrpAppoinmentDoctor').value, null), GetDoctorSessionDataForAppoinment_Success);
+//     var GetCurrentDate = new Date();
+//     var GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
+//     // _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(document.getElementById('DrpAppoinmentDoctor').value, GetTodayDate, null), GetDoctorSessionDataForAppoinment_Success);
+//     const AppointmentDoctor = $('#DrpAppoinmentDoctor').val();
+//     const AppointmentSession = $('#DrpSessionDateDoctor').val();
+//     console.log('GetDoctorSessionDataForAppoinment:', AppointmentDoctor, AppointmentSession);
+//     // console.log('GetDoctorSessionDataForAppoinment:', _NurseLoggedIn, GetTodayDate);
+//     if (AppointmentDoctor === 'all') {
+//         // _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_NurseLoggedIn.Id, GetTodayDate), GetDoctorSessionDataForAppoinment_Success);
+//         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday('all', GetTodayDate), GetDoctorSessionDataForAppoinment_Success);
+//     } else {
+//         _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(document.getElementById('DrpAppoinmentDoctor').value, GetTodayDate, null), GetDoctorSessionDataForAppoinment_Success);
+//     }
+// }
 
 function SetAppoinmentToDoctor_Click() {
     _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    console.log('SetAppoinmentToDoctor_Click._AppointmentSessionId:', _AppointmentSessionId);
 
     if (document.getElementById('DrpSessionDateDoctor').value != " " && document.getElementById('DrpAppoinmentDoctor').value != " ") {
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);

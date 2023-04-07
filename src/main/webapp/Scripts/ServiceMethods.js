@@ -59,6 +59,9 @@ function NurseGet_Success(Response) {
     _NurseFirstName = Response.Data[0].FirstName;
     _NurseLastName = Response.Data[0].LastName;
     _NurseNIC = Response.Data[0].NIC;
+
+    _NurseLoggedIn = Response.Data[0];
+    // console.log('NurseGet_Success._NurseLoggedIn:', _NurseLoggedIn);
 }
 
 function GetNurseBranches() {
@@ -231,7 +234,7 @@ function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
     //all doctors - as the first option
-    $('#' + Id).append('<option value="all">All Doctors</option>');
+    // $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
@@ -323,12 +326,19 @@ function GetInstituteBranches_Success(Response) {
 function GetDoctorSessionDataForAppoinment_Success(Response) {
     $("#DrpSessionDateDoctor").empty();
 
-    if (Response.Status != 1000) $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>'); else {
+    if (Response.Status != 1000) {
+        $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
+        // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
+    } else {
         let DataLength = Response.Data.length;
         let Count = 0;
         let Type;
-        if (DataLength === 0) $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>'); else {
+        if (DataLength === 0) {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
+            // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
+        } else {
+            $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
+            // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
             for (Count = 0; Count < DataLength; Count++) {
                 let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
                 let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
@@ -474,9 +484,26 @@ function FilterAppointedPatientData(Data) {
 
 function GetAllPatientAppointmentsList() {
     _ArrayAppointedPatientData = [];
-    _Request.Post(ServiceMethods.GetAppoinment,
-        new AppointmentList(undefined, undefined, undefined, undefined),
-        GetAllPatientAppointmentsList_Success);
+
+    // _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, undefined), GetAllPatientAppointmentsList_Success);
+
+    const GetCurrentDate = new Date();
+    const GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
+    // _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsList_Success);
+    _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
+}
+
+function GetAllPatientAppointmentsForTodayList_Success(Response) {
+    if (Response.Status !== 1000) {
+        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    } else {
+        const AppointmentsForToday = Response.Data;
+        // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday:', AppointmentsForToday);
+        for (let i = 0; i < AppointmentsForToday.length; i++) {
+            // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday[i].Id:', AppointmentsForToday[i].Id);
+            _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, AppointmentsForToday[i].Id), GetDoctorAppoinmentList_Success);
+        }
+    }
 }
 
 function GetAllPatientAppointmentsList_Success(Response) {
