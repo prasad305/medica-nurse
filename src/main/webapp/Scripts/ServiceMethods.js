@@ -231,7 +231,7 @@ function GetDoctorData_Success(Response) {
 }
 
 function SetDoctorData(Id) {
-    console.log('SetDoctorData.Id:',Id);
+    // console.log('SetDoctorData.Id:', Id);
     let Count;
     let DataLength = _DoctorSessionData.length;
     //all doctors - as the first option
@@ -482,7 +482,8 @@ function FilterAppointedPatientData(Data) {
     }
 }
 
-function GetAllPatientAppointmentsList() {
+function GetAllPatientAppointmentsList(SearchType) {
+    // console.log('GetAllPatientAppointmentsList.SearchType:', SearchType);
     _ArrayAppointedPatientData = [];
 
     // _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, undefined), GetAllPatientAppointmentsList_Success);
@@ -490,7 +491,12 @@ function GetAllPatientAppointmentsList() {
     const GetCurrentDate = new Date();
     const GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
     // _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsList_Success);
-    _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
+    if (SearchType === 'search') {
+        const AppointmentDate = $('#TxtAppointmentSearchDate').val();
+        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
+    } else {
+        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
+    }
 }
 
 function GetAllPatientAppointmentsForTodayList_Success(Response) {

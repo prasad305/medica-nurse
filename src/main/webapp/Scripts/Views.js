@@ -1148,7 +1148,7 @@ function NewAppoinment() {
 
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
 
-        let DivFormRowDoctor = new Div(undefined, "col-sm-4 text-left");
+        let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
         let LabelAppoinment = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
         let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment()")]);
         SelectAppoinment.appendChild(new SelectItem("Select Doctor", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
@@ -1157,7 +1157,7 @@ function NewAppoinment() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
 
         // let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
-        let DivFormRowSession = new Div(undefined, "col-sm-6 text-left");
+        let DivFormRowSession = new Div(undefined, "col-sm-3 text-left");
 
         let LabelAppoinmentSession = new Label(undefined, "Select Session",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
@@ -1172,13 +1172,28 @@ function NewAppoinment() {
         DivFormRowSession.appendChild(SelectAppoinmentSession);
         FormRow0Appoinment.appendChild(DivFormRowSession);
 
-        let DivFormRowNext = new Div(undefined, "col-sm-2 d-flex");
+        const DateToday = new Date().toISOString().slice(0, 10);
+        let DivFormRowDate = new Div(undefined, "col-sm-3 text-left");
+        let LabelAppointmentDate = new Label(undefined, "Select Date",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
+        );
+        let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
+            [
+                new Attribute(_AttributeType, "date"),
+                new Attribute('min', DateToday),
+                new Attribute('value', DateToday)
+            ]);
 
+        DivFormRowDate.appendChild(LabelAppointmentDate);
+        DivFormRowDate.appendChild(AppointmentDateSelect);
+        FormRow0Appoinment.appendChild(DivFormRowDate);
+
+        let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
         let ButtonPatientSearch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
             [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
 
-        DivFormRowNext.appendChild(ButtonPatientSearch);
-        FormRow0Appoinment.appendChild(DivFormRowNext);
+        DivFormRowSearch.appendChild(ButtonPatientSearch);
+        FormRow0Appoinment.appendChild(DivFormRowSearch);
 
         // const DivFormRowTable = new Div("AllPatientAppointmentsListTableWrapper", "col-sm-12");
         // FormRow0Appoinment.appendChild(DivFormRowTable);
