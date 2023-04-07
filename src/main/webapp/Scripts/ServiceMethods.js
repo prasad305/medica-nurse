@@ -231,10 +231,11 @@ function GetDoctorData_Success(Response) {
 }
 
 function SetDoctorData(Id) {
+    console.log('SetDoctorData.Id:',Id);
     let Count;
     let DataLength = _DoctorSessionData.length;
     //all doctors - as the first option
-    // $('#' + Id).append('<option value="all">All Doctors</option>');
+    $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
@@ -328,17 +329,17 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
 
     if (Response.Status != 1000) {
         $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-        // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
+        $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
     } else {
         let DataLength = Response.Data.length;
         let Count = 0;
         let Type;
         if (DataLength === 0) {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-            // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
+            $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
         } else {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-            // $('#DrpSessionDateDoctor').append('<option value="none">None</option>');
+            $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
             for (Count = 0; Count < DataLength; Count++) {
                 let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
                 let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
@@ -460,8 +461,7 @@ function FilterAppointedPatientData(Data) {
 
         _ArrayAppointedPatientData.push(
             {
-                // "No": isNull(Data[Count].Number),
-                "No": (Count + 1),
+                "A#": isNull(Data[Count].Number),
                 "Doctor": "-",
                 "Name": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
                 "Mobile": isNull(Data[Count].Mobile),

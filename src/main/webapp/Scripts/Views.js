@@ -1324,7 +1324,7 @@ function DocumentUploader() {
 function TablePatientAppointment() {
     this.Render = function (Container, Data) {
 
-        let Headers = ["No", "Doctor", "Name", "Mobile", "M/F", "Payment", "Status", "Action"];
+        let Headers = ["A#", "Doctor", "Name", "Mobile", "M/F", "Payment", "Status", "Action"];
 
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12");
