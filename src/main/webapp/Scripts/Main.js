@@ -80,6 +80,9 @@ var _NurseLastName;
 var _NurseFirstName;
 let _NurseLoggedIn = {};
 
+let _IsSetAppointmentToDoctorClicked = false;
+let _CardClicked = '';
+
 /*========================
      Enums
 =========================*/

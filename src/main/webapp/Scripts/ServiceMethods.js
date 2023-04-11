@@ -40,7 +40,7 @@ function SaveDetails_Success(Response) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
             new NewAppoinment().Render(Containers.MainContent);
-            // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+            GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
             GetDoctorAppoinmentList();
         }
 
@@ -157,10 +157,10 @@ function FilterPatientData(Data) {
                     '</button>' +
                     '<button class="btn btn-primary btn-icon mx-2" type="button" onclick="SetAppointmentPatient(this,' + isNull(Data[Count].Id) + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-primary btn-icon" type="button" onclick="PatientMedicalBillModalDisplay(' + isNull(Data[Count].Id) + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                     '</button>'
+                // '<button class="btn btn-primary btn-icon" type="button" onclick="PatientMedicalBillModalDisplay(' + isNull(Data[Count].Id) + ')">' +
+                // '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
+                // '</button>'
             });
         }
     }
@@ -365,6 +365,12 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
 
 function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     new NewAppoinment().Render(Containers.MainContent);
+    // if (_IsSetAppointmentToDoctorClicked) {
+    //     new Appoinments().Render(Containers.MainContent);
+    //     _IsSetAppointmentToDoctorClicked = false;
+    // } else {
+    //     new NewAppoinment().Render(Containers.MainContent);
+    // }
     _AppointmentSessionId = Id;
     if (_PatientId !== null && _PatientId !== undefined) {
         document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
@@ -385,13 +391,13 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
 
 function GetNextAppoinmentNumber_Sucess(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    // else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
+    else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
 }
 
 function SaveAppointment_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _PatientId = null;
-        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+        GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
 
         //SavePatientAnalytics(Response.Data);

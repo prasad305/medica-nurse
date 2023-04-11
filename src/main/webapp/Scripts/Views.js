@@ -1035,66 +1035,51 @@ function Appoinments() {
         let HeadingAppoinments = new Heading4("Appoinments", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         CardBodyAppoinments.appendChild(HeadingAppoinments);
 
-        let RowSub0Appoinments = new Div(undefined, "row");
+        let SearchRow = new Div("AppointmentsSearchRow", "row");
+        SearchRow.appendChild(new Div(undefined, "col-lg-2"));
 
-        let ColSub0Appoinments = new Div(undefined, "col-lg-12 text-center");
-
-        RowSub0Appoinments.appendChild(ColSub0Appoinments);
-        CardBodyAppoinments.appendChild(RowSub0Appoinments);
+        let ColSub0Appoinments = new Div(undefined, "col-lg-8 text-center");
+        SearchRow.appendChild(ColSub0Appoinments);
+        CardBodyAppoinments.appendChild(SearchRow);
 
         let FormAppoinments = new Form(undefined);
 
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
-
-        let DivFormRowDoctor = new Div(undefined, "col-sm-4 text-left");
+        let DivFormRowDoctor = new Div(undefined, "col-sm-12 col-12 text-left ");
         let LabelAppoinment = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
-        let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment()")]);
+        let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment('Appoinments')")]);
         SelectAppoinment.appendChild(new SelectItem("Select Doctor", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
         DivFormRowDoctor.appendChild(SelectAppoinment);
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
+        FormAppoinments.appendChild(FormRow0Appoinment);
 
-        // let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
-        let DivFormRowSession = new Div(undefined, "col-sm-4 text-left");
-
-        let LabelAppoinmentSession = new Label(undefined, "Select Session",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
-
-        let SelectAppoinmentSession = new Select("DrpSessionDateDoctor",
-            [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
-
-        SelectAppoinmentSession.appendChild(new SelectItem("Select Session", " ",
-            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
-
+        let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
+        let DivFormRowSession = new Div(undefined, "col-sm-12 col-12 text-left ");
+        let LabelAppoinmentSession = new Label(undefined, "Select Session", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
+        let SelectAppoinmentSession = new Select("DrpSessionDateDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
+        SelectAppoinmentSession.appendChild(new SelectItem("Select Session", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowSession.appendChild(LabelAppoinmentSession);
         DivFormRowSession.appendChild(SelectAppoinmentSession);
-        FormRow0Appoinment.appendChild(DivFormRowSession);
+        FormRow1Appoinment.appendChild(DivFormRowSession);
+        FormAppoinments.appendChild(FormRow1Appoinment);
 
-        let DivFormRowNext = new Div(undefined, "col-sm-4 d-flex");
-
-        let ButtonPatientSearch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
-            [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
-
+        let FormRow3PatientSearch = new Div(undefined, "form-group row");
+        let DivFormRowNext = new Div(undefined, "col-sm-12 col-12");
+        let ButtonPatientSearch = new Button(undefined, "Next", "btn btn-primary btn-rounded w-100", [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
         DivFormRowNext.appendChild(ButtonPatientSearch);
-        FormRow0Appoinment.appendChild(DivFormRowNext);
+        FormRow3PatientSearch.appendChild(DivFormRowNext);
+        FormAppoinments.appendChild(FormRow3PatientSearch);
 
-        // const DivFormRowTable = new Div("AllPatientAppointmentsListTableWrapper", "col-sm-12");
-        // FormRow0Appoinment.appendChild(DivFormRowTable);
-
-        FormAppoinments.appendChild(FormRow0Appoinment);
         ColSub0Appoinments.appendChild(FormAppoinments);
 
-        const RowTable = new Div(undefined, "row");
-        const RowTableColumnOne = new Div("AllPatientAppointmentsListTableWrapper", "col-lg-12");
-        RowTable.appendChild(RowTableColumnOne);
-        CardBodyAppoinments.appendChild(RowTable);
+        let FormGroupRow0Table = new Div("AppointmentsSearchResultsRow", "form-group row");
+        FormGroupRow0Table.appendChild(new Div("DivAppointedPatientTable", "col-lg-12"));
+        CardBodyAppoinments.appendChild(FormGroupRow0Table);
 
         CardAppoinments.appendChild(CardBodyAppoinments);
 
         BindView(Container, CardAppoinments);
-
-        //next
-        // GetAllPatientAppointmentsList();
     }
 }
 
@@ -1105,58 +1090,52 @@ function NewAppoinment() {
 
         CardBodyAddAppoinment.appendChild(new Heading4("Appointments", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]));
 
-        // CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetails")]));
-        // CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
-        // CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
-        // CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetails")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
 
-        let DivMainRow = new Div(undefined, "row");
-        // DivMainRow.appendChild(new Div(undefined, "col-lg-1"));
+        let AppointmentAddRow = new Div("NewAppointmentAddRow", "row");
+        let AppointmentAddRowColumn = new Div(undefined, "col-lg-12 mt-4");
 
-        // let DivMainRowSubCel0 = new Div(undefined, "col-lg-12 mt-4");
+        let FormGroupRow = new Div(undefined, "form-group row");
+        FormGroupRow.appendChild(new Div(undefined, "col-lg-3"));
 
-        // let FormGroupRowAvailable = new Div(undefined, "form-group row");
-        // FormGroupRowAvailable.appendChild(new Div(undefined, "col-lg-3"));
+        let DivFormGroupRowCheckAppointment = new Div(undefined, "col-lg-3 text-center");
+        DivFormGroupRowCheckAppointment.appendChild(new Label(undefined, "Paid Appoinment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
+        DivFormGroupRowCheckAppointment.appendChild(new Checkbox("CheckAppoinmentNumber", undefined, [new Attribute(_AttributeOnClick, "CmdChkAppointment_Click()"), new Attribute(_AttributeClass, "form-control")]));
 
-        // let DivFormGroupRowCheckAppointment = new Div(undefined, "col-lg-3 text-center");
-        // DivFormGroupRowCheckAppointment.appendChild(new Label(undefined, "Paid Appoinment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
-        // DivFormGroupRowCheckAppointment.appendChild(new Checkbox("CheckAppoinmentNumber", undefined, [new Attribute(_AttributeOnClick, "CmdChkAppointment_Click()"), new Attribute(_AttributeClass, "form-control")]));
-        //
-        // let DivFormGroupRowAppointment = new Div(undefined, "col-lg-3");
-        // DivFormGroupRowAppointment.appendChild(new Label(undefined, "Available Appointment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
-        // DivFormGroupRowAppointment.appendChild(new Textbox("TxtAppoinmentNumber", "form-control form-control-rounded Time-Picker", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
-        //
-        // let DivFormGroupRowSaveAppointment = new Div("IdBtnAppointment", "col-lg-3");
-        // DivFormGroupRowSaveAppointment.appendChild(new Button("BtnSaveAppointment", "Save", "btn btn-rounded btn-info  mt-4 w-100", [new Attribute(_AttributeOnClick, "SaveAppointment_Click()")]));
-        // DivFormGroupRowSaveAppointment.appendChild(new Button("BtnNewAppointment", "+ New Appointment", "btn btn-rounded btn-info  mt-4 w-100", [new Attribute(_AttributeOnClick, "AddPatientAppointment_Click()"), new Attribute("style", "display: none;")]));
+        let DivFormGroupRowAppointment = new Div(undefined, "col-lg-3");
+        DivFormGroupRowAppointment.appendChild(new Label(undefined, "Available Appointment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
+        DivFormGroupRowAppointment.appendChild(new Textbox("TxtAppoinmentNumber", "form-control form-control-rounded Time-Picker", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
 
-        // FormGroupRowAvailable.appendChild(DivFormGroupRowCheckAppointment);
-        // FormGroupRowAvailable.appendChild(DivFormGroupRowAppointment);
-        // FormGroupRowAvailable.appendChild(DivFormGroupRowSaveAppointment);
-        // DivMainRowSubCel0.appendChild(FormGroupRowAvailable);
-        // DivMainRow.appendChild(DivMainRowSubCel0);
-        // FormGroupRowAvailable.appendChild(new Div(undefined, "col-lg-3"));
+        let DivFormGroupRowSaveAppointment = new Div("IdBtnAppointment", "col-lg-3");
+        DivFormGroupRowSaveAppointment.appendChild(new Button("BtnSaveAppointment", "Save", "btn btn-rounded btn-info  mt-4 w-100", [new Attribute(_AttributeOnClick, "SaveAppointment_Click()")]));
+        DivFormGroupRowSaveAppointment.appendChild(new Button("BtnNewAppointment", "+ New Appointment", "btn btn-rounded btn-info  mt-4 w-100", [new Attribute(_AttributeOnClick, "AddPatientAppointment_Click()"), new Attribute("style", "display: none;")]));
 
-        let RowSub0Appoinments = new Div(undefined, "row");
+        FormGroupRow.appendChild(DivFormGroupRowCheckAppointment);
+        FormGroupRow.appendChild(DivFormGroupRowAppointment);
+        FormGroupRow.appendChild(DivFormGroupRowSaveAppointment);
+        AppointmentAddRowColumn.appendChild(FormGroupRow);
+        AppointmentAddRow.appendChild(AppointmentAddRowColumn);
+        CardBodyAddAppoinment.appendChild(AppointmentAddRow);
 
-        let ColSub0Appoinments = new Div(undefined, "col-lg-12 text-center");
-
-        RowSub0Appoinments.appendChild(ColSub0Appoinments);
-        CardBodyAddAppoinment.appendChild(RowSub0Appoinments);
+        let AppointmentSearchRow = new Div("NewAppointmentSearchRow", "row");
+        let SearchColumnOne = new Div(undefined, "col-lg-12 text-center");
+        AppointmentSearchRow.appendChild(SearchColumnOne);
+        CardBodyAddAppoinment.appendChild(AppointmentSearchRow);
 
         let FormAppoinments = new Form(undefined);
-
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
 
         let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
         let LabelAppoinment = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
-        let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment()")]);
+        let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment('NewAppoinment')")]);
         SelectAppoinment.appendChild(new SelectItem("Select Doctor", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
         DivFormRowDoctor.appendChild(SelectAppoinment);
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
 
-        // let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
         let DivFormRowSession = new Div(undefined, "col-sm-3 text-left");
 
         let LabelAppoinmentSession = new Label(undefined, "Select Session",
@@ -1190,27 +1169,31 @@ function NewAppoinment() {
 
         let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
         let ButtonPatientSearch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
-            [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
+            // [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
+            [new Attribute(_AttributeOnClick, "Appointments_Search()")]);
 
         DivFormRowSearch.appendChild(ButtonPatientSearch);
         FormRow0Appoinment.appendChild(DivFormRowSearch);
 
-        // const DivFormRowTable = new Div("AllPatientAppointmentsListTableWrapper", "col-sm-12");
-        // FormRow0Appoinment.appendChild(DivFormRowTable);
-
         FormAppoinments.appendChild(FormRow0Appoinment);
-        ColSub0Appoinments.appendChild(FormAppoinments);
+        SearchColumnOne.appendChild(FormAppoinments);
 
-        // let DivMainRowSubCel0 = new Div(undefined, "col-lg-12 mt-4");
+        let AppointmentSearchResultsRow = new Div("NewAppointmentSearchResultsRow", "form-group row");
+        AppointmentSearchResultsRow.appendChild(new Div("DivAppointedPatientTable", "col-lg-12"));
+        CardBodyAddAppoinment.appendChild(AppointmentSearchResultsRow);
 
-        let FormGroupRow0Table = new Div(undefined, "form-group row");
-        FormGroupRow0Table.appendChild(new Div("DivAppointedPatientTable", "col-lg-12"));
-        CardBodyAddAppoinment.appendChild(FormGroupRow0Table);
-
-        CardBodyAddAppoinment.appendChild(DivMainRow);
         CardAddAppoinment.appendChild(CardBodyAddAppoinment);
 
         BindView(Container, CardAddAppoinment);
+
+        // console.log('NewAppoinment._CardClicked:', _CardClicked);
+        if (_CardClicked === '' || _CardClicked === 'PatientSearch') {
+            $('#NewAppointmentSearchRow').hide();
+            $('#NewAppointmentAddRow').show();
+        } else if (_CardClicked === 'Appointments') {
+            $('#NewAppointmentAddRow').hide();
+            $('#NewAppointmentSearchRow').show();
+        }
     }
 }
 
