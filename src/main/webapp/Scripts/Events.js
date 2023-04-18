@@ -471,6 +471,17 @@ function SavePatientAnalytics() {
 
 }
 
+function AppointmentDoctorChangeEnable() {
+    $('#ModalForAppointmentDetailsEdit #AppointmentDoctor').prop('disabled', false);
+}
+
+function AppointmentDateChangeEnable() {
+    $('#ModalForAppointmentDetailsEdit #AppointmentDate').prop('disabled', false);
+}
+
+function AppointmentTimeChangeEnable() {
+    $('#ModalForAppointmentDetailsEdit #AppointmentTime').prop('disabled', false);
+}
 
 /*=================================
 			Pharmacy Events
@@ -787,14 +798,14 @@ function LnkGeneral_Click() {
 
 function AdminButtons_Click(Card) {
     AdminButtons_BgColorRemove();
-    $(Card).css('background-color','#BDC3C7');
+    $(Card).css('background-color', '#BDC3C7');
 }
 
 function AdminButtons_BgColorRemove() {
-    $("#BranchesCard").css('background-color','white');
-    $("#DoctorsCard").css('background-color','white');
-    $("#ReportsCard").css('background-color','white');
-    $("#MiscCard").css('background-color','white');
+    $("#BranchesCard").css('background-color', 'white');
+    $("#DoctorsCard").css('background-color', 'white');
+    $("#ReportsCard").css('background-color', 'white');
+    $("#MiscCard").css('background-color', 'white');
 }
 
 /*=================================
