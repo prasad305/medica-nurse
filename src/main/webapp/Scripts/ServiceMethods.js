@@ -1106,45 +1106,65 @@ function Admin_View() {
     new AdminLayoutMain().Render();
     new Branches().Render(Containers.MainContent);
     document.getElementById("BranchesCard").style.backgroundColor = "#BDC3C7";
+    BranchesAllGet();
 }
 
 /*=================================
 		Branches Methods
  =================================*/
 
-function GetBranchSearchResults_Success(Response) {
-    const BranchSelect= $("#SearchBranchSelect");
+function BranchesAllGet() {
+    //change user id to 2
+    _ArraySearchBranchesAllResultsData = [];
+    _UserId = 2;
+    _Request.Get(ServiceMethods.GetInstitute, undefined, BranchesAllGet_Success);
+}
+
+function BranchesAllGet_Success(Response) {
+    //reset user id to default
+    _UserId = getCookie("UserId");
+
+    const BranchSelect = $("#SearchBranchSelect");
+    $(BranchSelect).empty();
+}
+
+function BranchesSearch() {
+    _Request.Get(ServiceMethods.GetInstitute, undefined, BranchesSearch_Success);
+}
+
+function BranchesSearch_Success(Response) {
+    const BranchSelect = $("#SearchBranchSelect");
     $(BranchSelect).empty();
 
-    if (Response.Status != 1000) {
-        $(BranchSelect).append('<option value=" ">Select Branch</option>');
-    } else {
-        let DataLength = Response.Data.length;
-        let Count = 0;
-        let Type;
-        if (DataLength === 0) {
-            $(BranchSelect).append('<option value=" ">Select Branch</option>');
-        } else {
-            $(BranchSelect).append('<option value=" ">Select Branch</option>');
-            for (Count = 0; Count < DataLength; Count++) {
-                let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
-                let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
-
-                let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
-                const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
-                });
-
-                let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
-                let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
-                const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
-                });
-
-                if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
-
-                $('#DrpSessionDateDoctor').append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
-            }
-        }
-    }
+    // if (Response.Status != 1000) {
+    //     $(BranchSelect).append('<option value=" ">Select Branch</option>');
+    // } else {
+    //     let DataLength = Response.Data.length;
+    //     let Count = 0;
+    //     let Type;
+    //     if (DataLength === 0) {
+    //         $(BranchSelect).append('<option value=" ">Select Branch</option>');
+    //     } else {
+    //         $(BranchSelect).append('<option value=" ">Select Branch</option>');
+    //         for (Count = 0; Count < DataLength; Count++) {
+    //             let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
+    //             let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
+    //
+    //             let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    //             const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+    //                 timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    //             });
+    //
+    //             let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
+    //             let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+    //             const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+    //                 timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    //             });
+    //
+    //             if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
+    //
+    //             $('#DrpSessionDateDoctor').append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
+    //         }
+    //     }
+    // }
 }

@@ -83,6 +83,12 @@ let _NurseLoggedIn = {};
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
 
+//-- Admin UI
+
+let _ArraySearchBranchesAllResultsData = [];
+
+//-- /Admin UI
+
 /*========================
      Enums
 =========================*/
@@ -113,7 +119,8 @@ const ServiceMethods =
         InstituteBranch: "InstituteBranch/GetInstituteBranch",
         InstituteBranchGet: "InstituteBranch/Get",
         GetNurse: "Nurse/Get",
-        PatientInformationSave: "PatientDiagnosisDocument/Post"
+        PatientInformationSave: "PatientDiagnosisDocument/Post",
+        GetInstitute: "Institute/GET"
     };
 
 const MessageTypes =
@@ -200,6 +207,7 @@ var HideLoader = function () {
 
 function InitRequestHandler() {
     _UserId = getCookie("UserId");
+    // console.log('InitRequestHandler._UserId:', _UserId);
 
     let Headers = new Array();
 
@@ -208,6 +216,8 @@ function InitRequestHandler() {
 
     if (_PatientId !== null && _PatientId !== undefined && _PatientId !== "")
         Headers.push(new HttpHeader("PatientId", _PatientId));
+
+    // console.log('InitRequestHandler.Headers:', Headers);
 
     _Request = GetRequest(_ServiceURL, Headers);
 

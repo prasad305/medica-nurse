@@ -2081,7 +2081,7 @@ function Branches() {
         SearchForm.appendChild(FormRow);
         CardBody.appendChild(SearchForm);
 
-        const SearchResultsRow = new Div("BranchesSearchResultsRow", "form-group row");
+        const SearchResultsRow = new Div("BranchesSearchResultsRow", "row");
         SearchResultsRow.appendChild(new Div("BranchesSearchResultsTable", "col-lg-12"));
         CardBody.appendChild(SearchResultsRow);
 
