@@ -411,6 +411,9 @@ function GetDoctorAppoinmentList() {
 }
 
 function GetDoctorAppoinmentList_Success(Response) {
+    if ($('#AppointmentsSearchButton').prop('disabled', true)) {
+        $('#AppointmentsSearchButton').prop('disabled', false);
+    }
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         LoopCount = 0;
         _AppointmentDetails = Response.Data;
@@ -474,7 +477,7 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="LoadVitals(' + Data[Count].Id + ')">' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
@@ -511,6 +514,8 @@ function GetAllPatientAppointmentsForTodayList_Success(Response) {
     } else {
         const AppointmentsForToday = Response.Data;
         // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday:', AppointmentsForToday);
+        // _AppointmentsForToday = [];
+        // _AppointmentsForToday = Response.Data;
         for (let i = 0; i < AppointmentsForToday.length; i++) {
             // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday[i].Id:', AppointmentsForToday[i].Id);
             _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, AppointmentsForToday[i].Id), GetDoctorAppoinmentList_Success);
@@ -533,6 +538,10 @@ function LoadVitals(Id) {
     _Request.Get(ServiceMethods.GetPatientData + Id, Id, LoadPatientDataForVitals_Success);
 
     new AddVitals().Render(Containers.MainContent);
+}
+
+function AppointmentDetailsEdit(PatientId) {
+    new AppointmentDetailsEditModal().Render(Containers.Footer, PatientId);
 }
 
 function GetPatientOriginalId(Id) {

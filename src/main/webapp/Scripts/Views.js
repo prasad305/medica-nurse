@@ -1172,8 +1172,7 @@ function NewAppoinment() {
         FormRow0Appoinment.appendChild(DivFormRowDate);
 
         let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
-        let ButtonPatientSearch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
-            // [new Attribute(_AttributeOnClick, "SetAppoinmentToDoctor_Click()")]);
+        let ButtonPatientSearch = new Button("AppointmentsSearchButton", "Search", "btn btn-primary btn-rounded w-100 mt-auto",
             [new Attribute(_AttributeOnClick, "Appointments_Search()")]);
 
         DivFormRowSearch.appendChild(ButtonPatientSearch);
@@ -1567,6 +1566,65 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
         BindView(Container, Modal);
 
         $('#ModalForMedicalClinicBillIframe').modal('show');
+    }
+}
+
+function AppointmentDetailsEditModal() {
+    this.Render = function (Container, PatientId) {
+        console.log('AppointmentDetailsEditModal:', Container, PatientId);
+
+        const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+        console.log('AppointmentDetailsEditModal.PatientMatched:', PatientMatched);
+        console.log('AppointmentDetailsEditModal._AppointmentsForToday:', _AppointmentsForToday);
+
+        const Modal = new Div("ModalForAppointmentDetailsEdit", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Edit Appointment Details", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+        // ModalContentBody.appendChild(new Label(undefined, 'Text', undefined));
+
+        const BodyRowOne = new Div(undefined, "row");
+
+        const RowOneColumnOne = new Div('ClinicMedicalBillsSearch', 'col-md-12');
+        RowOneColumnOne.appendChild(new Label(undefined, 'Text', undefined));
+        BodyRowOne.appendChild(RowOneColumnOne);
+
+        const RowOneColumnTwo = new Div('ClinicMedicalBillsSearchResults', 'col-md-12');
+        RowOneColumnTwo.appendChild(new Label(undefined, 'Text', undefined));
+        BodyRowOne.appendChild(RowOneColumnTwo);
+
+        ModalContentBody.appendChild(BodyRowOne);
+
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        // ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
+        //     [
+        //         // new Attribute('data-dismiss', 'modal'),
+        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+        //     ]
+        // ));
+        // ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
+        //     [
+        //         // new Attribute('data-dismiss', 'modal'),
+        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Prescription.Id + ')')
+        //     ]
+        // ));
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        $('#ModalForAppointmentDetailsEdit').modal('show');
     }
 }
 

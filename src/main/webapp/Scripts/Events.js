@@ -366,16 +366,19 @@ function Appointments_Search() {
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
+
     // console.log('Appointments_Search.AppointmentDate:', _AppointmentSessionId, AppointmentDate);
 
     if (document.getElementById('DrpSessionDateDoctor').value === "all" && document.getElementById('DrpAppoinmentDoctor').value === "all") {
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         // GetDoctorAppoinmentList();
+        $('#AppointmentsSearchButton').prop('disabled', true);
         GetAllPatientAppointmentsList('search');
         // document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
     } else if (document.getElementById('DrpSessionDateDoctor').value != " " &&
         document.getElementById('DrpAppoinmentDoctor').value != " " && (AppointmentDate !== "" && AppointmentDate != NaN)) {
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+        $('#AppointmentsSearchButton').prop('disabled', true);
         GetDoctorAppoinmentList();
         // document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
     } else {

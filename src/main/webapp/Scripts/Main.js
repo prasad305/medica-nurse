@@ -73,7 +73,7 @@ let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
 
 let _AppointmentsForTodayCount = 0;
-let _AppointmentsForTodayResults = [];
+let _AppointmentsForToday = [];
 
 var _NurseNIC;
 var _NurseLastName;
