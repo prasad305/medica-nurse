@@ -212,8 +212,12 @@ function SiteNavigation() {
         DropDownProfileMenu.appendChild(HyperlinkSignOut);
         let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch Id", "dropdown-item");
         DropDownProfileMenu.appendChild(HyperlinkBranchId);
+
         let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
         DropDownProfileMenu.appendChild(HyperlinkSettings);
+
+        let HyperlinkGeneral = new Hyperlink("LblSettings", undefined, "General", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]);
+        DropDownProfileMenu.appendChild(HyperlinkGeneral);
 
         let DropDownProfileName = new Div(undefined, "dropdown");
         let ProfileName = new Heading6(undefined, [new Attribute(_AttributeClass, "card-title m-unset"), new Attribute(_AttributeId, "ProfileName")]);
@@ -1862,28 +1866,294 @@ function Footer() {
          Admin UIs
  =================================*/
 
-function Settings() {
+function AdminLayoutMain() {
+    this.Render = function () {
+        let DivMain = new Div(undefined, "app-admin-wrap layout-sidebar-large");
+        let DivNavBar = new Div(Containers.Header, undefined);
+        DivMain.appendChild(DivNavBar);
+
+        let DivHeader = new Div(undefined, "main-content-wrap sidenav-close d-flex flex-column m-auto");
+
+        let DivMainContent = Div(undefined, "main-content");
+        DivMainContent.appendChild(new Div(Containers.ButtonBar));
+
+        let DivRowMainContent = new Div(undefined, "row");
+        DivRowMainContent.appendChild(new Div(undefined, "col-lg-2"));
+        let DivSubRowMain = new Div(Containers.MainContent, "col-lg-8 col-12 pd-lr-5");
+        DivRowMainContent.appendChild(DivSubRowMain);
+
+        DivRowMainContent.appendChild(new Div(undefined, "col-lg-2"));
+
+        DivMainContent.appendChild(DivRowMainContent);
+
+        DivHeader.appendChild(DivMainContent);
+
+        let DivFlex = new Div(undefined, "flex-grow-1");
+        DivHeader.appendChild(DivFlex);
+
+        DivMain.appendChild(DivHeader);
+
+        let DivFooter = new Div(Containers.Footer, "footer");
+        DivMain.appendChild(DivFooter);
+
+        document.body.innerHTML = "";
+
+        document.body.appendChild(DivMain);
+
+        //Call initial views here
+        new SiteNavigation().Render(Containers.Header);
+        // new SiteButtonBar().Render(Containers.ButtonBar);
+        new AdminSiteButtonBar().Render(Containers.ButtonBar);
+        new Footer().Render(Containers.Footer);
+    };
+}
+
+function AdminSiteButtonBar() {
     this.Render = function (Container) {
-        this.Render = function (Container) {
-            let CardProfile = new Div(undefined, "card");
-            let CardBodyEditProfile = new Div(undefined, "card-body");
-            let UserProfile = new Div(undefined, "user-profile mb-4");
-            let WidgetProfileCard = new Div(undefined, "ul-widget-card__user-info");
-            let UserFullName = new Paragraph(undefined, [new Attribute(_AttributeClass, "m-0 text-24"), new Attribute(_AttributeId, "UserFullName")]);
-            let UserAge = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserNIC")]);
-            let UserGender = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserGender")]);
-            WidgetProfileCard.appendChild(UserFullName);
-            WidgetProfileCard.appendChild(UserAge);
-            WidgetProfileCard.appendChild(UserGender);
-            UserProfile.appendChild(WidgetProfileCard);
-            CardBodyEditProfile.appendChild(UserProfile);
-            CardProfile.appendChild(CardBodyEditProfile);
+        let DivRowMainButtonBar = Div(undefined, "row");
+        DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
+        let RowCelRowCellSite = Div(undefined, "col-lg-2 col-3 pd-lr-5");
 
-            let DivProfile = new Div("DependentDetails", undefined);
+        let SpanPrescription = new Span(undefined, undefined, "c-pointer");
+        let DivPrescription = new Div(undefined, "card mb-4 o-hidden");
+        let DivPrescriptionCardBody = new Div("BranchesCard", "card-body",
+            [new Attribute(_AttributeOnClick, "Branches_Click(this),AdminButtons_Click(this)")]
+        );
 
-            CardBodyEditProfile.appendChild(DivProfile);
+        let DivWidgetRowPrescription = new Div(undefined, "ul-widget__row-v2 p-relative");
+        let DivWidgetImagePrescription = new Div(undefined, "ul-widget6__pic");
+        let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Patientn.png", undefined, "Prescription Image");
 
-            BindView(Container, CardProfile);
-        }
+        let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2");
+        let HeadingPrescription = new Heading4("Branches", [new Attribute(_AttributeClass, "heading mt-3")]);
+
+        DivWidgetImagePrescription.appendChild(ImagePrescription);
+        DivWidgetRowPrescription.appendChild(DivWidgetImagePrescription);
+        DivPrescriptionCardBody.appendChild(DivWidgetRowPrescription);
+
+        DivWidgetContentPrescription.appendChild(HeadingPrescription);
+        DivWidgetRowPrescription.appendChild(DivWidgetContentPrescription);
+
+        DivPrescription.appendChild(DivPrescriptionCardBody);
+        SpanPrescription.appendChild(DivPrescription);
+
+        RowCelRowCellSite.appendChild(SpanPrescription);
+        DivRowMainButtonBar.appendChild(RowCelRowCellSite);
+
+        ////////////////////////////////////////////
+
+        let RowCellSiteButtonBar = Div(undefined, "col-lg-2 col-3 pd-lr-5");
+
+        let SpanReport = new Span(undefined, undefined, "c-pointer");
+        let DivReport = new Div(undefined, "card mb-4 o-hidden");
+        let DivReportCardBody = new Div("DoctorsCard", "card-body",
+            [new Attribute(_AttributeOnClick, "Doctors_Click(this),AdminButtons_Click(this)")]
+        );
+
+        let DivWidgetRowReport = new Div(undefined, "ul-widget__row-v2 p-relative");
+        let DivWidgetImageReport = new Div(undefined, "ul-widget6__pic");
+        let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Appointment.png", undefined, "Report Image");
+
+        let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2");
+        let HeadingReport = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
+
+        DivWidgetImageReport.appendChild(ImageReport);
+        DivWidgetRowReport.appendChild(DivWidgetImageReport);
+        DivReportCardBody.appendChild(DivWidgetRowReport);
+
+        DivWidgetContentReport.appendChild(HeadingReport);
+        DivWidgetRowReport.appendChild(DivWidgetContentReport);
+
+        DivReport.appendChild(DivReportCardBody);
+        SpanReport.appendChild(DivReport);
+
+        RowCellSiteButtonBar.appendChild(SpanReport);
+        DivRowMainButtonBar.appendChild(RowCellSiteButtonBar);
+
+        //////////////////////////////////////////
+
+        let RowCellSiteDocument = Div(undefined, "col-lg-2 col-3 pd-lr-5");
+
+        let SpanHistory = new Span(undefined, undefined, "c-pointer");
+        let DivHistory = new Div(undefined, "card mb-4 o-hidden");
+        let DivHistoryCardBody = new Div("ReportsCard", "card-body",
+            [new Attribute(_AttributeOnClick, "Reports_Click(this),AdminButtons_Click(this)")]
+        );
+
+        let DivWidgetRowHistory = new Div(undefined, "ul-widget__row-v2 p-relative");
+        let DivWidgetImageHistory = new Div(undefined, "ul-widget6__pic");
+        let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Schedule.png", undefined, "History Image");
+
+        let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2");
+        let HeadingHistory = new Heading4("Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
+
+        DivWidgetImageHistory.appendChild(ImageHistory);
+        DivWidgetRowHistory.appendChild(DivWidgetImageHistory);
+        DivHistoryCardBody.appendChild(DivWidgetRowHistory);
+
+        DivWidgetContentHistory.appendChild(HeadingHistory);
+        DivWidgetRowHistory.appendChild(DivWidgetContentHistory);
+
+        DivHistory.appendChild(DivHistoryCardBody);
+        SpanHistory.appendChild(DivHistory);
+
+        RowCellSiteDocument.appendChild(SpanHistory);
+        DivRowMainButtonBar.appendChild(RowCellSiteDocument);
+
+        //////////////////////////////////////////
+
+        let RowCellSiteDoc = Div(undefined, "col-lg-2 col-3 pd-lr-5");
+
+        let SpanAllergies = new Span(undefined, undefined, "c-pointer");
+        let DivAllergies = new Div(undefined, "card mb-4 o-hidden");
+        let DivAllergiesCardBody = new Div("MiscCard", "card-body",
+            [new Attribute(_AttributeOnClick, "Misc_Click(this),AdminButtons_Click(this)")]
+        );
+
+        let DivWidgetRowAllergies = new Div(undefined, "ul-widget__row-v2 p-relative");
+        let DivWidgetImageAllergies = new Div(undefined, "ul-widget6__pic");
+        let ImageAllergies = new Imagebox(undefined, "dist-assets/images/Nurse/Pharmacy.png", undefined, "Allergies Image");
+
+        let DivWidgetContentAllergies = new Div("MiscHeading", "ul-widget__content-v2");
+        let HeadingAllergies = new Heading4("Misc", [new Attribute(_AttributeClass, "heading mt-3")]);
+
+        DivWidgetImageAllergies.appendChild(ImageAllergies);
+        DivWidgetRowAllergies.appendChild(DivWidgetImageAllergies);
+        DivAllergiesCardBody.appendChild(DivWidgetRowAllergies);
+
+        DivWidgetContentAllergies.appendChild(HeadingAllergies);
+        DivWidgetRowAllergies.appendChild(DivWidgetContentAllergies);
+
+        DivAllergies.appendChild(DivAllergiesCardBody);
+        SpanAllergies.appendChild(DivAllergies);
+
+        RowCellSiteDoc.appendChild(SpanAllergies);
+        DivRowMainButtonBar.appendChild(RowCellSiteDoc);
+
+        DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
+
+        /////////////////////////////////////////
+
+        BindView(Container, DivRowMainButtonBar);
     }
 }
+
+function Branches() {
+    this.Render = function (Container) {
+        const Card = new Div(undefined, "card text-left");
+        const CardBody = new Div(undefined, "card-body");
+
+        const Heading = new Heading4("Branches", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        CardBody.appendChild(Heading);
+
+        const TitleRow = new Div(undefined, "row");
+        const TitleRowColumnOne = new Div(undefined, "col-md-12");
+
+        // TitleRowColumnOne.appendChild(new Label(undefined, "Branches", undefined, undefined));
+
+        TitleRow.appendChild(TitleRowColumnOne);
+        CardBody.appendChild(TitleRow);
+
+        const SearchRow = new Div("BranchesSearchRow", "row");
+        const SearchRowColumnOne = new Div(undefined, "col-lg-12 text-center");
+        SearchRow.appendChild(SearchRowColumnOne);
+        CardBody.appendChild(SearchRow);
+
+        const SearchForm = new Form(undefined);
+        const FormRow = new Div(undefined, "form-group row mt-3");
+
+        const FormRowColumnOne = new Div(undefined, "col-sm-9 text-left");
+        const SelectBranchLabel = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "SearchBranchSelect")]);
+        const SelectBranchSelect = new Select("SearchBranchSelect", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetBranchSearchResults_Success")]);
+        SelectBranchSelect.appendChild(new SelectItem("Select Branch", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        FormRowColumnOne.appendChild(SelectBranchLabel);
+        FormRowColumnOne.appendChild(SelectBranchSelect);
+        FormRow.appendChild(FormRowColumnOne);
+        CardBody.appendChild(FormRow);
+
+        const FormRowColumnTwo = new Div(undefined, "col-sm-3 d-flex");
+        const ButtonSearchBranch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
+            [new Attribute(_AttributeOnClick, "Appointments_Search()")]);
+
+        FormRowColumnTwo.appendChild(ButtonSearchBranch);
+        FormRow.appendChild(FormRowColumnTwo);
+
+        SearchForm.appendChild(FormRow);
+        CardBody.appendChild(SearchForm);
+
+        const SearchResultsRow = new Div("BranchesSearchResultsRow", "form-group row");
+        SearchResultsRow.appendChild(new Div("BranchesSearchResultsTable", "col-lg-12"));
+        CardBody.appendChild(SearchResultsRow);
+
+        Card.appendChild(CardBody);
+
+        BindView(Container, Card);
+    }
+}
+
+function Doctors() {
+    this.Render = function (Container) {
+        const Card = new Div(undefined, "card text-left");
+        const CardBody = new Div(undefined, "card-body");
+
+        const Heading = new Heading4("Doctors", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        CardBody.appendChild(Heading);
+
+        const RowOne = new Div(undefined, "row");
+        const RowOneColumnOne = new Div(undefined, "col-md-12");
+
+        RowOneColumnOne.appendChild(new Label(undefined, "Doctors", undefined, undefined));
+
+        RowOne.appendChild(RowOneColumnOne);
+        CardBody.appendChild(RowOne);
+
+        Card.appendChild(CardBody);
+
+        BindView(Container, Card);
+    }
+}
+
+function Reports() {
+    this.Render = function (Container) {
+        const Card = new Div(undefined, "card text-left");
+        const CardBody = new Div(undefined, "card-body");
+
+        const Heading = new Heading4("Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        CardBody.appendChild(Heading);
+
+        const RowOne = new Div(undefined, "row");
+        const RowOneColumnOne = new Div(undefined, "col-md-12");
+
+        RowOneColumnOne.appendChild(new Label(undefined, "Reports", undefined, undefined));
+
+        RowOne.appendChild(RowOneColumnOne);
+        CardBody.appendChild(RowOne);
+
+        Card.appendChild(CardBody);
+
+        BindView(Container, Card);
+    }
+}
+
+function Misc() {
+    this.Render = function (Container) {
+        const Card = new Div(undefined, "card text-left");
+        const CardBody = new Div(undefined, "card-body");
+
+        const Heading = new Heading4("Misc", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        CardBody.appendChild(Heading);
+
+        const RowOne = new Div(undefined, "row");
+        const RowOneColumnOne = new Div(undefined, "col-md-12");
+
+        RowOneColumnOne.appendChild(new Label(undefined, "Misc", undefined, undefined));
+
+        RowOne.appendChild(RowOneColumnOne);
+        CardBody.appendChild(RowOne);
+
+        Card.appendChild(CardBody);
+
+        BindView(Container, Card);
+    }
+}
+

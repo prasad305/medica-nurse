@@ -717,10 +717,6 @@ function CmdAboutUs_Click() {
     new AboutUs().Render(Containers.MainContent);
 }
 
-function LnkSettings_Click() {
-    new Settings().Render(Containers.MainContent);
-}
-
 function LnkSignOut_Click() {
     location.reload();
 }
@@ -771,3 +767,61 @@ $('#TableAppointedPatient').each(function (index) {
     $(this).children('td').five().addClass('d-none d-lg-table-cell');
 
 });
+
+/*=================================
+			Admin Events
+ =================================*/
+
+function LnkSettings_Click() {
+    //admin ui
+    Admin_View();
+}
+
+function LnkGeneral_Click() {
+    //reception ui
+    General_View();
+}
+
+function AdminButtons_Click(Card) {
+    AdminButtons_BgColorRemove();
+    $(Card).css('background-color','#BDC3C7');
+}
+
+function AdminButtons_BgColorRemove() {
+    $("#BranchesCard").css('background-color','white');
+    $("#DoctorsCard").css('background-color','white');
+    $("#ReportsCard").css('background-color','white');
+    $("#MiscCard").css('background-color','white');
+}
+
+/*=================================
+            Branches Events
+ =================================*/
+
+function Branches_Click() {
+    new Branches().Render(Containers.MainContent);
+}
+
+/*=================================
+            Doctors Events
+ =================================*/
+
+function Doctors_Click() {
+    new Doctors().Render(Containers.MainContent);
+}
+
+/*=================================
+            Reports Events
+ =================================*/
+
+function Reports_Click() {
+    new Reports().Render(Containers.MainContent);
+}
+
+/*=================================
+            Misc Events
+ =================================*/
+
+function Misc_Click() {
+    new Misc().Render(Containers.MainContent);
+}
