@@ -755,15 +755,17 @@ function LnkSignOut_Click() {
 function CmdBtnClickable_Click(Event) {
     CmdBtnColorRemove_Click();
     Event.style.backgroundColor = "#BDC3C7";
-
 }
 
 function CmdBtnColorRemove_Click() {
-
-    document.getElementById("PatientCard").style.backgroundColor = "white";
-    document.getElementById("AppoinmentsCard").style.backgroundColor = "white";
-    document.getElementById("SessionCard").style.backgroundColor = "white";
-    document.getElementById("InvoiceCard").style.backgroundColor = "white";
+    try {
+        document.getElementById("PatientCard").style.backgroundColor = "white";
+        document.getElementById("AppoinmentsCard").style.backgroundColor = "white";
+        document.getElementById("SessionCard").style.backgroundColor = "white";
+        document.getElementById("InvoiceCard").style.backgroundColor = "white";
+    } catch (Error) {
+        //do nothing
+    }
 }
 
 
@@ -819,10 +821,14 @@ function AdminButtons_Click(Card) {
 }
 
 function AdminButtons_BgColorRemove() {
-    $("#BranchesCard").css('background-color', 'white');
-    $("#DoctorsCard").css('background-color', 'white');
-    $("#ReportsCard").css('background-color', 'white');
-    $("#MiscCard").css('background-color', 'white');
+    try {
+        $("#BranchesCard").css('background-color', 'white');
+        $("#DoctorsCard").css('background-color', 'white');
+        $("#ReportsCard").css('background-color', 'white');
+        $("#MiscCard").css('background-color', 'white');
+    } catch (Error) {
+        //do nothing
+    }
 }
 
 /*=================================
@@ -831,6 +837,15 @@ function AdminButtons_BgColorRemove() {
 
 function Branches_Click() {
     new Branches().Render(Containers.MainContent);
+    AllBranchesOfTheInstituteGet();
+}
+
+function GetBranchData() {
+    if ($("#SearchBranchSelect").val().trim() !== '') {
+
+    } else {
+        return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
+    }
 }
 
 /*=================================

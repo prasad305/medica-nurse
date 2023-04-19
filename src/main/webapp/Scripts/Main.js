@@ -79,13 +79,15 @@ var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
 let _NurseLoggedIn = {};
+let _NurseInstitute = {};
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
 
 //-- Admin UI
 
-let _ArraySearchBranchesAllResultsData = [];
+let _ArrayAllBranchesOfTheInstituteResultsData = [];
+let _IsAllBranchesGetClicked = false;
 
 //-- /Admin UI
 
@@ -206,7 +208,12 @@ var HideLoader = function () {
 };
 
 function InitRequestHandler() {
-    _UserId = getCookie("UserId");
+    // console.log('InitRequestHandler._IsAllBranchesGetClicked:', _IsAllBranchesGetClicked);
+    if (_IsAllBranchesGetClicked) {
+        _UserId = 2;
+    } else {
+        _UserId = getCookie("UserId");
+    }
     // console.log('InitRequestHandler._UserId:', _UserId);
 
     let Headers = new Array();

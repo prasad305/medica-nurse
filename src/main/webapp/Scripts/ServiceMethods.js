@@ -73,6 +73,8 @@ function GetNurseBranches_Success(Response) {
     if (Response.Data[0] != null || Response.Data[0] != "") {
         _UserBranchId = Response.Data[0].Id;
         document.getElementById("LblInstituteBranch").innerHTML = Response.Data[0].Name;
+
+        _NurseInstitute = Response.Data[0];
     }
 }
 
@@ -1121,26 +1123,37 @@ function Admin_View() {
     new AdminLayoutMain().Render();
     new Branches().Render(Containers.MainContent);
     document.getElementById("BranchesCard").style.backgroundColor = "#BDC3C7";
-    BranchesAllGet();
+    AllBranchesOfTheInstituteGet();
 }
 
 /*=================================
 		Branches Methods
  =================================*/
 
-function BranchesAllGet() {
+function AllBranchesOfTheInstituteGet() {
     //change user id to 2
-    _ArraySearchBranchesAllResultsData = [];
-    _UserId = 2;
-    _Request.Get(ServiceMethods.GetInstitute, undefined, BranchesAllGet_Success);
+    _ArrayAllBranchesOfTheInstituteResultsData = [];
+    //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
+    _IsAllBranchesGetClicked = true;
+    //rerun
+    InitRequestHandler();
+    _Request.Post(ServiceMethods.InstituteBranch, new InstituteBranch(undefined, '2', _NurseInstitute.InstituteId), AllBranchesOfTheInstituteGet_Success);
 }
 
-function BranchesAllGet_Success(Response) {
-    //reset user id to default
-    _UserId = getCookie("UserId");
+function AllBranchesOfTheInstituteGet_Success(Response) {
+    //reset flag
+    _IsAllBranchesGetClicked = false;
+    //reset
+    InitRequestHandler();
+
+    _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
 
     const BranchSelect = $("#SearchBranchSelect");
     $(BranchSelect).empty();
+    $(BranchSelect).append('<option value=" ">Select Branch</option>');
+    for (let Count = 0; Count < Response.Data.length; Count++) {
+        $(BranchSelect).append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
+    }
 }
 
 function BranchesSearch() {

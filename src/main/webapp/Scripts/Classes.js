@@ -218,3 +218,14 @@ function PatientUploadInformation(PatientId, Type, FileName, Name, UserSaved) {
     this.Name = Name;
     this.UserSaved = UserSaved;
 }
+
+/*=================================
+		Admin Proxy Classes
+ =================================*/
+
+function InstituteBranch(Id, UserId, InstituteId)
+{
+    this.Id = Id;
+    this.UserId = UserId;
+    this.InstituteId = InstituteId;
+}

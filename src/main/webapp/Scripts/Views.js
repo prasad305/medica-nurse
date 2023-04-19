@@ -2209,7 +2209,7 @@ function Branches() {
 
         const FormRowColumnOne = new Div(undefined, "col-sm-9 text-left");
         const SelectBranchLabel = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "SearchBranchSelect")]);
-        const SelectBranchSelect = new Select("SearchBranchSelect", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetBranchSearchResults_Success")]);
+        const SelectBranchSelect = new Select("SearchBranchSelect", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
         SelectBranchSelect.appendChild(new SelectItem("Select Branch", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         FormRowColumnOne.appendChild(SelectBranchLabel);
         FormRowColumnOne.appendChild(SelectBranchSelect);
@@ -2218,7 +2218,7 @@ function Branches() {
 
         const FormRowColumnTwo = new Div(undefined, "col-sm-3 d-flex");
         const ButtonSearchBranch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
-            [new Attribute(_AttributeOnClick, "Appointments_Search()")]);
+            [new Attribute(_AttributeOnClick, "GetBranchData()")]);
 
         FormRowColumnTwo.appendChild(ButtonSearchBranch);
         FormRow.appendChild(FormRowColumnTwo);
