@@ -72,8 +72,8 @@ var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
 
-let _AppointmentsForTodayCount = 0;
-let _AppointmentsForToday = [];
+let _ArrayAppointmentsForTodayCount = 0;
+let _ArrayAppointmentsForToday = [];
 
 var _NurseNIC;
 var _NurseLastName;

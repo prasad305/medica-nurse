@@ -483,6 +483,23 @@ function AppointmentTimeChangeEnable() {
     $('#ModalForAppointmentDetailsEdit #AppointmentTime').prop('disabled', false);
 }
 
+function AppointmentUpdate() {
+    console.log('AppointmentUpdate._ArrayAppointmentsForToday', _ArrayAppointmentsForToday);
+    const PatientId = $('#ModalForAppointmentDetailsEdit #AppointmentPatientId').val();
+    const AppointmentNo = $('#ModalForAppointmentDetailsEdit #AppointmentNo').val();
+    const DoctorId = $('#ModalForAppointmentDetailsEdit #AppointmentDoctor').val();
+    const Date = $('#ModalForAppointmentDetailsEdit #AppointmentDate').val();
+    const Time = $('#ModalForAppointmentDetailsEdit #AppointmentTime').val();
+    const JsonObject = {
+        PatientId: PatientId,
+        AppointmentNo: AppointmentNo,
+        DoctorId: DoctorId,
+        Date: Date,
+        Time: Time
+    };
+    console.log('AppointmentUpdate.JsonObject:', JsonObject);
+}
+
 /*=================================
 			Pharmacy Events
  =================================*/

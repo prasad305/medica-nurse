@@ -1570,12 +1570,12 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
 }
 
 function AppointmentDetailsEditModal() {
-    this.Render = function (Container, PatientId) {
-        // console.log('AppointmentDetailsEditModal:', Container, PatientId);
+    this.Render = function (Container, AppointmentId) {
+        // console.log('AppointmentDetailsEditModal:', Container, AppointmentId);
 
-        const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-        // console.log('AppointmentDetailsEditModal.PatientMatched:', PatientMatched);
-        // console.log('AppointmentDetailsEditModal._AppointmentsForToday:', _AppointmentsForToday);
+        // console.log('AppointmentDetailsEditModal._ArrayAppointmentsForToday:', _ArrayAppointmentsForToday);
+        const AppointmentMatched = _ArrayAppointmentsForToday.filter((Appointment) => Appointment.Id === AppointmentId)[0];
+        // console.log('AppointmentDetailsEditModal.AppointmentMatched:', AppointmentMatched);
 
         const Modal = new Div("ModalForAppointmentDetailsEdit", "modal");
 
@@ -1583,7 +1583,7 @@ function AppointmentDetailsEditModal() {
         const ModalDialogContent = new Div(undefined, "modal-content");
 
         const ModalContentHeader = new Div(undefined, "modal-header");
-        ModalContentHeader.appendChild(new Heading4("Edit Appointment Details", undefined));
+        ModalContentHeader.appendChild(new Heading4("Update Appointment Details", undefined));
         ModalDialogContent.appendChild(ModalContentHeader);
 
         const ModalContentBody = new Div(undefined, "modal-body");
@@ -1596,13 +1596,20 @@ function AppointmentDetailsEditModal() {
         const FormRowOne = new Div(undefined, "form-group row");
         const RowOneColumnOne = new Div(undefined, "col-sm-12 text-left");
         const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentNoText")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentPatientName")]
         );
-        const AppointmentPatientText = new Textbox("AppointmentPatientText", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "text"), new Attribute('disabled', 'true'), new Attribute('value', 'John')]
+        const AppointmentPatientName = new Textbox("AppointmentPatientName", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute('disabled', 'true'),
+                new Attribute('value', AppointmentMatched.FirstName + ' ' + AppointmentMatched.LastName)]
         );
+        // const AppointmentPatientId = new Textbox("AppointmentPatientId", "form-control form-control-rounded",
+        //     [new Attribute(_AttributeType, "hidden"), new Attribute('disabled', 'true'), new Attribute('value', '1')]
+        // );
         RowOneColumnOne.appendChild(AppointmentPatientLabel);
-        RowOneColumnOne.appendChild(AppointmentPatientText);
+        RowOneColumnOne.appendChild(AppointmentPatientName);
+        // RowOneColumnOne.appendChild(AppointmentPatientId);
         FormRowOne.appendChild(RowOneColumnOne);
 
         //---- row 02
@@ -1613,7 +1620,7 @@ function AppointmentDetailsEditModal() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentNo")]
         );
         const AppointmentNoText = new Textbox("AppointmentNo", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "text"), new Attribute('disabled', 'true'), new Attribute('value', '1')]
+            [new Attribute(_AttributeType, "text"), new Attribute('disabled', 'true'), new Attribute('value', AppointmentMatched.Number)]
         );
         RowTwoColumnOne.appendChild(AppointmentNoLabel);
         RowTwoColumnOne.appendChild(AppointmentNoText);
@@ -1691,11 +1698,10 @@ function AppointmentDetailsEditModal() {
         ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
-        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
         ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-success',
             [
-                // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'AppointmentUpdate(' + Prescription.Id + ')')
+                new Attribute(_AttributeOnClick, 'AppointmentUpdate()')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);

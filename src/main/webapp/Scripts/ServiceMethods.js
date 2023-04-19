@@ -419,6 +419,12 @@ function GetDoctorAppoinmentList_Success(Response) {
         _AppointmentDetails = Response.Data;
         //GetAppointedPatients(Response.Data);
 
+        if (Response.Data.length > 0) {
+            for (let i = 0; i < Response.Data.length; i++) {
+                _ArrayAppointmentsForToday.push(Response.Data[i]);
+            }
+        }
+
         //*******new
         FilterAppointedPatientData(Response.Data);
         LoadAppointmentedPatientList();
@@ -514,7 +520,7 @@ function GetAllPatientAppointmentsForTodayList_Success(Response) {
     } else {
         const AppointmentsForToday = Response.Data;
         // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday:', AppointmentsForToday);
-        // _AppointmentsForToday = [];
+        _ArrayAppointmentsForToday = [];
         // _AppointmentsForToday = Response.Data;
         for (let i = 0; i < AppointmentsForToday.length; i++) {
             // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday[i].Id:', AppointmentsForToday[i].Id);
