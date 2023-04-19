@@ -1577,6 +1577,8 @@ function AppointmentDetailsEditModal() {
         const AppointmentMatched = _ArrayAppointmentsForToday.filter((Appointment) => Appointment.Id === AppointmentId)[0];
         // console.log('AppointmentDetailsEditModal.AppointmentMatched:', AppointmentMatched);
 
+        _AppointmentSelected = AppointmentMatched;
+
         const Modal = new Div("ModalForAppointmentDetailsEdit", "modal");
 
         const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");

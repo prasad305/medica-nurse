@@ -74,6 +74,7 @@ let _ArrayPatientSearchResultsData = [];
 
 let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
+let _AppointmentSelected = {};
 
 var _NurseNIC;
 var _NurseLastName;

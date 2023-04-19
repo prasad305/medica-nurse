@@ -584,11 +584,23 @@ function LoadVitals(Id) {
 }
 
 function AppointmentDetailsEdit(PatientId) {
+    _AppointmentSelected = {};
     new AppointmentDetailsEditModal().Render(Containers.Footer, PatientId);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
+    //auto set selected doctor's session
+    GetDoctorsSessionsForAppointmentUpdate();
+    //set matching options as 'selected'
+    AppointmentsMatchingDropdownItemsSetSelected();
+}
+
+function AppointmentsMatchingDropdownItemsSetSelected() {
+    // console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
+    //TxtAppointmentUpdateDoctor
+    //TxtAppointmentUpdateDoctorSession
+    $("#TxtAppointmentUpdateDoctorSession option[value='" + _AppointmentSelected.SessionId + "']").prop("selected", true);
 }
 
 function GetPatientOriginalId(Id) {
