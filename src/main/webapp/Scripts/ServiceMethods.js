@@ -365,6 +365,41 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
     }
 }
 
+function GetDoctorsSessionsForAppointmentUpdate_Success(Response) {
+    const DoctorSessionSelect = $("#TxtAppointmentUpdateDoctorSession");
+    $(DoctorSessionSelect).empty();
+
+    if (Response.Status != 1000) {
+        $(DoctorSessionSelect).append('<option value=" ">None</option>');
+    } else {
+        let DataLength = Response.Data.length;
+        let Type;
+        if (DataLength === 0) {
+            $(DoctorSessionSelect).append('<option value=" ">None</option>');
+        } else {
+            for (let Count = 0; Count < DataLength; Count++) {
+                let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
+                let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
+
+                let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+                const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+
+                let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
+                let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+                const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+
+                if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
+
+                $(DoctorSessionSelect).append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
+            }
+        }
+    }
+}
+
 function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     new NewAppoinment().Render(Containers.MainContent);
     // if (_IsSetAppointmentToDoctorClicked) {
@@ -550,6 +585,10 @@ function LoadVitals(Id) {
 
 function AppointmentDetailsEdit(PatientId) {
     new AppointmentDetailsEditModal().Render(Containers.Footer, PatientId);
+    $('#TxtAppointmentUpdateDoctor').empty();
+    for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
+        $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
+    }
 }
 
 function GetPatientOriginalId(Id) {

@@ -345,6 +345,12 @@ function GetDoctorSessionDataForAppoinment(CardType) {
     }
 }
 
+function GetDoctorsSessionsForAppointmentUpdate() {
+    const AppointmentSearchDate = $('#TxtAppointmentUpdateDate').val();
+    const AppointmentDoctorId = $('#TxtAppointmentUpdateDoctor').val();
+    _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null), GetDoctorsSessionsForAppointmentUpdate_Success);
+}
+
 function SetAppoinmentToDoctor_Click() {
     _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
@@ -472,7 +478,8 @@ function SavePatientAnalytics() {
 }
 
 function AppointmentDoctorChangeEnable() {
-    $('#ModalForAppointmentDetailsEdit #AppointmentDoctor').prop('disabled', false);
+    $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctor').prop('disabled', false);
+    $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctorSession').prop('disabled', false);
 }
 
 function AppointmentDateChangeEnable() {
@@ -484,12 +491,12 @@ function AppointmentTimeChangeEnable() {
 }
 
 function AppointmentUpdate() {
-    console.log('AppointmentUpdate._ArrayAppointmentsForToday', _ArrayAppointmentsForToday);
-    const PatientId = $('#ModalForAppointmentDetailsEdit #AppointmentPatientId').val();
-    const AppointmentNo = $('#ModalForAppointmentDetailsEdit #AppointmentNo').val();
-    const DoctorId = $('#ModalForAppointmentDetailsEdit #AppointmentDoctor').val();
-    const Date = $('#ModalForAppointmentDetailsEdit #AppointmentDate').val();
-    const Time = $('#ModalForAppointmentDetailsEdit #AppointmentTime').val();
+    // console.log('AppointmentUpdate._ArrayAppointmentsForToday', _ArrayAppointmentsForToday);
+    const PatientId = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdatePatientId').val();
+    const AppointmentNo = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateAppointmentNo').val();
+    const DoctorId = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctor').val();
+    const Date = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDate').val();
+    const Time = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateTime').val();
     const JsonObject = {
         PatientId: PatientId,
         AppointmentNo: AppointmentNo,

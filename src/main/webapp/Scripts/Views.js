@@ -1594,105 +1594,110 @@ function AppointmentDetailsEditModal() {
         //---- row 01
 
         const FormRowOne = new Div(undefined, "form-group row");
-        const RowOneColumnOne = new Div(undefined, "col-sm-12 text-left");
+        const ColumnPatientName = new Div(undefined, "col-sm-6 text-left");
         const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentPatientName")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdatePatientName")]
         );
-        const AppointmentPatientName = new Textbox("AppointmentPatientName", "form-control form-control-rounded",
+        const AppointmentPatientName = new Textbox("TxtAppointmentUpdatePatientName", "form-control form-control-rounded",
             [
                 new Attribute(_AttributeType, "text"),
                 new Attribute('disabled', 'true'),
                 new Attribute('value', AppointmentMatched.FirstName + ' ' + AppointmentMatched.LastName)]
         );
-        // const AppointmentPatientId = new Textbox("AppointmentPatientId", "form-control form-control-rounded",
+        // const AppointmentPatientId = new Textbox("TxtAppointmentUpdatePatientId", "form-control form-control-rounded",
         //     [new Attribute(_AttributeType, "hidden"), new Attribute('disabled', 'true'), new Attribute('value', '1')]
         // );
-        RowOneColumnOne.appendChild(AppointmentPatientLabel);
-        RowOneColumnOne.appendChild(AppointmentPatientName);
+        ColumnPatientName.appendChild(AppointmentPatientLabel);
+        ColumnPatientName.appendChild(AppointmentPatientName);
         // RowOneColumnOne.appendChild(AppointmentPatientId);
-        FormRowOne.appendChild(RowOneColumnOne);
+        FormRowOne.appendChild(ColumnPatientName);
+
+        const ColumnAppointmentId = new Div(undefined, "col-sm-6 text-left");
+        const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateAppointmentNo")]
+        );
+        const AppointmentNoText = new Textbox("TxtAppointmentUpdateAppointmentNo", "form-control form-control-rounded",
+            [new Attribute(_AttributeType, "text"), new Attribute('disabled', 'true'), new Attribute('value', AppointmentMatched.Number)]
+        );
+        ColumnAppointmentId.appendChild(AppointmentNoLabel);
+        ColumnAppointmentId.appendChild(AppointmentNoText);
+        FormRowOne.appendChild(ColumnAppointmentId);
 
         //---- row 02
 
-        const FormRowTwo = new Div(undefined, "form-group row");
-        const RowTwoColumnOne = new Div(undefined, "col-sm-6 text-left mt-2");
-        const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentNo")]
-        );
-        const AppointmentNoText = new Textbox("AppointmentNo", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "text"), new Attribute('disabled', 'true'), new Attribute('value', AppointmentMatched.Number)]
-        );
-        RowTwoColumnOne.appendChild(AppointmentNoLabel);
-        RowTwoColumnOne.appendChild(AppointmentNoText);
-        FormRowTwo.appendChild(RowTwoColumnOne);
-
-        const RowTwoColumnTwo = new Div(undefined, "col-sm-4 text-left mt-2");
+        const ColumnDoctor = new Div(undefined, "col-sm-4 text-left mt-2");
         const AppointmentDoctorLabel = new Label(undefined, "Doctor",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentDoctor")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctor")]
         );
-        const AppointmentDoctorSelect = new Select("AppointmentDoctor",
-            [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute('disabled', 'true')]
+        const AppointmentDoctorSelect = new Select("TxtAppointmentUpdateDoctor",
+            [
+                new Attribute(_AttributeClass, "form-control form-control-rounded select"),
+                new Attribute('disabled', 'true'),
+                new Attribute(_AttributeOnChange, 'GetDoctorsSessionsForAppointmentUpdate()')
+            ]
         );
-        AppointmentDoctorSelect.appendChild(new SelectItem("Select Doctor", " ",
-            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
-        ));
-        RowTwoColumnTwo.appendChild(AppointmentDoctorLabel);
-        RowTwoColumnTwo.appendChild(AppointmentDoctorSelect);
-        FormRowTwo.appendChild(RowTwoColumnTwo);
+        // AppointmentDoctorSelect.appendChild(new SelectItem("Select Doctor", " ",
+        //     [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        // ));
+        ColumnDoctor.appendChild(AppointmentDoctorLabel);
+        ColumnDoctor.appendChild(AppointmentDoctorSelect);
+        FormRowOne.appendChild(ColumnDoctor);
 
-        const RowTwoColumnThree = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
-        const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
+        const ColumnDoctorEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
+        const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded ml-auto mt-auto',
             [new Attribute(_AttributeOnClick, 'AppointmentDoctorChangeEnable()')]
         );
-        RowTwoColumnThree.appendChild(AppointmentDoctorEnable);
-        FormRowTwo.appendChild(RowTwoColumnThree);
+        ColumnDoctorEnable.appendChild(AppointmentDoctorEnable);
+        FormRowOne.appendChild(ColumnDoctorEnable);
+
+        const ColumnDate = new Div(undefined, "col-sm-6 text-left mt-2");
+        const AppointmentDateLabel = new Label(undefined, "Date",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
+        );
+        const DateToday = new Date().toISOString().slice(0, 10);
+        const AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded",
+            [new Attribute(_AttributeType, "date"), new Attribute('value', DateToday), new Attribute('min', DateToday)]
+        );
+        ColumnDate.appendChild(AppointmentDateLabel);
+        ColumnDate.appendChild(AppointmentDate);
+        FormRowOne.appendChild(ColumnDate);
+
+        // const ColumnDateEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
+        // const AppointmentDateEnable = new Button('BtnAppointmentDateEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
+        //     [new Attribute(_AttributeOnClick, 'AppointmentDateChangeEnable()')]
+        // );
+        // ColumnDateEnable.appendChild(AppointmentDateEnable);
+        // FormRowOne.appendChild(ColumnDateEnable);
 
         //---- row 03
 
-        const FormRowThree = new Div(undefined, "form-group row");
-        const RowThreeColumnOne = new Div(undefined, "col-sm-4 text-left mt-2");
-        const AppointmentDateLabel = new Label(undefined, "Date",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentDate")]
+        const ColumnTime = new Div(undefined, "col-sm-6 text-left mt-2");
+        const AppointmentDoctorSessionLabel = new Label(undefined, "Session",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
         );
-        const DateToday = new Date().toISOString().slice(0, 10);
-        const AppointmentDate = new Textbox("AppointmentDate", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "date"), new Attribute('disabled', 'true'), new Attribute('value', DateToday)]
+        const AppointmentDoctorSession = new Select("TxtAppointmentUpdateDoctorSession",
+            [
+                new Attribute(_AttributeClass, "form-control form-control-rounded select"),
+                new Attribute('disabled', 'true')
+            ]
         );
-        RowThreeColumnOne.appendChild(AppointmentDateLabel);
-        RowThreeColumnOne.appendChild(AppointmentDate);
-        FormRowThree.appendChild(RowThreeColumnOne);
+        AppointmentDoctorSession.appendChild(new SelectItem("None", " ",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        ColumnTime.appendChild(AppointmentDoctorSessionLabel);
+        ColumnTime.appendChild(AppointmentDoctorSession);
+        FormRowOne.appendChild(ColumnTime);
 
-        const RowThreeColumnTwo = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
-        const AppointmentDateEnable = new Button('BtnAppointmentDateEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
-            [new Attribute(_AttributeOnClick, 'AppointmentDateChangeEnable()')]
-        );
-        RowThreeColumnTwo.appendChild(AppointmentDateEnable);
-        FormRowThree.appendChild(RowThreeColumnTwo);
-
-        const RowThreeColumnThree = new Div(undefined, "col-sm-4 text-left mt-2");
-        const AppointmentTimeLabel = new Label(undefined, "Time",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "AppointmentTime")]
-        );
-        const TimeNow = new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-        const AppointmentTime = new Textbox("AppointmentTime", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "time"), new Attribute('disabled', 'true'), new Attribute('value', TimeNow)]
-        );
-        RowThreeColumnThree.appendChild(AppointmentTimeLabel);
-        RowThreeColumnThree.appendChild(AppointmentTime);
-        FormRowThree.appendChild(RowThreeColumnThree);
-
-        const RowThreeColumnFour = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
-        const AppointmentTimeEnable = new Button('BtnAppointmentTimeEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
-            [new Attribute(_AttributeOnClick, 'AppointmentTimeChangeEnable()')]
-        );
-        RowThreeColumnFour.appendChild(AppointmentTimeEnable);
-        FormRowThree.appendChild(RowThreeColumnFour);
+        // const ColumnTimeEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
+        // const AppointmentTimeEnable = new Button('BtnAppointmentTimeEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
+        //     [new Attribute(_AttributeOnClick, 'AppointmentTimeChangeEnable()')]
+        // );
+        // ColumnTimeEnable.appendChild(AppointmentTimeEnable);
+        // FormRowOne.appendChild(ColumnTimeEnable);
 
         //----
 
         SearchForm.appendChild(FormRowOne);
-        SearchForm.appendChild(FormRowTwo);
-        SearchForm.appendChild(FormRowThree);
 
         ModalContentBody.appendChild(SearchForm);
         ModalDialogContent.appendChild(ModalContentBody);
