@@ -2190,58 +2190,93 @@ function AdminSiteButtonBar() {
     }
 }
 
+/*=================================
+             Branches
+ =================================*/
+
 function Branches() {
     this.Render = function (Container) {
         const Card = new Div(undefined, "card text-left");
         const CardBody = new Div(undefined, "card-body");
 
+        //-- row 01
+
+        const RowOne = new Div(undefined, "row");
+
+        const ColumnCardTitle = new Div(undefined, "col-md-12");
         const Heading = new Heading4("Branches", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
-        CardBody.appendChild(Heading);
+        ColumnCardTitle.appendChild(Heading);
+        RowOne.appendChild(ColumnCardTitle);
 
-        const TitleRow = new Div(undefined, "row");
-        const TitleRowColumnOne = new Div(undefined, "col-md-12");
+        //-- row 02
 
-        // TitleRowColumnOne.appendChild(new Label(undefined, "Branches", undefined, undefined));
+        const RowTwo = new Div(undefined, "row mt-3");
 
-        TitleRow.appendChild(TitleRowColumnOne);
-        CardBody.appendChild(TitleRow);
+        // const FormRowColumnThree = new Div(undefined, "col-sm-12 mt-3");
+        // const ButtonAddNewBranch = new Button(undefined, "Add A New Branch", "btn btn-primary btn-rounded float-right",
+        //     [new Attribute(_AttributeOnClick, "BranchNewAdd()")]);
+        //
+        // FormRowColumnThree.appendChild(ButtonAddNewBranch);
+        // RowTwo.appendChild(FormRowColumnThree);
 
-        const SearchRow = new Div("BranchesSearchRow", "row");
-        const SearchRowColumnOne = new Div(undefined, "col-lg-12 text-center");
-        SearchRow.appendChild(SearchRowColumnOne);
-        CardBody.appendChild(SearchRow);
+        const ColumnBranchesSearchResultsTableRow = new Div("BranchesSearchResults", "col-sm-12");
+        RowTwo.appendChild(ColumnBranchesSearchResultsTableRow);
 
-        const SearchForm = new Form(undefined);
-        const FormRow = new Div(undefined, "form-group row mt-3");
+        //-- /rows
 
-        const FormRowColumnOne = new Div(undefined, "col-sm-9 text-left");
-        const SelectBranchLabel = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "SearchBranchSelect")]);
-        const SelectBranchSelect = new Select("SearchBranchSelect", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
-        SelectBranchSelect.appendChild(new SelectItem("Select Branch", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
-        FormRowColumnOne.appendChild(SelectBranchLabel);
-        FormRowColumnOne.appendChild(SelectBranchSelect);
-        FormRow.appendChild(FormRowColumnOne);
-        CardBody.appendChild(FormRow);
-
-        const FormRowColumnTwo = new Div(undefined, "col-sm-3 d-flex");
-        const ButtonSearchBranch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100 mt-auto",
-            [new Attribute(_AttributeOnClick, "GetBranchData()")]);
-
-        FormRowColumnTwo.appendChild(ButtonSearchBranch);
-        FormRow.appendChild(FormRowColumnTwo);
-
-        SearchForm.appendChild(FormRow);
-        CardBody.appendChild(SearchForm);
-
-        const SearchResultsRow = new Div("BranchesSearchResultsRow", "row");
-        SearchResultsRow.appendChild(new Div("BranchesSearchResultsTable", "col-lg-12"));
-        CardBody.appendChild(SearchResultsRow);
+        CardBody.appendChild(RowOne);
+        CardBody.appendChild(RowTwo);
 
         Card.appendChild(CardBody);
 
         BindView(Container, Card);
     }
 }
+
+function BranchesSearchResultsTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ["Branch Name", "Action"];
+
+        let ParentRow = new Div(undefined, "row");
+
+        let ColumnTableTitle = new Div(undefined, "col-md-6");
+        let Heading = new Heading5("All Branches", undefined);
+        ColumnTableTitle.appendChild(Heading);
+        ParentRow.appendChild(ColumnTableTitle);
+
+        const ColumnAddNewBranch = new Div(undefined, "col-md-6");
+        const ButtonAddNewBranch = new Button(undefined, "Add A New Branch", "btn btn-primary btn-rounded float-right",
+            [new Attribute(_AttributeOnClick, "BranchNewAdd()")]);
+        ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
+        ParentRow.appendChild(ColumnAddNewBranch);
+
+        const ColumnTable = new Div(undefined, "col-md-12 mt-2");
+        let DivTableBranchesSearchResults = new Div(undefined, "table-responsive");
+        DivTableBranchesSearchResults.appendChild(new TableView("TableBranchesSearchResults", "table table-striped", Headers, Data, undefined));
+        ColumnTable.appendChild(DivTableBranchesSearchResults);
+        ParentRow.appendChild(ColumnTable);
+
+        // let Headers = ["Branch Name", "Action"];
+        //
+        // let ParentRow = new Div(undefined, "row");
+        // let ColumnOne = new Div(undefined, "col-md-12 mt-2");
+        //
+        // let Heading = new Heading5("Search Results", undefined);
+        // ColumnOne.appendChild(Heading);
+        //
+        // let DivTablePrescriptions = new Div(undefined, "table-responsive mt-3");
+        // DivTablePrescriptions.appendChild(new TableView("TableBranchesSearchResults", "table table-striped", Headers, Data, undefined));
+        // ColumnOne.appendChild(DivTablePrescriptions);
+        //
+        // ParentRow.appendChild(ColumnOne);
+
+        BindView(Container, ParentRow);
+    }
+}
+
+/*=================================
+             Doctors
+ =================================*/
 
 function Doctors() {
     this.Render = function (Container) {
@@ -2265,6 +2300,10 @@ function Doctors() {
     }
 }
 
+/*=================================
+             Reports
+ =================================*/
+
 function Reports() {
     this.Render = function (Container) {
         const Card = new Div(undefined, "card text-left");
@@ -2286,6 +2325,10 @@ function Reports() {
         BindView(Container, Card);
     }
 }
+
+/*=================================
+             Misc
+ =================================*/
 
 function Misc() {
     this.Render = function (Container) {

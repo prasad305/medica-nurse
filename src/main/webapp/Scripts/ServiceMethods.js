@@ -514,7 +514,7 @@ function FilterAppointedPatientData(Data) {
         _ArrayAppointedPatientData.push(
             {
                 "A#": isNull(Data[Count].Number),
-                "Doctor": "-",
+                "Doctor": isNull(Data[Count].DoctorName),
                 "Name": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
                 "Mobile": isNull(Data[Count].Mobile),
                 "M/F": Gender,
@@ -1072,16 +1072,6 @@ function ClinicMedicalBillsSearchResultsTableDisplay(Data) {
 
     new ClinicBillSearchResultsTable().Render('ClinicMedicalBillsSearchResults', ArrayBillSearchResultsData);
     CreateDataTable('TableClinicMedicalBillsSearchResults');
-
-    //add pagination
-    // TablePaginationAdd('TableClinicMedicalBillsSearchResults', 'desc', 10);
-}
-
-function TablePaginationAdd(TableId, DisplayOrder, MinimumRowCount) {
-    $(TableId).DataTable({
-        order: [[0, DisplayOrder]],
-        "pageLength": MinimumRowCount
-    });
 }
 
 function ClinicPrescriptionDisplay(PrescriptionId) {
@@ -1182,8 +1172,7 @@ function Admin_View() {
  =================================*/
 
 function AllBranchesOfTheInstituteGet() {
-    //change user id to 2
-    _ArrayAllBranchesOfTheInstituteResultsData = [];
+    // _ArrayAllBranchesOfTheInstituteResultsData = [];
     //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
     _IsAllBranchesGetClicked = true;
     //rerun
@@ -1191,59 +1180,70 @@ function AllBranchesOfTheInstituteGet() {
     _Request.Post(ServiceMethods.InstituteBranch, new InstituteBranch(undefined, '2', _NurseInstitute.InstituteId), AllBranchesOfTheInstituteGet_Success);
 }
 
+// function AllBranchesOfTheInstituteGet_Success(Response) {
+//     //reset flag
+//     _IsAllBranchesGetClicked = false;
+//     //reset
+//     InitRequestHandler();
+//
+//     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
+//
+//     const BranchSelect = $("#SearchBranchSelect");
+//     $(BranchSelect).empty();
+//     $(BranchSelect).append('<option value=" ">Select Branch</option>');
+//     for (let Count = 0; Count < Response.Data.length; Count++) {
+//         $(BranchSelect).append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
+//     }
+// }
+
 function AllBranchesOfTheInstituteGet_Success(Response) {
     //reset flag
     _IsAllBranchesGetClicked = false;
     //reset
     InitRequestHandler();
+    // _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
 
-    _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
+    const ArrayBranchesSearchResultsData = [];
 
-    const BranchSelect = $("#SearchBranchSelect");
-    $(BranchSelect).empty();
-    $(BranchSelect).append('<option value=" ">Select Branch</option>');
-    for (let Count = 0; Count < Response.Data.length; Count++) {
-        $(BranchSelect).append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
+    if (Response.Data.length > 0) {
+
+        let Branch = {};
+
+        for (let Count = 0; Count < Response.Data.length; Count++) {
+
+            Branch = Response.Data[Count];
+            // console.log('AllBranchesOfTheInstituteGet_Success.Branch:', Branch);
+
+            ArrayBranchesSearchResultsData.push({
+                "Branch Name": Branch.Name,
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchUpdate(' + Branch.Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                    '</button>'
+            });
+
+        }
+
     }
+
+    // console.log('AllBranchesOfTheInstituteGet_Success.ArrayBranchesSearchResultsData:', ArrayBranchesSearchResultsData);
+
+    new BranchesSearchResultsTable().Render('BranchesSearchResults', ArrayBranchesSearchResultsData);
+    CreateDataTable('TableBranchesSearchResults');
+
 }
 
 function BranchesSearch() {
     _Request.Get(ServiceMethods.GetInstitute, undefined, BranchesSearch_Success);
 }
 
-function BranchesSearch_Success(Response) {
-    const BranchSelect = $("#SearchBranchSelect");
-    $(BranchSelect).empty();
+function BranchNewAdd() {
 
-    // if (Response.Status != 1000) {
-    //     $(BranchSelect).append('<option value=" ">Select Branch</option>');
-    // } else {
-    //     let DataLength = Response.Data.length;
-    //     let Count = 0;
-    //     let Type;
-    //     if (DataLength === 0) {
-    //         $(BranchSelect).append('<option value=" ">Select Branch</option>');
-    //     } else {
-    //         $(BranchSelect).append('<option value=" ">Select Branch</option>');
-    //         for (Count = 0; Count < DataLength; Count++) {
-    //             let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
-    //             let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
-    //
-    //             let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
-    //             const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-    //                 timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
-    //             });
-    //
-    //             let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
-    //             let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
-    //             const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
-    //                 timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
-    //             });
-    //
-    //             if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
-    //
-    //             $('#DrpSessionDateDoctor').append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
-    //         }
-    //     }
-    // }
+}
+
+function BranchUpdate(BranchId) {
+
+}
+
+function BranchWardAdd(BranchId) {
+
 }

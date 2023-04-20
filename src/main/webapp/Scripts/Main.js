@@ -160,7 +160,8 @@ const Messages =
         FileUploadSuccess: "File Uploaded SuccessFully",
         ConnectingError: "An error occured while communicating with the server",
         NofileChoosen: "No file chosen, yet.",
-        FileUploadFailed: "Upload Information Failed"
+        FileUploadFailed: "Upload Information Failed",
+        NoDataToDisplay: "No data to display"
     };
 
 const Images =
