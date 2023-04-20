@@ -229,3 +229,28 @@ function InstituteBranch(Id, UserId, InstituteId)
     this.UserId = UserId;
     this.InstituteId = InstituteId;
 }
+
+function InstituteBranchSave(Id, InstituteId, Name, AddressId, Email, Website, Numbers, Status, UserSaved)
+{
+    this.Id = Id;
+    this.InstituteId = InstituteId;
+    this.Name = Name;
+    this.AddressId = AddressId;
+    this.Email = Email;
+    this.Website = Website;
+    this.Numbers = Numbers;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+}
+
+function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status, UserSaved)
+{
+    this.Id = Id;
+    this.AddressLine1 = AddressLine1;
+    this.AddressLine2 = AddressLine2;
+    this.Suburb = Suburb;
+    this.City = City;
+    this.Postcode = Postcode;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+}

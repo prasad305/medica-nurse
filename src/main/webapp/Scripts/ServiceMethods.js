@@ -1241,7 +1241,58 @@ function BranchDetailsView(BranchId) {
 }
 
 function BranchUpdate(BranchId) {
+    const Name = document.getElementById("TxtBranchUpdateBranchName").value.trim();
+    const Address1 = document.getElementById("TxtBranchUpdateAddressLine1").value.trim();
+    const Address2 = document.getElementById("TxtBranchUpdateAddressLine2").value.trim();
+    const Suburb = document.getElementById("TxtBranchUpdateSuburb").value.trim();
+    const City = document.getElementById("TxtBranchUpdateCity").value.trim();
+    const PostalCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
+    const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
+    const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
+    const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
+    const Status = 1;
+    const UserSaved = getCookie("UserId");
+    const InstituteId = 1;
 
+    let PayLoad = new InstituteBranchSave(BranchId, InstituteId, Name, _AddressId, Email, Website, Numbers, Status, UserSaved);
+    console.log('BranchUpdate.PayLoad:', PayLoad);
+    // SaveAddress(Address1, Address2, Suburb, City, PostalCode, function () {
+    //     _Request.Post("InstituteBranch/POST", PayLoad, SuccessInstituteBranchSave);
+    // });
+}
+
+function SaveAddress(Address1, Address2, Suburb, City, Postcode, func) {
+    let AddressId = 0;
+    let Entity = new Address(0, Address1, Address2, Suburb, City, Postcode, 1, getCookie("UserId"));
+    // console.log(Entity);
+    _Request.Post("Address/POST", Entity,
+        function (Response) {
+            console.log(Response.Data);
+            if (Response.Status === 1000) {
+                AddressId = Response.Data.Id;
+                console.log(AddressId);
+                _AddressId = AddressId;
+                func();
+            } else {
+                alert(Response.Message);
+                // PopUpCustomAlerts("Error !", Response.Message, 'error');
+            }
+        });
+}
+
+function SuccessInstituteBranchSave(Response) {
+    if (Response.Status === 1000) {
+        // PopUpCustomAlertsWithClass("Success !", "Institute Branch Added Successfully !", 'success', 'btn-green');
+        // CmdSearchInstituteBranch();
+        $('#modalBranch').modal('hide');
+    } else {
+        // PopUpCustomAlerts("Error !", Response.Message, 'error');
+    }
+    ClearInstituteBranchId();
+}
+
+function ClearInstituteBranchId() {
+    InstituteBranchId = 0;
 }
 
 function BranchWardAdd(BranchId) {

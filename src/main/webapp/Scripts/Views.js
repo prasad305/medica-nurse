@@ -2296,6 +2296,128 @@ function BranchUpdateModal() {
         ColumnBranch.appendChild(TextBranch);
         ParentRow.appendChild(ColumnBranch);
 
+        const ColumnEmail = new Div(undefined, "col-sm-6 mt-2");
+        const LabelEmail = new Label(undefined, "Email",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateEmail")]
+        );
+        const TextEmail = new Textbox("TxtBranchUpdateEmail", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Email'),
+                new Attribute(_AttributeType, 'email'),
+                new Attribute('value', BranchMatched.Email)
+            ]
+        );
+        ColumnEmail.appendChild(LabelEmail);
+        ColumnEmail.appendChild(TextEmail);
+        ParentRow.appendChild(ColumnEmail);
+
+        const ColumnWebsite = new Div(undefined, "col-sm-6 mt-2");
+        const LabelWebsite = new Label(undefined, "Website",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateWebsite")]
+        );
+        const TextWebsite = new Textbox("TxtBranchUpdateWebsite", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Website'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.Website)
+            ]
+        );
+        ColumnWebsite.appendChild(LabelWebsite);
+        ColumnWebsite.appendChild(TextWebsite);
+        ParentRow.appendChild(ColumnWebsite);
+
+        const ColumnAddressLine1 = new Div(undefined, "col-sm-6 mt-2");
+        const LabelAddressLine1 = new Label(undefined, "Address Line 1",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine1")]
+        );
+        const TextAddressLine1 = new Textbox("TxtBranchUpdateAddressLine1", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Address Line 1'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.AddressLine1)
+            ]
+        );
+        ColumnAddressLine1.appendChild(LabelAddressLine1);
+        ColumnAddressLine1.appendChild(TextAddressLine1);
+        ParentRow.appendChild(ColumnAddressLine1);
+
+        const ColumnAddressLine2 = new Div(undefined, "col-sm-6 mt-2");
+        const LabelAddressLine2 = new Label(undefined, "Address Line 2",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine2")]
+        );
+        const TextAddressLine2 = new Textbox("TxtBranchUpdateAddressLine2", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Address Line 2'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.AddressLine2)
+            ]
+        );
+        ColumnAddressLine2.appendChild(LabelAddressLine2);
+        ColumnAddressLine2.appendChild(TextAddressLine2);
+        ParentRow.appendChild(ColumnAddressLine2);
+
+        const ColumnPostCode = new Div(undefined, "col-sm-6 mt-2");
+        const LabelPostCode = new Label(undefined, "Post Code",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdatePostCode")]
+        );
+        const TextPostCode = new Textbox("TxtBranchUpdatePostCode", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePattern, "[0-9]{10}"),
+                new Attribute(_AttributePlaceHolder, 'Post Code'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.Postcode)
+            ]
+        );
+        ColumnPostCode.appendChild(LabelPostCode);
+        ColumnPostCode.appendChild(TextPostCode);
+        ParentRow.appendChild(ColumnPostCode);
+
+        const ColumnSuburb = new Div(undefined, "col-sm-6 mt-2");
+        const LabelSuburb = new Label(undefined, "Suburb",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateSuburb")]
+        );
+        const TextSuburb = new Textbox("TxtBranchUpdateSuburb", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Suburb'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.Suburb)
+            ]
+        );
+        ColumnSuburb.appendChild(LabelSuburb);
+        ColumnSuburb.appendChild(TextSuburb);
+        ParentRow.appendChild(ColumnSuburb);
+
+        const ColumnCity = new Div(undefined, "col-sm-6 mt-2");
+        const LabelCity = new Label(undefined, "City",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateCity")]
+        );
+        const TextCity = new Textbox("TxtBranchUpdateCity", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'City'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.Suburb)
+            ]
+        );
+        ColumnCity.appendChild(LabelCity);
+        ColumnCity.appendChild(TextCity);
+        ParentRow.appendChild(ColumnCity);
+
+        const ColumnContactNo = new Div(undefined, "col-sm-6 mt-2");
+        const LabelContactNo = new Label(undefined, "Contact No",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateContactNo")]
+        );
+        const TextContactNo = new Textbox("TxtBranchUpdateContactNo", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePattern, "[0-9]{10}"),
+                new Attribute(_AttributePlaceHolder, 'Contact No'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', BranchMatched.Suburb)
+            ]
+        );
+        ColumnContactNo.appendChild(LabelContactNo);
+        ColumnContactNo.appendChild(TextContactNo);
+        ParentRow.appendChild(ColumnContactNo);
+
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
 

@@ -89,6 +89,8 @@ let _CardClicked = '';
 
 let _ArrayAllBranchesOfTheInstituteResultsData = [];
 let _IsAllBranchesGetClicked = false;
+let _AddressId = 0;
+let InstituteBranchId = 0;
 
 //-- /Admin UI
 
