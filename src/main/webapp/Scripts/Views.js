@@ -2199,34 +2199,18 @@ function Branches() {
         const Card = new Div(undefined, "card text-left");
         const CardBody = new Div(undefined, "card-body");
 
-        //-- row 01
-
         const RowOne = new Div(undefined, "row");
-
         const ColumnCardTitle = new Div(undefined, "col-md-12");
         const Heading = new Heading4("Branches", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         ColumnCardTitle.appendChild(Heading);
         RowOne.appendChild(ColumnCardTitle);
 
-        //-- row 02
-
         const RowTwo = new Div(undefined, "row mt-3");
-
-        // const FormRowColumnThree = new Div(undefined, "col-sm-12 mt-3");
-        // const ButtonAddNewBranch = new Button(undefined, "Add A New Branch", "btn btn-primary btn-rounded float-right",
-        //     [new Attribute(_AttributeOnClick, "BranchNewAdd()")]);
-        //
-        // FormRowColumnThree.appendChild(ButtonAddNewBranch);
-        // RowTwo.appendChild(FormRowColumnThree);
-
         const ColumnBranchesSearchResultsTableRow = new Div("BranchesSearchResults", "col-sm-12");
         RowTwo.appendChild(ColumnBranchesSearchResultsTableRow);
 
-        //-- /rows
-
         CardBody.appendChild(RowOne);
         CardBody.appendChild(RowTwo);
-
         Card.appendChild(CardBody);
 
         BindView(Container, Card);
@@ -2256,21 +2240,80 @@ function BranchesSearchResultsTable() {
         ColumnTable.appendChild(DivTableBranchesSearchResults);
         ParentRow.appendChild(ColumnTable);
 
-        // let Headers = ["Branch Name", "Action"];
-        //
-        // let ParentRow = new Div(undefined, "row");
-        // let ColumnOne = new Div(undefined, "col-md-12 mt-2");
-        //
-        // let Heading = new Heading5("Search Results", undefined);
-        // ColumnOne.appendChild(Heading);
-        //
-        // let DivTablePrescriptions = new Div(undefined, "table-responsive mt-3");
-        // DivTablePrescriptions.appendChild(new TableView("TableBranchesSearchResults", "table table-striped", Headers, Data, undefined));
-        // ColumnOne.appendChild(DivTablePrescriptions);
-        //
-        // ParentRow.appendChild(ColumnOne);
-
         BindView(Container, ParentRow);
+    }
+}
+
+function BranchUpdateModal() {
+    this.Render = function (Container, BranchId) {
+
+        const Modal = new Div("ModalForBranchUpdate", "modal");
+        Modal.setAttribute('data-backdrop', 'static');
+        Modal.setAttribute('data-keyboard', 'false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const ParentRow = new Div(undefined, "row");
+
+        // console.log('_NurseInstitute:', _NurseInstitute);
+        const ColumnInstitute = new Div(undefined, "col-sm-6 mt-2");
+        const LabelInstitute = new Label(undefined, "Institute",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateInstituteName")]
+        );
+        const TextInstitute = new Textbox("TxtBranchUpdateInstituteName", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePattern, "[0-9]{20}"),
+                new Attribute(_AttributePlaceHolder, "Institute Name"),
+                new Attribute("disabled", true),
+                new Attribute("value", _NurseInstitute.Name)
+            ]
+        );
+        ColumnInstitute.appendChild(LabelInstitute);
+        ColumnInstitute.appendChild(TextInstitute);
+        ParentRow.appendChild(ColumnInstitute);
+
+        const ColumnBranch = new Div(undefined, "col-sm-6 mt-2");
+        const LabelBranch = new Label(undefined, "Branch",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateBranchName")]
+        );
+        const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
+        // console.log('BranchMatched:', BranchMatched);
+        const TextBranch = new Textbox("TxtBranchUpdateBranchName", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePattern, "[0-9]{20}"),
+                new Attribute(_AttributePlaceHolder, "Branch Name"),
+                new Attribute("value", BranchMatched.Name)
+            ]
+        );
+        ColumnBranch.appendChild(LabelBranch);
+        ColumnBranch.appendChild(TextBranch);
+        ParentRow.appendChild(ColumnBranch);
+
+        ModalContentBody.appendChild(ParentRow);
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
+            [
+                new Attribute(_AttributeOnClick, 'BranchUpdate(' + BranchMatched.Id + ')')
+            ]
+        ));
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        $('#ModalForBranchUpdate').modal('show');
     }
 }
 
