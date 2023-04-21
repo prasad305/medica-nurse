@@ -515,7 +515,7 @@ function FilterAppointedPatientData(Data) {
             {
                 "A#": isNull(Data[Count].Number),
                 "Doctor": isNull(Data[Count].DoctorName),
-                "Name": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
+                "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
                 "Mobile": isNull(Data[Count].Mobile),
                 "M/F": Gender,
                 "Payment": PaymentStatus,
@@ -590,16 +590,15 @@ function AppointmentDetailsEdit(PatientId) {
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
-    //auto set selected doctor's session
-    GetDoctorsSessionsForAppointmentUpdate();
     //set matching options as 'selected'
     AppointmentsMatchingDropdownItemsSetSelected();
+    //auto set selected doctor's session
+    GetDoctorsSessionsForAppointmentUpdate();
 }
 
 function AppointmentsMatchingDropdownItemsSetSelected() {
-    // console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
-    //TxtAppointmentUpdateDoctor
-    //TxtAppointmentUpdateDoctorSession
+    console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
+    $("#TxtAppointmentUpdateDoctor option[value='" + _AppointmentSelected.DoctorId + "']").prop("selected", true);
     $("#TxtAppointmentUpdateDoctorSession option[value='" + _AppointmentSelected.SessionId + "']").prop("selected", true);
 }
 

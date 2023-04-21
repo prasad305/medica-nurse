@@ -1161,11 +1161,7 @@ function NewAppoinment() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
         );
         let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
-            [
-                new Attribute(_AttributeType, "date"),
-                new Attribute('min', DateToday),
-                new Attribute('value', DateToday)
-            ]);
+            [new Attribute(_AttributeType, 'date'), new Attribute('min', DateToday), new Attribute('value', DateToday)]);
 
         DivFormRowDate.appendChild(LabelAppointmentDate);
         DivFormRowDate.appendChild(AppointmentDateSelect);
@@ -1197,6 +1193,8 @@ function NewAppoinment() {
             $('#NewAppointmentAddRow').hide();
             $('#NewAppointmentSearchRow').show();
         }
+
+        $('#TxtAppointmentSearchDate').prop('type', 'date');
     }
 }
 
@@ -1325,7 +1323,7 @@ function DocumentUploader() {
 function TablePatientAppointment() {
     this.Render = function (Container, Data) {
 
-        let Headers = ["A#", "Doctor", "Name", "Mobile", "M/F", "Payment", "Status", "Action"];
+        let Headers = ["A#", "Doctor", "Patient", "Mobile", "M/F", "Payment", "Status", "Action"];
 
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12");
@@ -1580,12 +1578,14 @@ function AppointmentDetailsEditModal() {
         _AppointmentSelected = AppointmentMatched;
 
         const Modal = new Div("ModalForAppointmentDetailsEdit", "modal");
+        Modal.setAttribute('data-backdrop', 'static');
+        Modal.setAttribute('data-keyboard', 'false');
 
         const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
         const ModalDialogContent = new Div(undefined, "modal-content");
 
         const ModalContentHeader = new Div(undefined, "modal-header");
-        ModalContentHeader.appendChild(new Heading4("Update Appointment Details", undefined));
+        ModalContentHeader.appendChild(new Heading4("Update Appointment", undefined));
         ModalDialogContent.appendChild(ModalContentHeader);
 
         const ModalContentBody = new Div(undefined, "modal-body");
@@ -1657,8 +1657,8 @@ function AppointmentDetailsEditModal() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
         );
         const DateToday = new Date().toISOString().slice(0, 10);
-        const AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded",
-            [new Attribute(_AttributeType, "date"), new Attribute('value', DateToday), new Attribute('min', DateToday)]
+        const AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded Date-Picker",
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday), new Attribute('min', DateToday)]
         );
         ColumnDate.appendChild(AppointmentDateLabel);
         ColumnDate.appendChild(AppointmentDate);
@@ -1706,7 +1706,7 @@ function AppointmentDetailsEditModal() {
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-success',
+        ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-primary',
             [
                 new Attribute(_AttributeOnClick, 'AppointmentUpdate()')
             ]
@@ -1718,6 +1718,7 @@ function AppointmentDetailsEditModal() {
 
         BindView(Container, Modal);
 
+        $('#TxtAppointmentUpdateDate').prop('type', 'date');
         $('#ModalForAppointmentDetailsEdit').modal('show');
     }
 }
@@ -2248,7 +2249,7 @@ function BranchAddOrUpdateModal() {
     this.Render = function (Container, BranchId, ProcessType) {
         // console.log('BranchAddOrUpdateModal:', BranchId, ProcessType);
 
-        const Modal = new Div("ModalForBranchUpdate", "modal");
+        const Modal = new Div("ModalForBranchAddOrUpdate", "modal");
         Modal.setAttribute('data-backdrop', 'static');
         Modal.setAttribute('data-keyboard', 'false');
 
