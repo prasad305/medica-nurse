@@ -1216,7 +1216,7 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
 
             ArrayBranchesSearchResultsData.push({
                 "Branch Name": Branch.Name,
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchDetailsView(' + Branch.Id + ')">' +
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>'
             });
@@ -1236,8 +1236,27 @@ function BranchNewAdd() {
 
 }
 
-function BranchDetailsView(BranchId) {
-    new BranchUpdateModal().Render(Containers.Footer, BranchId);
+function BranchAddOrUpdateModalView(BranchId) {
+    if (parseInt(BranchId) > 0) {
+        //update
+        new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'Update');
+        //pass data
+        $('#TxtBranchUpdateInstituteName').val(_NurseInstitute.Name);
+        const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
+        // console.log('BranchMatched:', BranchMatched);
+        $('#TxtBranchUpdateBranchName').val(BranchMatched.Name);
+        $('#TxtBranchUpdateEmail').val(BranchMatched.Email);
+        $('#TxtBranchUpdateWebsite').val(BranchMatched.Website);
+        $('#TxtBranchUpdateAddressLine1').val(BranchMatched.AddressLine1);
+        $('#TxtBranchUpdateAddressLine2').val(BranchMatched.AddressLine2);
+        $('#TxtBranchUpdatePostCode').val(BranchMatched.Postcode);
+        $('#TxtBranchUpdateSuburb').val(BranchMatched.Suburb);
+        $('#TxtBranchUpdateCity').val(BranchMatched.City);
+        $('#TxtBranchUpdateContactNo').val('');
+    } else {
+        //add new
+        new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'AddNew');
+    }
 }
 
 function BranchUpdate(BranchId) {

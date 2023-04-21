@@ -2230,7 +2230,7 @@ function BranchesSearchResultsTable() {
 
         const ColumnAddNewBranch = new Div(undefined, "col-md-6");
         const ButtonAddNewBranch = new Button(undefined, "Add A New Branch", "btn btn-primary btn-rounded float-right",
-            [new Attribute(_AttributeOnClick, "BranchNewAdd()")]);
+            [new Attribute(_AttributeOnClick, "BranchAddOrUpdateModalView('0')")]);
         ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
         ParentRow.appendChild(ColumnAddNewBranch);
 
@@ -2244,8 +2244,9 @@ function BranchesSearchResultsTable() {
     }
 }
 
-function BranchUpdateModal() {
-    this.Render = function (Container, BranchId) {
+function BranchAddOrUpdateModal() {
+    this.Render = function (Container, BranchId, ProcessType) {
+        // console.log('BranchAddOrUpdateModal:', BranchId, ProcessType);
 
         const Modal = new Div("ModalForBranchUpdate", "modal");
         Modal.setAttribute('data-backdrop', 'static');
@@ -2255,14 +2256,18 @@ function BranchUpdateModal() {
         const ModalDialogContent = new Div(undefined, "modal-content");
 
         const ModalContentHeader = new Div(undefined, "modal-header");
-        ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
+        if (ProcessType === 'AddNew') {
+            ModalContentHeader.appendChild(new Heading4("Add A New Branch", undefined));
+        } else {
+            ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
+        }
+        // ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
         ModalDialogContent.appendChild(ModalContentHeader);
 
         const ModalContentBody = new Div(undefined, "modal-body");
 
         const ParentRow = new Div(undefined, "row");
 
-        // console.log('_NurseInstitute:', _NurseInstitute);
         const ColumnInstitute = new Div(undefined, "col-sm-6 mt-2");
         const LabelInstitute = new Label(undefined, "Institute",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateInstituteName")]
@@ -2272,7 +2277,8 @@ function BranchUpdateModal() {
                 new Attribute(_AttributePattern, "[0-9]{20}"),
                 new Attribute(_AttributePlaceHolder, "Institute Name"),
                 new Attribute("disabled", true),
-                new Attribute("value", _NurseInstitute.Name)
+                // new Attribute("value", _NurseInstitute.Name)
+                new Attribute("value", '')
             ]
         );
         ColumnInstitute.appendChild(LabelInstitute);
@@ -2283,13 +2289,11 @@ function BranchUpdateModal() {
         const LabelBranch = new Label(undefined, "Branch",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateBranchName")]
         );
-        const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
-        // console.log('BranchMatched:', BranchMatched);
         const TextBranch = new Textbox("TxtBranchUpdateBranchName", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePattern, "[0-9]{20}"),
                 new Attribute(_AttributePlaceHolder, "Branch Name"),
-                new Attribute("value", BranchMatched.Name)
+                new Attribute("value", '')
             ]
         );
         ColumnBranch.appendChild(LabelBranch);
@@ -2304,7 +2308,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'Email'),
                 new Attribute(_AttributeType, 'email'),
-                new Attribute('value', BranchMatched.Email)
+                new Attribute('value', '')
             ]
         );
         ColumnEmail.appendChild(LabelEmail);
@@ -2319,7 +2323,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'Website'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.Website)
+                new Attribute('value', '')
             ]
         );
         ColumnWebsite.appendChild(LabelWebsite);
@@ -2334,7 +2338,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'Address Line 1'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.AddressLine1)
+                new Attribute('value', '')
             ]
         );
         ColumnAddressLine1.appendChild(LabelAddressLine1);
@@ -2349,7 +2353,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'Address Line 2'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.AddressLine2)
+                new Attribute('value', '')
             ]
         );
         ColumnAddressLine2.appendChild(LabelAddressLine2);
@@ -2365,7 +2369,7 @@ function BranchUpdateModal() {
                 new Attribute(_AttributePattern, "[0-9]{10}"),
                 new Attribute(_AttributePlaceHolder, 'Post Code'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.Postcode)
+                new Attribute('value', '')
             ]
         );
         ColumnPostCode.appendChild(LabelPostCode);
@@ -2380,7 +2384,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'Suburb'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.Suburb)
+                new Attribute('value', '')
             ]
         );
         ColumnSuburb.appendChild(LabelSuburb);
@@ -2395,7 +2399,7 @@ function BranchUpdateModal() {
             [
                 new Attribute(_AttributePlaceHolder, 'City'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.Suburb)
+                new Attribute('value', '')
             ]
         );
         ColumnCity.appendChild(LabelCity);
@@ -2411,7 +2415,7 @@ function BranchUpdateModal() {
                 new Attribute(_AttributePattern, "[0-9]{10}"),
                 new Attribute(_AttributePlaceHolder, 'Contact No'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', BranchMatched.Suburb)
+                new Attribute('value', '')
             ]
         );
         ColumnContactNo.appendChild(LabelContactNo);
@@ -2423,11 +2427,16 @@ function BranchUpdateModal() {
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
-            [
-                new Attribute(_AttributeOnClick, 'BranchUpdate(' + BranchMatched.Id + ')')
-            ]
-        ));
+        if (ProcessType === 'AddNew') {
+            ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
+                [new Attribute(_AttributeOnClick, 'BranchAddNew()')]
+            ));
+        } else {
+            ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
+                [new Attribute(_AttributeOnClick, 'BranchUpdate(' + BranchId + ')')]
+            ));
+        }
+
         ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);
