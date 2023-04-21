@@ -2278,8 +2278,7 @@ function BranchAddOrUpdateModal() {
                 new Attribute(_AttributePattern, "[0-9]{20}"),
                 new Attribute(_AttributePlaceHolder, "Institute Name"),
                 new Attribute("disabled", true),
-                // new Attribute("value", _NurseInstitute.Name)
-                new Attribute("value", '')
+                new Attribute("value", _NurseInstitute.Name)
             ]
         );
         ColumnInstitute.appendChild(LabelInstitute);
@@ -2445,7 +2444,7 @@ function BranchAddOrUpdateModal() {
 
         BindView(Container, Modal);
 
-        $('#ModalForBranchUpdate').modal('show');
+        $('#ModalForBranchAddOrUpdate').modal('show');
     }
 }
 

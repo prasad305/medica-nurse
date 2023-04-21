@@ -122,10 +122,12 @@ const ServiceMethods =
         DrugsPrescriptions: "PrescriptionRecord/PresciptionRcordDrugGet",
         ReadyPrescription: "AppointmentPrescriptionRecord/Update",
         InstituteBranch: "InstituteBranch/GetInstituteBranch",
+        InstituteBranchPost: "InstituteBranch/POST",
         InstituteBranchGet: "InstituteBranch/Get",
         GetNurse: "Nurse/Get",
         PatientInformationSave: "PatientDiagnosisDocument/Post",
-        GetInstitute: "Institute/GET"
+        GetInstitute: "Institute/GET",
+        AddressPost: "Address/POST",
     };
 
 const MessageTypes =
@@ -163,7 +165,8 @@ const Messages =
         ConnectingError: "An error occured while communicating with the server",
         NofileChoosen: "No file chosen, yet.",
         FileUploadFailed: "Upload Information Failed",
-        NoDataToDisplay: "No data to display"
+        NoDataToDisplay: "No data to display",
+        BranchSaveSuccess: "Branch Saved Successfully!"
     };
 
 const Images =

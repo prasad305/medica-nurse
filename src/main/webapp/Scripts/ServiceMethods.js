@@ -597,7 +597,7 @@ function AppointmentDetailsEdit(PatientId) {
 }
 
 function AppointmentsMatchingDropdownItemsSetSelected() {
-    console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
+    // console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
     $("#TxtAppointmentUpdateDoctor option[value='" + _AppointmentSelected.DoctorId + "']").prop("selected", true);
     $("#TxtAppointmentUpdateDoctorSession option[value='" + _AppointmentSelected.SessionId + "']").prop("selected", true);
 }
@@ -1231,16 +1231,12 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
 
 }
 
-function BranchNewAdd() {
-
-}
-
 function BranchAddOrUpdateModalView(BranchId) {
+    _BranchPayLoadToPost = {};
     if (parseInt(BranchId) > 0) {
         //update
         new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'Update');
         //pass data
-        $('#TxtBranchUpdateInstituteName').val(_NurseInstitute.Name);
         const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
         // console.log('BranchMatched:', BranchMatched);
         $('#TxtBranchUpdateBranchName').val(BranchMatched.Name);
@@ -1258,59 +1254,103 @@ function BranchAddOrUpdateModalView(BranchId) {
     }
 }
 
-function BranchUpdate(BranchId) {
+function BranchAddNew() {
     const Name = document.getElementById("TxtBranchUpdateBranchName").value.trim();
     const Address1 = document.getElementById("TxtBranchUpdateAddressLine1").value.trim();
     const Address2 = document.getElementById("TxtBranchUpdateAddressLine2").value.trim();
     const Suburb = document.getElementById("TxtBranchUpdateSuburb").value.trim();
     const City = document.getElementById("TxtBranchUpdateCity").value.trim();
-    const PostalCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
+    const PostCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
     const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
     const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
     const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
     const Status = 1;
-    const UserSaved = getCookie("UserId");
-    const InstituteId = 1;
+    const UserSavedId = getCookie("UserId");
+    const InstituteId = _NurseInstitute.InstituteId;
 
-    let PayLoad = new InstituteBranchSave(BranchId, InstituteId, Name, _AddressId, Email, Website, Numbers, Status, UserSaved);
-    console.log('BranchUpdate.PayLoad:', PayLoad);
+    const AddressPayLoad = new Address(0, Address1, Address2, Suburb, City, PostCode, 1, 2);
     // SaveAddress(Address1, Address2, Suburb, City, PostalCode, function () {
-    //     _Request.Post("InstituteBranch/POST", PayLoad, SuccessInstituteBranchSave);
+    //     // _Request.Post("InstituteBranch/POST", PayLoad, SuccessInstituteBranchSave);
+    //     _Request.Post(ServiceMethods.InstituteBranchPost, BranchPayLoad, SuccessInstituteBranchSave);
+    // });
+
+    _Request.Post(ServiceMethods.AddressPost, AddressPayLoad, function (Response) {
+        // console.log('AddressPost.Response:', Response);
+        if (Response.Data != null) {
+            const AddressSavedId = Response.Data.Id;
+            // console.log('AddressSavedId:', AddressSavedId);
+            const BranchPayLoad = new InstituteBranchSave(InstituteBranchId, InstituteId, Name, AddressSavedId, Email, Website, Numbers, Status, 2);
+            _Request.Post(ServiceMethods.InstituteBranchPost, BranchPayLoad, SuccessInstituteBranchSave);
+        } else {
+            return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+        }
+    });
+}
+
+function BranchUpdate(BranchId) {
+    console.log('BranchUpdate:', BranchId);
+    // const Name = document.getElementById("TxtBranchUpdateBranchName").value.trim();
+    // const Address1 = document.getElementById("TxtBranchUpdateAddressLine1").value.trim();
+    // const Address2 = document.getElementById("TxtBranchUpdateAddressLine2").value.trim();
+    // const Suburb = document.getElementById("TxtBranchUpdateSuburb").value.trim();
+    // const City = document.getElementById("TxtBranchUpdateCity").value.trim();
+    // const PostCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
+    // const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
+    // const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
+    // const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
+    // const Status = 1;
+    // const UserSavedId = getCookie("UserId");
+    // const InstituteId = _NurseInstitute.InstituteId;
+    //
+    // const AddressPayLoad = new Address(0, Address1, Address2, Suburb, City, PostCode, 1, UserSavedId);
+    // // SaveAddress(Address1, Address2, Suburb, City, PostalCode, function () {
+    // //     // _Request.Post("InstituteBranch/POST", PayLoad, SuccessInstituteBranchSave);
+    // //     _Request.Post(ServiceMethods.InstituteBranchPost, BranchPayLoad, SuccessInstituteBranchSave);
+    // // });
+    //
+    // let AddressSavedId = 0;
+    //
+    // _Request.Post(ServiceMethods.AddressPost, AddressPayLoad, function () {
+    //     if (Response.Status === 1000) {
+    //         console.log(Response.Data.Id);
+    //         AddressSavedId = Response.Data.Id;
+    //         if (parseInt(AddressSavedId) > 0) {
+    //             const BranchPayLoad = new InstituteBranchSave(InstituteBranchId, InstituteId, Name, AddressSavedId, Email, Website, Numbers, Status, UserSavedId);
+    //             _Request.Post(ServiceMethods.InstituteBranchPost, BranchPayLoad, SuccessInstituteBranchSave);
+    //         }
+    //     } else {
+    //         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    //     }
     // });
 }
 
 function SaveAddress(Address1, Address2, Suburb, City, Postcode, func) {
     let AddressId = 0;
     let Entity = new Address(0, Address1, Address2, Suburb, City, Postcode, 1, getCookie("UserId"));
-    // console.log(Entity);
-    _Request.Post("Address/POST", Entity,
+    // _Request.Post("Address/POST", Entity,
+    _Request.Post(ServiceMethods.AddressPost, Entity,
         function (Response) {
-            console.log(Response.Data);
             if (Response.Status === 1000) {
                 AddressId = Response.Data.Id;
                 console.log(AddressId);
                 _AddressId = AddressId;
-                func();
+                if (parseInt(_AddressId) !== 0) {
+                    func();
+                }
             } else {
-                alert(Response.Message);
-                // PopUpCustomAlerts("Error !", Response.Message, 'error');
+                return ShowMessage(Messages.Message, MessageTypes.Warning, "Warning!");
             }
         });
 }
 
 function SuccessInstituteBranchSave(Response) {
     if (Response.Status === 1000) {
-        // PopUpCustomAlertsWithClass("Success !", "Institute Branch Added Successfully !", 'success', 'btn-green');
-        // CmdSearchInstituteBranch();
-        $('#modalBranch').modal('hide');
+        $('#ModalForBranchAddOrUpdate').modal('hide');
+        AllBranchesOfTheInstituteGet();
+        return ShowMessage(Messages.BranchSaveSuccess, MessageTypes.Success, "Success!");
     } else {
-        // PopUpCustomAlerts("Error !", Response.Message, 'error');
+        return ShowMessage(Messages.Message, MessageTypes.Warning, "Warning!");
     }
-    ClearInstituteBranchId();
-}
-
-function ClearInstituteBranchId() {
-    InstituteBranchId = 0;
 }
 
 function BranchWardAdd(BranchId) {
