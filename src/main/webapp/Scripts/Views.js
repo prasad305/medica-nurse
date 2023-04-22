@@ -2247,7 +2247,7 @@ function BranchesSearchResultsTable() {
 
 function BranchAddOrUpdateModal() {
     this.Render = function (Container, BranchId, ProcessType) {
-        // console.log('BranchAddOrUpdateModal:', BranchId, ProcessType);
+        // console.log('BranchAddOrUpdateModal:', Container, BranchId, ProcessType);
 
         const Modal = new Div("ModalForBranchAddOrUpdate", "modal");
         Modal.setAttribute('data-backdrop', 'static');
@@ -2429,11 +2429,11 @@ function BranchAddOrUpdateModal() {
         ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
         if (ProcessType === 'AddNew') {
             ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
-                [new Attribute(_AttributeOnClick, 'BranchAddNew()')]
+                [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate("0")')]
             ));
         } else {
             ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
-                [new Attribute(_AttributeOnClick, 'BranchUpdate(' + BranchId + ')')]
+                [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate(' + BranchId + ')')]
             ));
         }
 
