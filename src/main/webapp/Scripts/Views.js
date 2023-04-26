@@ -1596,7 +1596,7 @@ function AppointmentDetailsEditModal() {
         //---- row 01
 
         const FormRowOne = new Div(undefined, "form-group row");
-        const ColumnPatientName = new Div(undefined, "col-sm-6 text-left");
+        const ColumnPatientName = new Div(undefined, "col-sm-5 text-left");
         const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdatePatientName")]
         );
@@ -1614,7 +1614,7 @@ function AppointmentDetailsEditModal() {
         // RowOneColumnOne.appendChild(AppointmentPatientId);
         FormRowOne.appendChild(ColumnPatientName);
 
-        const ColumnAppointmentId = new Div(undefined, "col-sm-6 text-left");
+        const ColumnAppointmentId = new Div(undefined, "col-sm-5 text-left");
         const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateAppointmentNo")]
         );
@@ -1627,7 +1627,7 @@ function AppointmentDetailsEditModal() {
 
         //---- row 02
 
-        const ColumnDoctor = new Div(undefined, "col-sm-4 text-left mt-2");
+        const ColumnDoctor = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDoctorLabel = new Label(undefined, "Doctor",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctor")]
         );
@@ -1643,26 +1643,31 @@ function AppointmentDetailsEditModal() {
         // ));
         ColumnDoctor.appendChild(AppointmentDoctorLabel);
         ColumnDoctor.appendChild(AppointmentDoctorSelect);
-        FormRowOne.appendChild(ColumnDoctor);
+
 
         const ColumnDoctorEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
         const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded ml-auto mt-auto',
             [new Attribute(_AttributeOnClick, 'AppointmentDoctorChangeEnable()')]
         );
         ColumnDoctorEnable.appendChild(AppointmentDoctorEnable);
-        FormRowOne.appendChild(ColumnDoctorEnable);
 
-        const ColumnDate = new Div(undefined, "col-sm-6 text-left mt-2");
+
+        const ColumnDate = new Div(undefined, "col-sm-5 text-left mt-2");
+        const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDateLabel = new Label(undefined, "Date",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
         );
         const DateToday = new Date().toISOString().slice(0, 10);
         const AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday), new Attribute('min', DateToday)]
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday),
+                new Attribute('min', DateToday),
+                new Attribute(_AttributeOnChange, 'GetDoctorsSessionsForAppointmentUpdate()')]
         );
         ColumnDate.appendChild(AppointmentDateLabel);
         ColumnDate.appendChild(AppointmentDate);
         FormRowOne.appendChild(ColumnDate);
+        FormRowOne.appendChild(ColumnDoctor);
+        FormRowOne.appendChild(ColumnDoctorEnable);//button
 
         // const ColumnDateEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
         // const AppointmentDateEnable = new Button('BtnAppointmentDateEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
@@ -1673,7 +1678,7 @@ function AppointmentDetailsEditModal() {
 
         //---- row 03
 
-        const ColumnTime = new Div(undefined, "col-sm-6 text-left mt-2");
+        const ColumnTime = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDoctorSessionLabel = new Label(undefined, "Session",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
         );
@@ -1688,6 +1693,7 @@ function AppointmentDetailsEditModal() {
         ));
         ColumnTime.appendChild(AppointmentDoctorSessionLabel);
         ColumnTime.appendChild(AppointmentDoctorSession);
+        FormRowOne.appendChild(ColumnEmpty);
         FormRowOne.appendChild(ColumnTime);
 
         // const ColumnTimeEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
@@ -1708,7 +1714,8 @@ function AppointmentDetailsEditModal() {
         ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
         ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-primary',
             [
-                new Attribute(_AttributeOnClick, 'AppointmentUpdate()')
+                new Attribute(_AttributeOnClick, 'AppointmentUpdate()'),
+                new Attribute('disabled', 'true')
             ]
         ));
         ModalDialogContent.appendChild(ModalContentFooter);

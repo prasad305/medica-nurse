@@ -480,6 +480,7 @@ function SavePatientAnalytics() {
 function AppointmentDoctorChangeEnable() {
     $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctor').prop('disabled', false);
     $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctorSession').prop('disabled', false);
+    $('#BtnUpdateAppointment').prop('disabled', false);
 }
 
 function AppointmentDateChangeEnable() {
@@ -497,14 +498,50 @@ function AppointmentUpdate() {
     const DoctorId = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDoctor').val();
     const Date = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateDate').val();
     const Time = $('#ModalForAppointmentDetailsEdit #TxtAppointmentUpdateTime').val();
-    const JsonObject = {
-        PatientId: PatientId,
-        AppointmentNo: AppointmentNo,
-        DoctorId: DoctorId,
-        Date: Date,
-        Time: Time
-    };
-    console.log('AppointmentUpdate.JsonObject:', JsonObject);
+
+    let val = $('#TxtAppointmentUpdateDoctorSession').val();
+
+    selectedRowSessionId = parseInt(val);
+    console.log(selectedRowSessionId.isNuN);
+    if(isNaN(selectedRowSessionId)){
+        return ShowMessage("Please Select Session", MessageTypes.Warning, "Warning!");
+    }else {
+        let Entity = new DoctorChannelingStatus(selectedRowAppointmentId, selectedRowSessionId, selectedRowPatientId, "Cancel Appointment",
+            "cancelled", 0)
+
+        _Request.Post(ServiceMethods.ChanalingStatusSave, Entity, DoctorChannelingStatusUpdate_Success);
+
+
+        //next appoinment
+
+        _Request.Post(ServiceMethods.NextAppoinment, new SessionId(selectedRowSessionId), function (Res) {
+
+            _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0,
+                parseInt(Res.Data.Number),
+                selectedRowSessionId,
+                selectedRowPatientId, null,
+                1, _UserId)
+                , SaveAppointment_Success_Update);
+        });
+    }
+
+
+
+
+    // console.log('AppointmentUpdate.JsonObject:', JsonObject);
+}
+
+function SaveAppointment_Success_Update(Response) {
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+        CmdAppoinments_Click();
+        return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
+    }
+}
+
+function DoctorChannelingStatusUpdate_Success(Response)
+{
+    if (Response.Status != 1000)
+        return;
 }
 
 /*=================================

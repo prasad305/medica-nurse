@@ -127,6 +127,7 @@ const ServiceMethods =
         PatientInformationSave: "PatientDiagnosisDocument/Post",
         GetInstitute: "Institute/GET",
         AddressPost: "Address/POST",
+        ChanalingStatusSave: "DoctorChanalingStatus/Save",
     };
 
 const MessageTypes =

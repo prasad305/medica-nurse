@@ -254,3 +254,13 @@ function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status,
     this.Status = Status;
     this.UserSaved = UserSaved;
 }
+
+function DoctorChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id)
+{
+    this.AppointmentId = AppointmentId;
+    this.SessionId = SessionId;
+    this.PatientId = PatientId;
+    this.DoctorStatus = DoctorStatus;
+    this.ChanalingStatus = ChannelingStatus;
+    this.Id = Id;
+}

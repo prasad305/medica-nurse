@@ -5,6 +5,9 @@
 //Variables
 let DataLength;
 let LoopCount = 0;
+let selectedRowSessionId = 0;
+let selectedRowAppointmentId = 0;
+let selectedRowPatientId = 0;
 
 function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
@@ -491,12 +494,12 @@ function FilterAppointedPatientData(Data) {
 
         if (ChannelingStatusOriginal.includes('unsuccessful')) {
             ChannelingStatus = 'Unsuccessful';
-
         } else if (ChannelingStatusOriginal.includes('successful')) {
             ChannelingStatus = 'Successful';
-
         } else if (ChannelingStatusOriginal.includes('pending')) {
             ChannelingStatus = 'Pending';
+        } else if(ChannelingStatusOriginal.includes('cancelled')){
+            ChannelingStatus = 'Cancelled';
         }
 
         // console.log(ChannelingStatusOriginal, ChannelingStatus);
@@ -520,14 +523,14 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ','+Data[Count].SessionId+','+Data[Count].PatientId+')">' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' +
                     '</button>'
             });
 
@@ -583,9 +586,12 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(PatientId) {
+function AppointmentDetailsEdit(AppointmentId,SessionId,PatientId) {
     _AppointmentSelected = {};
-    new AppointmentDetailsEditModal().Render(Containers.Footer, PatientId);
+    selectedRowSessionId = SessionId;
+    selectedRowAppointmentId = AppointmentId;
+    selectedRowPatientId = PatientId;
+    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
