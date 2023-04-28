@@ -83,6 +83,7 @@ let _NurseLoggedIn = {};
 let _NurseBranch = {};
 let _NurseInstitute = {};
 let _ArrayAllInstitutes = [];
+//
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
