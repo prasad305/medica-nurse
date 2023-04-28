@@ -80,7 +80,9 @@ var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
 let _NurseLoggedIn = {};
+let _NurseBranch = {};
 let _NurseInstitute = {};
+let _ArrayAllInstitutes = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
