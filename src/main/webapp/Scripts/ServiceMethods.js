@@ -8,6 +8,10 @@ let LoopCount = 0;
 let selectedRowSessionId = 0;
 let selectedRowAppointmentId = 0;
 let selectedRowPatientId = 0;
+let DoctorContactIdArr =  [0 , 0];
+let DoctorSpecializationId = 0;
+let DoctorSpecializationDrpId = 0;
+let DoctorQualificationId = 0;
 
 function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
@@ -1303,4 +1307,13 @@ function SuccessInstituteBranchSave(Response) {
 
 function BranchWardAdd(BranchId) {
 
+}
+
+//doctor
+
+function EditPassword() {
+    $('#TxtDoctorConfirm_Password').show();
+    $('#LblDoctorConfirm_Password').show();
+    $('#TxtDoctorUser_Name').prop('disabled',false);
+    $('#TxtDoctorPassword').prop('disabled',false);
 }

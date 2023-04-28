@@ -2472,12 +2472,222 @@ function Doctors() {
 
         RowOneColumnOne.appendChild(new Label(undefined, "Doctors", undefined, undefined));
 
+
         RowOne.appendChild(RowOneColumnOne);
         CardBody.appendChild(RowOne);
 
         Card.appendChild(CardBody);
 
         BindView(Container, Card);
+
+        new DoctorSearch().Render(Containers.MainContent)
+    }
+}
+function DoctorSearch() {
+    this.Render = function (Container) {
+        let CardAddAppoinment = new Div(undefined, "card text-left");
+        let CardBodyAddAppoinment = new Div(undefined, "card-body");
+
+        CardBodyAddAppoinment.appendChild(new Heading4("Doctors", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]));
+
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetails")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
+
+
+
+        let DoctorSearchRow = new Div("DoctorSearchRow", "row");
+        let SearchColumnOne = new Div(undefined, "col-lg-12 text-center");
+        DoctorSearchRow.appendChild(SearchColumnOne);
+        CardBodyAddAppoinment.appendChild(DoctorSearchRow);
+
+        let FormAppoinments = new Form(undefined);
+        let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
+
+        let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
+        let LabelAppoinment = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorByBranch()")]);
+        SelectBranch.appendChild(new SelectItem("Select Branch", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        DivFormRowDoctor.appendChild(LabelAppoinment);
+        DivFormRowDoctor.appendChild(SelectBranch);
+        FormRow0Appoinment.appendChild(DivFormRowDoctor);
+
+        let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
+        let ButtonPatientSearch = new Button("DoctorBranchSearchButton", "Search", "btn btn-primary btn-rounded w-100 mt-auto",
+            [new Attribute(_AttributeOnClick, "DoctorBranch_Search()")]);
+
+        DivFormRowSearch.appendChild(ButtonPatientSearch);
+        FormRow0Appoinment.appendChild(DivFormRowSearch);
+
+        FormAppoinments.appendChild(FormRow0Appoinment);
+        SearchColumnOne.appendChild(FormAppoinments);
+
+        let AppointmentSearchResultsRow = new Div("DoctorsSearchResults", "");
+        AppointmentSearchResultsRow.appendChild(new Div("DivDoctorTable", "col-lg-12"));
+        CardBodyAddAppoinment.appendChild(AppointmentSearchResultsRow);
+
+        CardAddAppoinment.appendChild(CardBodyAddAppoinment);
+
+        BindView(Container, CardAddAppoinment);
+
+    }
+}
+function DoctorsSearchResultsTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ["Doctor Name", "Action"];
+
+        let ParentRow = new Div(undefined, "row");
+
+        let ColumnTableTitle = new Div(undefined, "col-md-12");
+        let Heading = new Heading5("All Doctors", undefined);
+        ColumnTableTitle.appendChild(Heading);
+        ParentRow.appendChild(ColumnTableTitle);
+
+        const ColumnAddNewBranch = new Div(undefined, "col-md-12");
+        const ButtonAddNewBranch = new Button(undefined, "Add A New Doctors", "btn btn-primary btn-rounded float-right",
+            [new Attribute(_AttributeOnClick, "DoctorAddOrUpdateModalView()")]);
+        ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
+        ParentRow.appendChild(ColumnAddNewBranch);
+
+        const ColumnTable = new Div(undefined, "col-md-12 mt-2");
+        let DivTableBranchesSearchResults = new Div(undefined, "table-responsive");
+        DivTableBranchesSearchResults.appendChild(new TableView("TableDoctorsSearchResults", "table table-striped", Headers, Data, undefined));
+        ColumnTable.appendChild(DivTableBranchesSearchResults);
+        ParentRow.appendChild(ColumnTable);
+
+        BindView(Container, ParentRow);
+    }
+}
+
+function DoctorsAddOrUpdateModal() {
+    this.Render = function (Container, dotcorId, ProcessType) {
+        // console.log('BranchAddOrUpdateModal:', Container, BranchId, ProcessType);
+
+        const Modal = new Div("ModalForBranchAddOrUpdate", "modal");
+        Modal.setAttribute('data-backdrop', 'static');
+        Modal.setAttribute('data-keyboard', 'false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        if (ProcessType === 'AddNew') {
+            ModalContentHeader.appendChild(new Heading4("Add A New Doctor", undefined));
+        } else {
+            ModalContentHeader.appendChild(new Heading4("Update Doctor", undefined));
+        }
+        // ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const ParentRow = new Div(undefined, "row");
+
+        let data = [];
+        data.push(new SelectItem("Select Title", "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Dr.", "Dr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Prof.", "Prof", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mr.", "Mr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mrs.", "Mrs", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Miss.", "Miss", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Rev.", "Rev", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+
+        DropDown("col-sm-3  mt-2","Doctor","Title","",data,ParentRow);
+
+        LableAndTextFeild("col-sm-9","Doctor","First Name","First Name","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Middle Name","Middle Name","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Last Name","Last Name","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Contact No.","Contact No.","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Phone No.","Phone No.","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Email","Email","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","N.I.C","N.I.C","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Registration Number","Registration Number","","",ParentRow);
+        LableAndTextFeild("col-sm-6","Doctor","Date Of Birth","Date Of Birth","","",ParentRow,"date");
+
+        DropDown("col-sm-6  mt-2","Doctor","Specialization","",undefined,ParentRow);
+        DropDown("col-sm-6  mt-2","Doctor","Qualifications","",undefined,ParentRow);
+
+
+        ModalContentBody.appendChild(ParentRow);
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        if (ProcessType === 'AddNew') {
+            ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
+                [new Attribute(_AttributeOnClick, 'AddOrUpdateDoctor()')]
+            ));
+        } else {
+            ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
+                [new Attribute(_AttributeOnClick, 'AddOrUpdateDoctor(' + dotcorId + ')')]
+            ));
+        }
+
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        $('#TxtDoctorDate_Of_Birth').prop('type','date');
+        $('#ModalForBranchAddOrUpdate').modal('show');
+    }
+}
+
+function DoctorsLoginModal() {
+    this.Render = function (Container, dotcorId) {
+        // console.log('BranchAddOrUpdateModal:', Container, BranchId, ProcessType);
+
+        const Modal = new Div("ModalDoctorsLogin", "modal");
+        Modal.setAttribute('data-backdrop', 'static');
+        Modal.setAttribute('data-keyboard', 'false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+
+        ModalContentHeader.appendChild(new Heading4("Login Details", undefined));
+
+        // ModalContentHeader.appendChild(new Heading4("Update Branch", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const ParentRow = new Div(undefined, "row");
+
+        LableAndTextFeild("col-sm-12","Doctor","User Name","User Name","","",ParentRow);
+        LableAndTextFeild("col-sm-12","Doctor","Password","Password","","",ParentRow);
+
+        LableAndTextFeild("col-sm-12","Doctor","Confirm Password","Confirm Password","","",ParentRow);
+
+        ModalContentBody.appendChild(ParentRow);
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Edit', 'btn btn-primary',
+            [new Attribute(_AttributeOnClick, 'EditPassword()')]));
+        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnChangeDoctorPassword', 'Save', 'btn btn-primary',
+            [new Attribute(_AttributeOnClick, 'ChangeDoctorPassword(' + dotcorId + ')')]
+        ));
+
+
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        $('#TxtDoctorUser_Name').prop('disabled',true);
+        $('#TxtDoctorPassword').prop('disabled',true);
+
+        $('#TxtDoctorConfirm_Password').hide();
+        $('#LblDoctorConfirm_Password').hide();
+        $('#ModalDoctorsLogin').modal('show');
     }
 }
 
@@ -2531,5 +2741,48 @@ function Misc() {
 
         BindView(Container, Card);
     }
+}
+
+function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,type){
+    const ColumnBranch = new Div(undefined, classCol+" mt-2");
+    const LabelBranch = new Label("Lbl"+id+lbl.replaceAll(" ","_").replaceAll(".",""), lbl,
+        [new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""))]
+    );
+
+    var att = [];
+    att.push(new Attribute(_AttributePattern, pattern));
+    att.push(new Attribute(_AttributePlaceHolder, placeHolder));
+    att.push(new Attribute("value", value));
+
+    console.log(type);
+    if (type == "date") {
+        att.push(new Attribute(_AttributeType, 'date'));
+    }
+    const TextBranch = new Textbox("Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""),
+        "form-control form-control-rounded",
+        att
+    );
+    ColumnBranch.appendChild(LabelBranch);
+    ColumnBranch.appendChild(TextBranch);
+    ParentRow.appendChild(ColumnBranch);
+}
+function DropDown(classCol,id,lbl,functionExec,customOptions,ParentRow){
+
+    let DivFormRowDoctor = new Div(undefined, classCol);
+    let LabelAppoinment = new Label(undefined, "Select "+lbl, [new Attribute(_AttributeClass, "col-form-label"),
+        new Attribute(_AttributeFor, "Drp"+lbl.replaceAll(" ","_").replaceAll(".",""))]);
+    let SelectBranch = new Select("Drp"+lbl.replaceAll(" ","_").replaceAll(".",""), [new Attribute(_AttributeClass,
+        "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, functionExec)]);
+    SelectBranch.appendChild(
+        new SelectItem("Select "+lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+
+    if(customOptions){
+        customOptions.forEach((currentElement) => {  SelectBranch.appendChild(currentElement); })
+    }
+    DivFormRowDoctor.appendChild(LabelAppoinment);
+    DivFormRowDoctor.appendChild(SelectBranch);
+    ParentRow.appendChild(DivFormRowDoctor);
+
 }
 

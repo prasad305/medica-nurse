@@ -898,6 +898,7 @@ function GetBranchData() {
 
 function Doctors_Click() {
     new Doctors().Render(Containers.MainContent);
+    SetBranchData('DrpBranch');
 }
 
 /*=================================
@@ -914,4 +915,294 @@ function Reports_Click() {
 
 function Misc_Click() {
     new Misc().Render(Containers.MainContent);
+}
+
+
+//doctor
+
+function DoctorBranch_Search(){
+    let id = $('#DrpBranch').val();
+    if(id=="0"){
+        return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
+    }
+    LoadAllDoctorsForBranch(id);
+}
+
+function GetDoctorByBranch(){
+
+}
+
+function LoadAllDoctorsForBranch(Branch)
+{
+    let Payload = new GetDoctorsByInstituteBranchId(Branch);
+    _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, SuccessLoadDoctors);
+}
+
+let ttlDoctors = 0;
+let curDoctor = 0;
+let AllDoctor=[];
+function SuccessLoadDoctors(Response)
+{
+    ttlDoctors=0;
+    curDoctor=0;
+    AllDoctor=[];
+    if (Response.Status === 1000)
+    {
+        ttlDoctors = Response.Data.length;
+        if(ttlDoctors==0){
+            doctorTblData(AllDoctor);
+        }
+        Response.Data.forEach(function (Doctor)
+        {
+            _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, LoadDoctorToTable);
+        });
+    }
+
+}
+
+
+function LoadDoctorToTable(Res){
+    curDoctor++;
+    AllDoctor.push(Res.Data);
+    if(curDoctor===ttlDoctors){
+        console.log(AllDoctor);
+        doctorTblData(AllDoctor);
+    }
+}
+
+function doctorTblData(Response){
+    //reset flag
+    const ArrayDoctorSearchResultsData = [];
+    if (Response.length > 0) {
+        let Doctor = {};
+        for (let Count = 0; Count < Response.length; Count++) {
+            Doctor = Response[Count];
+
+            ArrayDoctorSearchResultsData.push({
+                "Doctor Name": Doctor.Title+' '+Doctor.FirstName+' '+Doctor.LastName,
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView('+Count+',' + Doctor.Id + ')">' +
+                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                    '</button>'+
+                    // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
+                    // '<i class="nav-icon i-Close-Window"></i></button>' +
+                    '<button class="btn btn-primary" style="margin-left: 1rem" type="button" id="6" data-toggle="modal" ' +
+                    'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
+            });
+        }
+    }
+
+    new DoctorsSearchResultsTable().Render('DoctorsSearchResults', ArrayDoctorSearchResultsData);
+}
+
+
+function SetBranchData(Id) {
+    // console.log('SetDoctorData.Id:', Id);
+    let Count;
+    let DataLength = _ArrayAllBranchesOfTheInstituteResultsData.length;
+    //all doctors - as the first option
+    for (Count = 0; Count < DataLength; Count++) {
+        $('#' + Id).append('<option value="' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Id + '">' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Name + '</option>');
+    }
+}
+
+function DoctorLoginModalShow(Id) {
+
+    new DoctorsLoginModal().Render(Containers.Footer,Id);
+}
+
+let _SelectedDoctor;
+function DoctorAddOrUpdateModalView(index,id) {
+    if(id){
+        _SelectedDoctor = AllDoctor[index];
+        new DoctorsAddOrUpdateModal().Render(Containers.Footer, id, 'Update');
+
+        $("#DrpTitle").val(_SelectedDoctor.Title);
+        $("#TxtDoctorFirst_Name").val(_SelectedDoctor.FirstName);
+        $("#TxtDoctorMiddle_Name").val(_SelectedDoctor.MiddleName);
+        $("#TxtDoctorLast_Name").val(_SelectedDoctor.LastName);
+        $("#TxtDoctorEmail").val(_SelectedDoctor.Email);
+        $("#TxtDoctorNIC").val(_SelectedDoctor.NIC);
+        $("#TxtDoctorRegistration_Number").val(_SelectedDoctor.RegistrationNumber);
+        $("#TxtDoctorDate_Of_Birth").val((_SelectedDoctor.DateOfBirth).substring(0,10));
+
+        let Payload = new DoctorSpecialization(undefined,_SelectedDoctor.Id,undefined,undefined,_UserId);
+        _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp){
+            DoctorSpecializationId = ResponseSp.Data[0].Id
+            DoctorSpecializationDrpId = ResponseSp.Data[0].SpecializationId
+            _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
+        });
+        _Request.Post("DoctorQualification/Get", Payload, function (ResponseQa){
+            DoctorQualificationId = ResponseQa.Data[0].Id
+            _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
+        });
+        _Request.Post("DoctorContactNumber/GetContactNumber", Payload,function (Response){
+            if (Response.Status === 1000) {
+                if(Response.Data.length==2){
+                    DoctorContactIdArr = [Response.Data[0].Id, Response.Data[1].Id]
+                    $("#TxtDoctorContact_No").val(Response.Data[0].ContactNumber);
+                    $("#TxtDoctorPhone_No").val(Response.Data[1].ContactNumber);
+                }
+            }
+        });
+    }else{
+        new DoctorsAddOrUpdateModal().Render(Containers.Footer, "BranchId", 'AddNew');
+        _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
+        _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
+    }
+
+
+}
+
+function AddOrUpdateDoctor(id) {
+    makeCustomHeader(_UserIdAdmin);
+    if(!id){
+        id = 0;
+    }
+
+    let Title = $("#DrpTitle").val();
+    let FirstName = $("#TxtDoctorFirst_Name").val();
+    let MiddleName = $("#TxtDoctorMiddle_Name").val();
+    let LastName = $("#TxtDoctorLast_Name").val();
+    let Contact1 = $("#TxtDoctorContact_No").val();
+    let Contact2 = $("#TxtDoctorPhone_No").val();
+    let Email = $("#TxtDoctorEmail").val();
+    let NIC = $("#TxtDoctorNIC").val();
+    let RegNumber = $("#TxtDoctorRegistration_Number").val();
+    let DOB = $("#TxtDoctorDate_Of_Birth").val();
+
+
+    let ContactList=[];
+
+    ContactList.push( new ContactNumbers(DoctorContactIdArr[0]== 0 ? 0 : DoctorContactIdArr[0],Contact1,0));
+
+    if(Contact2 != "" )
+        ContactList.push(new ContactNumbers(DoctorContactIdArr[1]==0 ? 0 : DoctorContactIdArr[1], Contact2,0))
+
+
+    let Payload = new DoctorSave(id,Title,FirstName,MiddleName,LastName,Email,NIC,1,
+        _UserIdAdmin,RegNumber,DOB,undefined,ContactList);
+
+    _Request.Post("doctor/post", Payload, SuccessSaveDoctorDetails);
+
+    DoctorContactIdArr =[0 ,0];
+
+}
+
+function SpecializationGetSuccess(Response){
+    console.log(Response)
+    if (Response.Status !== 1000){}
+    else
+    {
+        let max = Response.Data.length;
+        for (let i = 0; i<max; i++){
+            let opt = document.createElement('option');
+            opt.value = Response.Data[i].Id;
+            opt.innerHTML = Response.Data[i].Name;
+            $('#DrpSpecialization').append(opt);
+        }
+        $('#DrpSpecialization').val(DoctorSpecializationDrpId);
+    }
+}
+function QualificationGetSuccess(Response){
+
+    if (Response.Status !== 1000){}
+    else
+    {
+        let max = Response.Data.length;
+        for (let i = 0; i<max; i++){
+            let opt = document.createElement('option');
+            opt.value = Response.Data[i].Id;
+            opt.innerHTML = Response.Data[i].Name;
+            $('#DrpQualifications').append(opt);
+        }
+        $('#DrpQualifications').val(DoctorQualificationId);
+    }
+}
+
+function SuccessSaveDoctorDetails(Response)
+{
+    if (Response.Status !== 1000) {
+        makeCustomHeader(_UserId);
+        ShowMessage("Error !", MessageTypes.Error, "Error!");
+
+    } else {
+        let PayLoad = new DoctorBranch($('#DrpBranch').val(),Response.Data.Id,1,_UserIdAdmin);
+        _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
+        });
+
+        //create Doctor Specialization object
+        let selectedSpecialization = $("#DrpSpecialization").val();
+        let PayloadSp = new DoctorSpecialization(DoctorSpecializationId == 0 ? 0 : DoctorSpecializationId,Response.Data.Id,selectedSpecialization,1,_UserIdAdmin);
+        _Request.Post("DoctorSpecialization/Post", PayloadSp, SuccessSaveNewSpecialization);
+        DoctorSpecializationId = 0;
+
+        //create Doctor Qualification object
+        let selectedQualification =  $("#DrpQualifications").val();
+        let PayloadQu = new DoctorQualification(DoctorQualificationId == 0 ? 0 : DoctorQualificationId,Response.Data.Id,selectedQualification,1,_UserIdAdmin);
+        _Request.Post("DoctorQualification/Save", PayloadQu, SuccessSaveNewQualificationtest);
+        DoctorQualificationId = 0;
+    }
+}
+
+function SuccessSaveNewSpecialization(Response) {
+    if (Response.Status !== 1000){
+
+        makeCustomHeader(_UserId);
+        ShowMessage("Error !", MessageTypes.Error, "Error!");
+    }
+}
+
+function SuccessSaveNewQualificationtest(Response)
+{
+    makeCustomHeader(_UserId);
+    DoctorBranch_Search();
+    $('#ModalForBranchAddOrUpdate').modal('hide');
+    ShowMessage("Doctor Saved Successfully !", MessageTypes.Success, "Success !");
+
+}
+
+var SelectedDoctor;
+
+function ChangeDoctorPassword(doctorId) {
+
+    SelectedDoctor = doctorId;
+
+    let UserName = document.getElementById("TxtDoctorUser_Name").value;
+    let Password = document.getElementById("TxtDoctorPassword").value;
+    let ConfirmPassword= document.getElementById("TxtDoctorConfirm_Password").value;
+
+    if(!(Password===ConfirmPassword)){
+        ShowMessage("Please check your password", MessageTypes.Error, "Error !");
+        return;
+    }
+
+    makeCustomHeader(_UserIdAdmin);
+
+    let Payload = new User(0,UserName,Password,3,1,SelectedDoctor,undefined);
+    _Request.Post("User/Post", Payload, SuccessSaveUserLoginDetails);
+}
+
+function SuccessSaveUserLoginDetails(Response){
+
+    if (Response.Status !== 1000){
+        makeCustomHeader(_UserId);
+        ShowMessage("Error", MessageTypes.Error, "Error !");
+    }
+    else
+    {
+        let Payload = new DoctorUser(0,Response.Data.Id,parseInt(SelectedDoctor),SelectedDoctor);   //Error in DoctorId
+        _Request.Post("UserDoctor/Save", Payload, SuccessSaveDoctorUserLoginDetails);
+    }
+}
+function SuccessSaveDoctorUserLoginDetails(Response)
+{
+    makeCustomHeader(_UserId);
+    if (Response.Status !== 1000)
+
+        ShowMessage("Error", MessageTypes.Error, "Error !");
+    else
+    {
+        $('#ModalDoctorsLogin').modal('hide');
+        ShowMessage("Doctor Login Details Saved Successfully !", MessageTypes.Success, "Success !");
+    }
 }
