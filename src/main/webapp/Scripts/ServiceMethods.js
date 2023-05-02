@@ -5,6 +5,13 @@
 //Variables
 let DataLength;
 let LoopCount = 0;
+let selectedRowSessionId = 0;
+let selectedRowAppointmentId = 0;
+let selectedRowPatientId = 0;
+let DoctorContactIdArr =  [0 , 0];
+let DoctorSpecializationId = 0;
+let DoctorSpecializationDrpId = 0;
+let DoctorQualificationId = 0;
 
 function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
@@ -508,12 +515,12 @@ function FilterAppointedPatientData(Data) {
 
         if (ChannelingStatusOriginal.includes('unsuccessful')) {
             ChannelingStatus = 'Unsuccessful';
-
         } else if (ChannelingStatusOriginal.includes('successful')) {
             ChannelingStatus = 'Successful';
-
         } else if (ChannelingStatusOriginal.includes('pending')) {
             ChannelingStatus = 'Pending';
+        } else if(ChannelingStatusOriginal.includes('cancelled')){
+            ChannelingStatus = 'Cancelled';
         }
 
         // console.log(ChannelingStatusOriginal, ChannelingStatus);
@@ -537,14 +544,14 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ','+Data[Count].SessionId+','+Data[Count].PatientId+')">' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Upload"></i></span>' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
+                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' +
                     '</button>'
             });
 
@@ -600,9 +607,12 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(PatientId) {
+function AppointmentDetailsEdit(AppointmentId,SessionId,PatientId) {
     _AppointmentSelected = {};
-    new AppointmentDetailsEditModal().Render(Containers.Footer, PatientId);
+    selectedRowSessionId = SessionId;
+    selectedRowAppointmentId = AppointmentId;
+    selectedRowPatientId = PatientId;
+    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
@@ -1302,49 +1312,74 @@ function BranchWardAdd(BranchId) {
 
 }
 
-/*=================================
-		   Reports Methods
- =================================*/
+//doctor
 
-function ReportsTestTableDisplay() {
-    let People = [
+function EditPassword() {
+    $('#TxtDoctorConfirm_Password').show();
+    $('#LblDoctorConfirm_Password').show();
+    $('#TxtDoctorUser_Name').prop('disabled',false);
+    $('#TxtDoctorPassword').prop('disabled',false);
+}
+
+
+//report
+
+function DownloadReport()
+{
+
+    let doctor = $('#DrpDoctor').val();
+    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+
+    makeCustomHeader(_UserIdAdmin);
+    _Request.Post("PrescriptionRecord/GetPrescriptionRecord",new NewDailyCollection(FromDate,ToDate,doctor,"ALL"),function (res) {
+
+        makeCustomHeader(_UserId);
+        var csv_data = [];
+        csv_data.push('#,Date & Time,Prescription No,Patient Name,Patient Mobile,Patient Age,Presenting Symptoms,Diagnosis,Drug Name')
+        for (var i = 0; i < res.Data.length; i++)
         {
-            "id": 1,
-            "first_name": "Jacob",
-            "last_name": "Mulberry",
-            "gender": "Male",
-            "phone": "8842267701",
-            "address": "58237 Pleasure Plaza",
-            "email": "jmulberry0@live.com",
-            "password": "ouD8sQ0LpK",
-            "guid": "e7d8a440-f738-4815-8114-a12c3393b4c1"
-        },
-        {
-            "id": 2,
-            "first_name": "Thornton",
-            "last_name": "Allington",
-            "gender": "Male",
-            "phone": "4254013686",
-            "address": "99336 Brown Hill",
-            "email": "tallington1@soup.io",
-            "password": "RVhdMII",
-            "guid": "33de8e79-9180-499a-8ecd-520d54ad0308"
+            let data = res.Data[i];
+            csv_data.push(i+','+data.DateCreated+','+data.PrescriptionId+','+
+                data.PatientFullName+','+data.Mobile+','+data.AgeYears+','
+                +data.PositiveSx.replaceAll(',','-')+','+data.Diagnosis.replaceAll(',','-')+','+data.DrugName)
         }
-    ];
+        // Combine each row data with new line character
+        csv_data = csv_data.join('\n');
 
-    const ArrayForTableData = [];
+        // Call this function to download csv file
+        downloadCSVFile(csv_data);
+    });
 
-    if (People.length > 0) {
-        let Person = {};
-        for (let Count = 0; Count < People.length; Count++) {
-            Person = People[Count];
-            ArrayForTableData.push({
-                "Name": Person.first_name + ' ' + Person.last_name,
-                "Phone": Person.phone
-            });
-        }
-    }
+}
 
-    new ReportsTestTable().Render('ReportsTableWrapper', ArrayForTableData);
-    CreateDataTable('TableReportsTest');
+function downloadCSVFile(csv_data)
+{
+
+    // Create CSV file object and feed
+    // our csv_data into it
+    var BOM = "\uFEFF";
+    var csvData = BOM + csv_data;
+    CSVFile = new Blob([csvData], {
+        type: 'text/csv; charset=utf-8'
+    });
+
+    // Create to temporary link to initiate
+    // download process
+    var temp_link = document.createElement('a');
+
+    const TodaysDate = new Date().toISOString().slice(0,10);
+
+    // Download csv file
+    temp_link.download = "PrescriptionList-"+TodaysDate+".csv";
+    temp_link.href = window.URL.createObjectURL(CSVFile);
+
+    // This link should not be displayed
+    temp_link.style.display = "none";
+    document.body.appendChild(temp_link);
+
+    // Automatically click the link to
+    // trigger download
+    temp_link.click();
+    document.body.removeChild(temp_link);
 }

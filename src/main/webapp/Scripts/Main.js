@@ -37,6 +37,7 @@ var _HttpRequestMultiPartWithoutAsync;
 
 var _Id;
 var _UserId;
+var _UserIdAdmin = "2";
 var _Request;
 var _PatientId;
 var _PatientNIC;
@@ -66,6 +67,7 @@ var _ApoointmentHeadingTitle;
 
 var _ArrayDrugData = [];
 var _DoctorSessionData = [];
+var _BranchData = [];
 var _ArrayPrescriptionData = [];
 var _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
@@ -127,6 +129,8 @@ const ServiceMethods =
         PatientInformationSave: "PatientDiagnosisDocument/Post",
         GetInstitute: "Institute/GET",
         AddressPost: "Address/POST",
+        ChanalingStatusSave: "DoctorChanalingStatus/Save",
+        GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
     };
 
 const MessageTypes =
@@ -247,6 +251,13 @@ function InitRequestHandler() {
 /*===========================
 		Methods
 ===========================*/
+
+function makeCustomHeader(userId){
+    let Headers = [];
+        Headers.push(new HttpHeader("UserId", userId));
+    _Request = GetRequest(_ServiceURL, Headers);
+}
+
 function Wait(FnCondition, FncSuccess) {
     if (FnCondition())
         setTimeout(Wait, 100, FnCondition, FncSuccess);

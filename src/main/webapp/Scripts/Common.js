@@ -243,3 +243,21 @@ function isNullOrUndefined(String) {
 // function isEmpty(String) {
 //     return String.trim() !== '' ? String : '-';
 // }
+
+
+function FieldsValidation(Field) {
+
+    if (Field.value === "" || Field.value === null || Field.value === " ") {
+        return false;
+    }
+    return true;
+}
+
+function formatDateAndTime(d){
+    return [d.getFullYear(),d.getMonth()+1,
+            d.getDate()
+        ].join('/')+' '+
+        [d.getHours(),
+            d.getMinutes(),
+            d.getSeconds()].join(':')
+}

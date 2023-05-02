@@ -254,9 +254,3 @@ function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status,
     this.Status = Status;
     this.UserSaved = UserSaved;
 }
-
-function ContactNumbers(Id,ContactNumber,Status){
-    this.Id = Id;
-    this.ContactNumber=ContactNumber;
-    this.Status=Status;
-}
