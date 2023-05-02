@@ -1317,3 +1317,66 @@ function EditPassword() {
     $('#TxtDoctorUser_Name').prop('disabled',false);
     $('#TxtDoctorPassword').prop('disabled',false);
 }
+
+
+//report
+
+function DownloadReport()
+{
+
+    let doctor = $('#DrpDoctor').val();
+    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+
+    makeCustomHeader(_UserIdAdmin);
+    _Request.Post("PrescriptionRecord/GetPrescriptionRecord",new NewDailyCollection(FromDate,ToDate,doctor,"ALL"),function (res) {
+
+        makeCustomHeader(_UserId);
+        var csv_data = [];
+        csv_data.push('#,Date & Time,Prescription No,Patient Name,Patient Mobile,Patient Age,Presenting Symptoms,Diagnosis,Drug Name')
+        for (var i = 0; i < res.Data.length; i++)
+        {
+            let data = res.Data[i];
+            csv_data.push(i+','+data.DateCreated+','+data.PrescriptionId+','+
+                data.PatientFullName+','+data.Mobile+','+data.AgeYears+','
+                +data.PositiveSx.replaceAll(',','-')+','+data.Diagnosis.replaceAll(',','-')+','+data.DrugName)
+        }
+        // Combine each row data with new line character
+        csv_data = csv_data.join('\n');
+
+        // Call this function to download csv file
+        downloadCSVFile(csv_data);
+    });
+
+}
+
+function downloadCSVFile(csv_data)
+{
+
+    // Create CSV file object and feed
+    // our csv_data into it
+    var BOM = "\uFEFF";
+    var csvData = BOM + csv_data;
+    CSVFile = new Blob([csvData], {
+        type: 'text/csv; charset=utf-8'
+    });
+
+    // Create to temporary link to initiate
+    // download process
+    var temp_link = document.createElement('a');
+
+    const TodaysDate = new Date().toISOString().slice(0,10);
+
+    // Download csv file
+    temp_link.download = "PrescriptionList-"+TodaysDate+".csv";
+    temp_link.href = window.URL.createObjectURL(CSVFile);
+
+    // This link should not be displayed
+    temp_link.style.display = "none";
+    document.body.appendChild(temp_link);
+
+    // Automatically click the link to
+    // trigger download
+    temp_link.click();
+    document.body.removeChild(temp_link);
+}

@@ -2714,9 +2714,108 @@ function Reports() {
         Card.appendChild(CardBody);
 
         BindView(Container, Card);
+
+        new ReportSearch().Render(Containers.MainContent)
     }
 }
 
+function ReportSearch() {
+    this.Render = function (Container) {
+        let CardAddAppoinment = new Div(undefined, "card text-left");
+        let CardBodyAddAppoinment = new Div(undefined, "card-body");
+
+        CardBodyAddAppoinment.appendChild(new Heading4("Prescription History", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]));
+
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetails")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
+        CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
+
+
+
+        let DoctorSearchRow = new Div("ReportSearchRow", "row");
+        let SearchColumnOne = new Div(undefined, "col-lg-12 text-center");
+        DoctorSearchRow.appendChild(SearchColumnOne);
+        CardBodyAddAppoinment.appendChild(DoctorSearchRow);
+
+        let FormAppoinments = new Form(undefined);
+        let FormRow0Appoinment = new Div(undefined, "form-group row mt-0");
+
+        let DivFormRowDoctor = new Div(undefined, "col-sm-3 mt-2 text-left");
+        let LabelAppoinment = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorByBranch()")]);
+        SelectBranch.appendChild(new SelectItem("Select Branch", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        DivFormRowDoctor.appendChild(LabelAppoinment);
+        DivFormRowDoctor.appendChild(SelectBranch);
+
+
+        let DivFormRowDoctor1 = new Div(undefined, "col-sm-3 mt-2 text-left");
+        let LabelAppoinment1 = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let SelectDoctor = new Select("DrpDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
+        SelectDoctor.appendChild(new SelectItem("Select Doctor", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        DivFormRowDoctor1.appendChild(LabelAppoinment1);
+        DivFormRowDoctor1.appendChild(SelectDoctor);
+
+        FormRow0Appoinment.appendChild(DivFormRowDoctor);
+        FormRow0Appoinment.appendChild(DivFormRowDoctor1);
+
+        LableAndTextFeild("col-sm-3","Report","From Date","From Date","","",FormRow0Appoinment,"date");
+        LableAndTextFeild("col-sm-3","Report","To Date","To Date","","",FormRow0Appoinment,"date");
+
+        const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
+        FormRow0Appoinment.appendChild(ColumnContactNo);
+
+        let DivFormRowSearch = new Div(undefined, "col-sm-3 mt-2 d-flex");
+        let ButtonPatientSearch = new Button("DoctorBranchSearchButton", "Search",
+            "btn btn-primary btn-rounded w-100 mt-auto",
+            [new Attribute(_AttributeOnClick, "Report_Search()")]);
+
+        DivFormRowSearch.appendChild(ButtonPatientSearch);
+        FormRow0Appoinment.appendChild(DivFormRowSearch);
+
+        FormAppoinments.appendChild(FormRow0Appoinment);
+        SearchColumnOne.appendChild(FormAppoinments);
+
+        let AppointmentSearchResultsRow = new Div("ReportSearchResults", "");
+        AppointmentSearchResultsRow.appendChild(new Div("DivReportTable", "col-lg-12"));
+        CardBodyAddAppoinment.appendChild(AppointmentSearchResultsRow);
+
+        CardAddAppoinment.appendChild(CardBodyAddAppoinment);
+
+        BindView(Container, CardAddAppoinment);
+
+        $('#TxtReportFrom_Date').prop('type','date');
+        $('#TxtReportTo_Date').prop('type','date');
+    }
+}
+
+function ReportSearchResultsTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ["No","Date & Time","Prescription No","Patient Name","Patient Mobile"];
+
+        let ParentRow = new Div(undefined, "row");
+
+        let ColumnTableTitle = new Div(undefined, "col-md-12");
+        let Heading = new Heading5("Prescription History", undefined);
+        ColumnTableTitle.appendChild(Heading);
+        ParentRow.appendChild(ColumnTableTitle);
+
+        const ColumnAddNewBranch = new Div(undefined, "col-md-12");
+        const ButtonAddNewBranch = new Button(undefined, "Download", "btn btn-primary btn-rounded float-right",
+            [new Attribute(_AttributeOnClick, "DownloadReport()")]);
+        ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
+        ParentRow.appendChild(ColumnAddNewBranch);
+
+        const ColumnTable = new Div(undefined, "col-md-12 mt-2");
+        let DivTableBranchesSearchResults = new Div(undefined, "table-responsive");
+        DivTableBranchesSearchResults.appendChild(new TableView("TableReportSearchResults",
+            "table table-striped", Headers, Data, undefined));
+        ColumnTable.appendChild(DivTableBranchesSearchResults);
+        ParentRow.appendChild(ColumnTable);
+
+        BindView(Container, ParentRow);
+    }
+}
 /*=================================
              Misc
  =================================*/

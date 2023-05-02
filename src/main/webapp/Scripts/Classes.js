@@ -329,3 +329,11 @@ function DoctorUser(Id, UserId, DoctorId, UserSaved){
     this.DoctorId =DoctorId;
     this.UserSaved=UserSaved;
 }
+function NewDailyCollection(FromDate, ToDate,DoctorId,SearchType)
+{
+    this.FromDate = FromDate;
+    this.ToDate = ToDate;
+    this.DoctorId = DoctorId;
+    this.SearchType = SearchType;
+
+}

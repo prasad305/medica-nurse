@@ -907,6 +907,7 @@ function Doctors_Click() {
 
 function Reports_Click() {
     new Reports().Render(Containers.MainContent);
+    SetBranchData('DrpBranch');
 }
 
 /*=================================
@@ -929,6 +930,35 @@ function DoctorBranch_Search(){
 }
 
 function GetDoctorByBranch(){
+
+    // DrpDoctor
+    let id = $('#DrpBranch').val();
+    let Payload = new GetDoctorsByInstituteBranchId(id);
+    _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, function (Response) {
+
+        ttlDoctors=0;
+        curDoctor=0;
+        AllDoctor=[];
+        if (Response.Status === 1000)
+        {
+            ttlDoctors = Response.Data.length;
+            if(ttlDoctors==0){
+                doctorDrpData(AllDoctor);
+            }
+            Response.Data.forEach(function (Doctor)
+            {
+                _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, function (Res) {
+                    curDoctor++;
+                    AllDoctor.push(Res.Data);
+                    if(curDoctor===ttlDoctors){
+                        console.log(AllDoctor);
+                        doctorDrpData(AllDoctor);
+                    }
+                });
+            });
+        }
+    });
+
 
 }
 
@@ -967,6 +997,16 @@ function LoadDoctorToTable(Res){
     if(curDoctor===ttlDoctors){
         console.log(AllDoctor);
         doctorTblData(AllDoctor);
+    }
+}
+
+function doctorDrpData(Res){
+    let Count;
+    let DataLength = Res.length;
+    //all doctors - as the first option
+    for (Count = 0; Count < DataLength; Count++) {
+        $('#DrpDoctor').append('<option value="' + Res[Count].Id + '">' +
+            Res[Count].Title+' '+ Res[Count].FirstName+' '+Res[Count].LastName + '</option>');
     }
 }
 
@@ -1205,4 +1245,42 @@ function SuccessSaveDoctorUserLoginDetails(Response)
         $('#ModalDoctorsLogin').modal('hide');
         ShowMessage("Doctor Login Details Saved Successfully !", MessageTypes.Success, "Success !");
     }
+}
+
+
+
+//report
+
+function Report_Search() {
+
+    let branch = $('#DrpBranch').val();
+    let doctor = $('#DrpDoctor').val();
+    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+
+    // let FromDate = moment(document.getElementById('TxtReportFrom_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 00:00:00";
+    // let ToDate = moment(document.getElementById('TxtReportTo_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 23:59:59";
+
+    makeCustomHeader(_UserIdAdmin);
+    _Request.Post("PrescriptionRecord/GetPrescriptionRecord", new NewDailyCollection(FromDate, ToDate, doctor, null), function (Response) {
+        makeCustomHeader(_UserId);
+        const ResultsData = [];
+        Response = Response.Data;
+        if (Response.length > 0) {
+            let Data = {};
+            for (let Count = 0; Count < Response.length; Count++) {
+                Data = Response[Count];
+                ResultsData.push({
+                    "No": (Count+1),
+                    "Date & Time": formatDateAndTime(new Date(Data.DateCreated)),
+                    "Prescription No": Data.PrescriptionId,
+                    "Patient Name": Data.PatientFullName,
+                    "Patient Mobile": Data.Mobile
+                });
+            }
+        }
+
+        new ReportSearchResultsTable().Render('ReportSearchResults', ResultsData);
+        CreateDataTable('TableReportSearchResults');
+    });
 }
