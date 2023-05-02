@@ -1249,7 +1249,7 @@ function BranchAddOrUpdateModalView(BranchId) {
         new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'Update');
         //pass data
         const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
-        console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
+        // console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
         $('#TxtBranchUpdateBranchName').val(BranchMatched.Name);
         $('#TxtBranchUpdateEmail').val(BranchMatched.Email);
         $('#TxtBranchUpdateWebsite').val(BranchMatched.Website);
@@ -1276,17 +1276,37 @@ function BranchAddOrUpdate(BranchId) {
     const PostCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
     const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
     const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
+    const ContactNo = document.getElementById("TxtBranchUpdateContactNo").value.trim();
     // const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
-    const Numbers = [new ContactNumbers(0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1)];
+    const Numbers = [new ContactNumbers(0, ContactNo, 1)];
     const Status = 1;
     const UserSavedId = getCookie("UserId");
     const InstituteId = _NurseBranch.InstituteId;
+
+    //validation
+    if (Name === "")
+        return ShowMessage('Invalid Branch Name!', MessageTypes.Warning, "Warning!");
+
+    if (Email === "")
+        return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
+
+    if (Address1 === "")
+        return ShowMessage('Invalid Address!', MessageTypes.Warning, "Warning!");
+
+    if (City === "")
+        return ShowMessage('Invalid City!', MessageTypes.Warning, "Warning!");
+
+    if (ContactNo === "")
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+
+    if (ValidateMobile(ContactNo) === false && ContactNo !== "")
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
 
     const AddressPayLoad = new Address(_AddressId, Address1, Address2, Suburb, City, PostCode, 1, 2);
 
     _Request.Post(ServiceMethods.AddressPost, AddressPayLoad, function (Response) {
         // console.log('AddressPost.Response:', Response);
-        if (Response.Data != null) {
+        if (Response.Status === 1000) {
             const AddressSavedId = Response.Data.Id;
             // console.log('AddressSavedId:', AddressSavedId);
             const BranchPayLoad = new InstituteBranchSave(parseInt(BranchId), InstituteId, Name, AddressSavedId, Email, Website, Numbers, Status, 2);

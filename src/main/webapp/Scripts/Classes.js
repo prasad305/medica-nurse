@@ -254,3 +254,86 @@ function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status,
     this.Status = Status;
     this.UserSaved = UserSaved;
 }
+
+function DoctorChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id)
+{
+    this.AppointmentId = AppointmentId;
+    this.SessionId = SessionId;
+    this.PatientId = PatientId;
+    this.DoctorStatus = DoctorStatus;
+    this.ChanalingStatus = ChannelingStatus;
+    this.Id = Id;
+}
+
+function GetDoctorsByInstituteBranchId(InstituteBranchId)
+{
+    this.InstituteBranchId = InstituteBranchId;
+}
+
+function ContactNumbers(Id,ContactNumber,Status){
+    this.Id = Id;
+    this.ContactNumber=ContactNumber;
+    this.Status=Status;
+}
+function DoctorSpecialization(Id,DoctorId,SpecializationId,Status,UserSaved){
+    this.Id = Id;
+    this.DoctorId=DoctorId;
+    this.SpecializationId=SpecializationId;
+    this.Status=Status;
+    this.UserSaved=UserSaved;
+}
+function DoctorQualification(Id,DoctorId,QualificationId,Status,UserSaved){
+    this.Id = Id;
+    this.DoctorId=DoctorId;
+    this.QualificationId=QualificationId;
+    this.Status=Status;
+    this.UserSaved=UserSaved;
+}
+
+function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers)
+{
+    this.Id = Id;
+    this.Title = Title;
+    this.FirstName = FirstName;
+    this.MiddleName = MiddleName;
+    this.LastName = LastName;
+    this.Email = Email;
+    this.NIC = NIC;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+    this.RegistrationNumber = RegistrationNumber;
+    this.DateOfBirth = DateOfBirth;
+    this.Addresses = Addresses;
+    this.ContactNumbers = ContactNumbers;
+}
+function DoctorBranch(InstituteBranchId, DoctorId, Status, UserSaved)
+{
+    this.InstituteBranchId = InstituteBranchId;
+    this.DoctorId = DoctorId;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+}
+
+function User(Id, Username,Password    , UserGroupId, Status, UserCreated, UserModified ){
+    this.Id = Id;
+    this.Username = Username;
+    this.Password =Password;
+    this.UserGroupId = UserGroupId;
+    this.Status = Status;
+    this.UserCreated=UserCreated;
+    this.UserModified=UserModified;
+}
+function DoctorUser(Id, UserId, DoctorId, UserSaved){
+    this.Id = Id;
+    this.UserId=UserId;
+    this.DoctorId =DoctorId;
+    this.UserSaved=UserSaved;
+}
+function NewDailyCollection(FromDate, ToDate,DoctorId,SearchType)
+{
+    this.FromDate = FromDate;
+    this.ToDate = ToDate;
+    this.DoctorId = DoctorId;
+    this.SearchType = SearchType;
+
+}
