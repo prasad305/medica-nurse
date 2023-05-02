@@ -869,6 +869,7 @@ function Doctors_Click() {
 
 function Reports_Click() {
     new Reports().Render(Containers.MainContent);
+    ReportsTestTableDisplay();
 }
 
 /*=================================

@@ -77,7 +77,7 @@ function GetNurseBranches_Success(Response) {
         _NurseBranch = Response.Data[0];
 
         //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
-        _IsAllBranchesGetClicked = true;
+        _IsAdminUserIdRequired = true;
         //rerun
         InitRequestHandler();
 
@@ -88,7 +88,7 @@ function GetNurseBranches_Success(Response) {
 
 function GetAllInstitutes_Success(Response) {
     //reset flag
-    _IsAllBranchesGetClicked = false;
+    _IsAdminUserIdRequired = false;
     //reset
     InitRequestHandler();
 
@@ -1190,31 +1190,15 @@ function Admin_View() {
 function AllBranchesOfTheInstituteGet() {
     _ArrayAllBranchesOfTheInstituteResultsData = [];
     //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
-    _IsAllBranchesGetClicked = true;
+    _IsAdminUserIdRequired = true;
     //rerun
     InitRequestHandler();
     _Request.Post(ServiceMethods.InstituteBranch, new InstituteBranch(undefined, '2', _NurseBranch.InstituteId), AllBranchesOfTheInstituteGet_Success);
 }
 
-// function AllBranchesOfTheInstituteGet_Success(Response) {
-//     //reset flag
-//     _IsAllBranchesGetClicked = false;
-//     //reset
-//     InitRequestHandler();
-//
-//     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
-//
-//     const BranchSelect = $("#SearchBranchSelect");
-//     $(BranchSelect).empty();
-//     $(BranchSelect).append('<option value=" ">Select Branch</option>');
-//     for (let Count = 0; Count < Response.Data.length; Count++) {
-//         $(BranchSelect).append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
-//     }
-// }
-
 function AllBranchesOfTheInstituteGet_Success(Response) {
     //reset flag
-    _IsAllBranchesGetClicked = false;
+    _IsAdminUserIdRequired = false;
     //reset
     InitRequestHandler();
     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
@@ -1316,4 +1300,51 @@ function SuccessInstituteBranchSave(Response) {
 
 function BranchWardAdd(BranchId) {
 
+}
+
+/*=================================
+		   Reports Methods
+ =================================*/
+
+function ReportsTestTableDisplay() {
+    let People = [
+        {
+            "id": 1,
+            "first_name": "Jacob",
+            "last_name": "Mulberry",
+            "gender": "Male",
+            "phone": "8842267701",
+            "address": "58237 Pleasure Plaza",
+            "email": "jmulberry0@live.com",
+            "password": "ouD8sQ0LpK",
+            "guid": "e7d8a440-f738-4815-8114-a12c3393b4c1"
+        },
+        {
+            "id": 2,
+            "first_name": "Thornton",
+            "last_name": "Allington",
+            "gender": "Male",
+            "phone": "4254013686",
+            "address": "99336 Brown Hill",
+            "email": "tallington1@soup.io",
+            "password": "RVhdMII",
+            "guid": "33de8e79-9180-499a-8ecd-520d54ad0308"
+        }
+    ];
+
+    const ArrayForTableData = [];
+
+    if (People.length > 0) {
+        let Person = {};
+        for (let Count = 0; Count < People.length; Count++) {
+            Person = People[Count];
+            ArrayForTableData.push({
+                "Name": Person.first_name + ' ' + Person.last_name,
+                "Phone": Person.phone
+            });
+        }
+    }
+
+    new ReportsTestTable().Render('ReportsTableWrapper', ArrayForTableData);
+    CreateDataTable('TableReportsTest');
 }
