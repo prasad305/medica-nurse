@@ -2703,13 +2703,16 @@ function Reports() {
         const Heading = new Heading4("Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         CardBody.appendChild(Heading);
 
-        const RowOne = new Div(undefined, "row");
-        const RowOneColumnOne = new Div(undefined, "col-md-12");
+        const Row = new Div(undefined, "row");
 
-        RowOneColumnOne.appendChild(new Label(undefined, "Reports", undefined, undefined));
+        const ColumnText = new Div(undefined, "col-md-12");
+        ColumnText.appendChild(new Label(undefined, "Reports", undefined, undefined));
+        Row.appendChild(ColumnText);
 
-        RowOne.appendChild(RowOneColumnOne);
-        CardBody.appendChild(RowOne);
+        const ColumnTable = new Div("ReportsTableWrapper", "col-md-12 mt-2");
+        Row.appendChild(ColumnTable);
+
+        CardBody.appendChild(Row);
 
         Card.appendChild(CardBody);
 

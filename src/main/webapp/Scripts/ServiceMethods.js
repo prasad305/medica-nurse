@@ -81,10 +81,27 @@ function GetNurseBranches_Success(Response) {
         _UserBranchId = Response.Data[0].Id;
         document.getElementById("LblInstituteBranch").innerHTML = Response.Data[0].Name;
 
-        _NurseInstitute = Response.Data[0];
+        _NurseBranch = Response.Data[0];
+
+        //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
+        _IsAdminUserIdRequired = true;
+        //rerun
+        InitRequestHandler();
+
+        _ArrayAllInstitutes = [];
+        _Request.Get(ServiceMethods.GetInstitute, null, GetAllInstitutes_Success);
     }
 }
 
+function GetAllInstitutes_Success(Response) {
+    //reset flag
+    _IsAdminUserIdRequired = false;
+    //reset
+    InitRequestHandler();
+
+    _ArrayAllInstitutes = Response.Data;
+    _NurseInstitute = _ArrayAllInstitutes.filter((Institute) => Institute.Id === _NurseBranch.InstituteId)[0];
+}
 
 /*=================================
 		Patient Methods
@@ -1183,31 +1200,15 @@ function Admin_View() {
 function AllBranchesOfTheInstituteGet() {
     _ArrayAllBranchesOfTheInstituteResultsData = [];
     //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
-    _IsAllBranchesGetClicked = true;
+    _IsAdminUserIdRequired = true;
     //rerun
     InitRequestHandler();
-    _Request.Post(ServiceMethods.InstituteBranch, new InstituteBranch(undefined, '2', _NurseInstitute.InstituteId), AllBranchesOfTheInstituteGet_Success);
+    _Request.Post(ServiceMethods.InstituteBranch, new InstituteBranch(undefined, '2', _NurseBranch.InstituteId), AllBranchesOfTheInstituteGet_Success);
 }
-
-// function AllBranchesOfTheInstituteGet_Success(Response) {
-//     //reset flag
-//     _IsAllBranchesGetClicked = false;
-//     //reset
-//     InitRequestHandler();
-//
-//     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
-//
-//     const BranchSelect = $("#SearchBranchSelect");
-//     $(BranchSelect).empty();
-//     $(BranchSelect).append('<option value=" ">Select Branch</option>');
-//     for (let Count = 0; Count < Response.Data.length; Count++) {
-//         $(BranchSelect).append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
-//     }
-// }
 
 function AllBranchesOfTheInstituteGet_Success(Response) {
     //reset flag
-    _IsAllBranchesGetClicked = false;
+    _IsAdminUserIdRequired = false;
     //reset
     InitRequestHandler();
     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
@@ -1248,16 +1249,17 @@ function BranchAddOrUpdateModalView(BranchId) {
         new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'Update');
         //pass data
         const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
-        // console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
+        console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
         $('#TxtBranchUpdateBranchName').val(BranchMatched.Name);
         $('#TxtBranchUpdateEmail').val(BranchMatched.Email);
         $('#TxtBranchUpdateWebsite').val(BranchMatched.Website);
         $('#TxtBranchUpdateAddressLine1').val(BranchMatched.AddressLine1);
         $('#TxtBranchUpdateAddressLine2').val(BranchMatched.AddressLine2);
-        $('#TxtBranchUpdatePostCode').val(BranchMatched.Postcode);
+        $('#TxtBranchUpdatePostCode').val(BranchMatched.Postcode.split('|')[0]);
         $('#TxtBranchUpdateSuburb').val(BranchMatched.Suburb);
         $('#TxtBranchUpdateCity').val(BranchMatched.City);
-        $('#TxtBranchUpdateContactNo').val('');
+        const ContactNo = '0' + BranchMatched.Postcode.split('|')[1].toString().slice(2);
+        $('#TxtBranchUpdateContactNo').val(ContactNo);
     } else {
         //add new
         new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'AddNew');
@@ -1274,10 +1276,11 @@ function BranchAddOrUpdate(BranchId) {
     const PostCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
     const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
     const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
-    const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
+    // const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
+    const Numbers = [new ContactNumbers(0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1)];
     const Status = 1;
     const UserSavedId = getCookie("UserId");
-    const InstituteId = _NurseInstitute.InstituteId;
+    const InstituteId = _NurseBranch.InstituteId;
 
     const AddressPayLoad = new Address(_AddressId, Address1, Address2, Suburb, City, PostCode, 1, 2);
 

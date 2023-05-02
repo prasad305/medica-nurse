@@ -82,7 +82,9 @@ var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
 let _NurseLoggedIn = {};
+let _NurseBranch = {};
 let _NurseInstitute = {};
+let _ArrayAllInstitutes = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
@@ -90,10 +92,8 @@ let _CardClicked = '';
 //-- Admin UI
 
 let _ArrayAllBranchesOfTheInstituteResultsData = [];
-let _IsAllBranchesGetClicked = false;
+let _IsAdminUserIdRequired = false;
 let _AddressId = 0;
-
-//-- /Admin UI
 
 /*========================
      Enums
@@ -219,7 +219,7 @@ var HideLoader = function () {
 
 function InitRequestHandler() {
     // console.log('InitRequestHandler._IsAllBranchesGetClicked:', _IsAllBranchesGetClicked);
-    if (_IsAllBranchesGetClicked) {
+    if (_IsAdminUserIdRequired) {
         _UserId = 2;
     } else {
         _UserId = getCookie("UserId");
