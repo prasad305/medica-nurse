@@ -2632,7 +2632,12 @@ function DoctorsAddOrUpdateModal() {
         BindView(Container, Modal);
 
         $('#TxtDoctorDate_Of_Birth').prop('type','date');
+        $("#TxtDoctorDate_Of_Birth").prop('disabled', true);
         $('#ModalForBranchAddOrUpdate').modal('show');
+        // $("#TxtDoctorNIC").on('focusout', DoctorsDateOfBirthDisplay());
+        $("#TxtDoctorNIC").on("focusout", function () {
+            DoctorsDateOfBirthDisplay();
+        });
     }
 }
 

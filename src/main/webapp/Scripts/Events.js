@@ -503,9 +503,9 @@ function AppointmentUpdate() {
 
     selectedRowSessionId = parseInt(val);
     console.log(selectedRowSessionId.isNuN);
-    if(isNaN(selectedRowSessionId)){
+    if (isNaN(selectedRowSessionId)) {
         return ShowMessage("Please Select Session", MessageTypes.Warning, "Warning!");
-    }else {
+    } else {
         let Entity = new DoctorChannelingStatus(selectedRowAppointmentId, selectedRowSessionId, selectedRowPatientId, "Cancel Appointment",
             "cancelled", 0)
 
@@ -517,15 +517,13 @@ function AppointmentUpdate() {
         _Request.Post(ServiceMethods.NextAppoinment, new SessionId(selectedRowSessionId), function (Res) {
 
             _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0,
-                parseInt(Res.Data.Number),
-                selectedRowSessionId,
-                selectedRowPatientId, null,
-                1, _UserId)
+                    parseInt(Res.Data.Number),
+                    selectedRowSessionId,
+                    selectedRowPatientId, null,
+                    1, _UserId)
                 , SaveAppointment_Success_Update);
         });
     }
-
-
 
 
     // console.log('AppointmentUpdate.JsonObject:', JsonObject);
@@ -538,8 +536,7 @@ function SaveAppointment_Success_Update(Response) {
     }
 }
 
-function DoctorChannelingStatusUpdate_Success(Response)
-{
+function DoctorChannelingStatusUpdate_Success(Response) {
     if (Response.Status != 1000)
         return;
 }
@@ -921,37 +918,35 @@ function Misc_Click() {
 
 //doctor
 
-function DoctorBranch_Search(){
+function DoctorBranch_Search() {
     let id = $('#DrpBranch').val();
-    if(id=="0"){
+    if (id == "0") {
         return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
     }
     LoadAllDoctorsForBranch(id);
 }
 
-function GetDoctorByBranch(){
+function GetDoctorByBranch() {
 
     // DrpDoctor
     let id = $('#DrpBranch').val();
     let Payload = new GetDoctorsByInstituteBranchId(id);
     _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, function (Response) {
 
-        ttlDoctors=0;
-        curDoctor=0;
-        AllDoctor=[];
-        if (Response.Status === 1000)
-        {
+        ttlDoctors = 0;
+        curDoctor = 0;
+        AllDoctor = [];
+        if (Response.Status === 1000) {
             ttlDoctors = Response.Data.length;
-            if(ttlDoctors==0){
+            if (ttlDoctors == 0) {
                 doctorDrpData(AllDoctor);
             }
-            Response.Data.forEach(function (Doctor)
-            {
+            Response.Data.forEach(function (Doctor) {
                 _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, function (Res) {
                     curDoctor++;
                     AllDoctor.push(Res.Data);
-                    if(curDoctor===ttlDoctors){
-                        console.log(AllDoctor);
+                    if (curDoctor === ttlDoctors) {
+                        // console.log(AllDoctor);
                         doctorDrpData(AllDoctor);
                     }
                 });
@@ -962,28 +957,25 @@ function GetDoctorByBranch(){
 
 }
 
-function LoadAllDoctorsForBranch(Branch)
-{
+function LoadAllDoctorsForBranch(Branch) {
     let Payload = new GetDoctorsByInstituteBranchId(Branch);
     _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, SuccessLoadDoctors);
 }
 
 let ttlDoctors = 0;
 let curDoctor = 0;
-let AllDoctor=[];
-function SuccessLoadDoctors(Response)
-{
-    ttlDoctors=0;
-    curDoctor=0;
-    AllDoctor=[];
-    if (Response.Status === 1000)
-    {
+let AllDoctor = [];
+
+function SuccessLoadDoctors(Response) {
+    ttlDoctors = 0;
+    curDoctor = 0;
+    AllDoctor = [];
+    if (Response.Status === 1000) {
         ttlDoctors = Response.Data.length;
-        if(ttlDoctors==0){
+        if (ttlDoctors == 0) {
             doctorTblData(AllDoctor);
         }
-        Response.Data.forEach(function (Doctor)
-        {
+        Response.Data.forEach(function (Doctor) {
             _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, LoadDoctorToTable);
         });
     }
@@ -991,26 +983,26 @@ function SuccessLoadDoctors(Response)
 }
 
 
-function LoadDoctorToTable(Res){
+function LoadDoctorToTable(Res) {
     curDoctor++;
     AllDoctor.push(Res.Data);
-    if(curDoctor===ttlDoctors){
-        console.log(AllDoctor);
+    if (curDoctor === ttlDoctors) {
+        // console.log(AllDoctor);
         doctorTblData(AllDoctor);
     }
 }
 
-function doctorDrpData(Res){
+function doctorDrpData(Res) {
     let Count;
     let DataLength = Res.length;
     //all doctors - as the first option
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpDoctor').append('<option value="' + Res[Count].Id + '">' +
-            Res[Count].Title+' '+ Res[Count].FirstName+' '+Res[Count].LastName + '</option>');
+            Res[Count].Title + ' ' + Res[Count].FirstName + ' ' + Res[Count].LastName + '</option>');
     }
 }
 
-function doctorTblData(Response){
+function doctorTblData(Response) {
     //reset flag
     const ArrayDoctorSearchResultsData = [];
     if (Response.length > 0) {
@@ -1019,10 +1011,10 @@ function doctorTblData(Response){
             Doctor = Response[Count];
 
             ArrayDoctorSearchResultsData.push({
-                "Doctor Name": Doctor.Title+' '+Doctor.FirstName+' '+Doctor.LastName,
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView('+Count+',' + Doctor.Id + ')">' +
+                "Doctor Name": Doctor.Title + ' ' + Doctor.FirstName + ' ' + Doctor.LastName,
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                    '</button>'+
+                    '</button>' +
                     // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
                     // '<i class="nav-icon i-Close-Window"></i></button>' +
                     '<button class="btn btn-primary" style="margin-left: 1rem" type="button" id="6" data-toggle="modal" ' +
@@ -1047,12 +1039,13 @@ function SetBranchData(Id) {
 
 function DoctorLoginModalShow(Id) {
 
-    new DoctorsLoginModal().Render(Containers.Footer,Id);
+    new DoctorsLoginModal().Render(Containers.Footer, Id);
 }
 
 let _SelectedDoctor;
-function DoctorAddOrUpdateModalView(index,id) {
-    if(id){
+
+function DoctorAddOrUpdateModalView(index, id) {
+    if (id) {
         _SelectedDoctor = AllDoctor[index];
         new DoctorsAddOrUpdateModal().Render(Containers.Footer, id, 'Update');
 
@@ -1063,28 +1056,28 @@ function DoctorAddOrUpdateModalView(index,id) {
         $("#TxtDoctorEmail").val(_SelectedDoctor.Email);
         $("#TxtDoctorNIC").val(_SelectedDoctor.NIC);
         $("#TxtDoctorRegistration_Number").val(_SelectedDoctor.RegistrationNumber);
-        $("#TxtDoctorDate_Of_Birth").val((_SelectedDoctor.DateOfBirth).substring(0,10));
+        $("#TxtDoctorDate_Of_Birth").val((_SelectedDoctor.DateOfBirth).substring(0, 10));
 
-        let Payload = new DoctorSpecialization(undefined,_SelectedDoctor.Id,undefined,undefined,_UserId);
-        _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp){
+        let Payload = new DoctorSpecialization(undefined, _SelectedDoctor.Id, undefined, undefined, _UserId);
+        _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp) {
             DoctorSpecializationId = ResponseSp.Data[0].Id
             DoctorSpecializationDrpId = ResponseSp.Data[0].SpecializationId
             _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
         });
-        _Request.Post("DoctorQualification/Get", Payload, function (ResponseQa){
+        _Request.Post("DoctorQualification/Get", Payload, function (ResponseQa) {
             DoctorQualificationId = ResponseQa.Data[0].Id
             _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
         });
-        _Request.Post("DoctorContactNumber/GetContactNumber", Payload,function (Response){
+        _Request.Post("DoctorContactNumber/GetContactNumber", Payload, function (Response) {
             if (Response.Status === 1000) {
-                if(Response.Data.length==2){
+                if (Response.Data.length == 2) {
                     DoctorContactIdArr = [Response.Data[0].Id, Response.Data[1].Id]
                     $("#TxtDoctorContact_No").val(Response.Data[0].ContactNumber);
                     $("#TxtDoctorPhone_No").val(Response.Data[1].ContactNumber);
                 }
             }
         });
-    }else{
+    } else {
         new DoctorsAddOrUpdateModal().Render(Containers.Footer, "BranchId", 'AddNew');
         _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
         _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
@@ -1093,48 +1086,88 @@ function DoctorAddOrUpdateModalView(index,id) {
 
 }
 
+function DoctorsDateOfBirthDisplay() {
+    let NIC = $("#TxtDoctorNIC").val().trim();
+    if (NIC === "" || (ValidateNIC(NIC) === false && NIC !== "")) {
+        $("#TxtDoctorDate_Of_Birth").val('');
+        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!");
+    }
+    const dob = GetDateOfBirthByNIC(NIC);
+    const dobReformatted = dob.split('/')[0] + '-' + dob.split('/')[1].padStart(2, '0') + '-' + dob.split('/')[2].padStart(2, '0');
+    $("#TxtDoctorDate_Of_Birth").val(dobReformatted);
+}
+
 function AddOrUpdateDoctor(id) {
     makeCustomHeader(_UserIdAdmin);
-    if(!id){
+    if (!id) {
         id = 0;
     }
 
-    let Title = $("#DrpTitle").val();
-    let FirstName = $("#TxtDoctorFirst_Name").val();
-    let MiddleName = $("#TxtDoctorMiddle_Name").val();
-    let LastName = $("#TxtDoctorLast_Name").val();
-    let Contact1 = $("#TxtDoctorContact_No").val();
-    let Contact2 = $("#TxtDoctorPhone_No").val();
-    let Email = $("#TxtDoctorEmail").val();
-    let NIC = $("#TxtDoctorNIC").val();
-    let RegNumber = $("#TxtDoctorRegistration_Number").val();
-    let DOB = $("#TxtDoctorDate_Of_Birth").val();
+    let Title = $("#DrpTitle").val().trim();
+    let FirstName = $("#TxtDoctorFirst_Name").val().trim();
+    let MiddleName = $("#TxtDoctorMiddle_Name").val().trim();
+    let LastName = $("#TxtDoctorLast_Name").val().trim();
+    let Contact1 = $("#TxtDoctorContact_No").val().trim();
+    let Contact2 = $("#TxtDoctorPhone_No").val().trim();
+    let Email = $("#TxtDoctorEmail").val().trim();
+    let NIC = $("#TxtDoctorNIC").val().trim();
+    let RegNumber = $("#TxtDoctorRegistration_Number").val().trim();
+    let DOB = $("#TxtDoctorDate_Of_Birth").val().trim();
+    let Specialization = $("#DrpSpecialization").val();
+    let Qualification = $("#DrpQualifications").val();
+    // console.log('AddOrUpdateDoctor:', Specialization, Qualification);
+
+    //validation
+    if (Title === "")
+        return ShowMessage('Invalid Title!', MessageTypes.Warning, "Warning!");
+
+    if (FirstName === "")
+        return ShowMessage('Invalid First Name!', MessageTypes.Warning, "Warning!");
+
+    if (LastName === "")
+        return ShowMessage('Invalid Last Name!', MessageTypes.Warning, "Warning!");
+
+    if (Contact1 === "" || (ValidateMobile(Contact1) === false && Contact1 !== ""))
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+
+    if (Email === "")
+        return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
+
+    if (NIC === "" || (ValidateNIC(NIC) === false && NIC !== ""))
+        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!");
+
+    if (DOB === "")
+        return ShowMessage('Invalid Date of Birth!', MessageTypes.Warning, "Warning!");
+
+    if (Specialization === null)
+        return ShowMessage('Invalid Specialization!', MessageTypes.Warning, "Warning!");
+
+    if (Qualification === null)
+        return ShowMessage('Invalid Qualification!', MessageTypes.Warning, "Warning!");
+
+    let ContactList = [];
+
+    ContactList.push(new ContactNumbers(DoctorContactIdArr[0] == 0 ? 0 : DoctorContactIdArr[0], Contact1, 0));
+
+    if (Contact2 != "")
+        ContactList.push(new ContactNumbers(DoctorContactIdArr[1] == 0 ? 0 : DoctorContactIdArr[1], Contact2, 0))
 
 
-    let ContactList=[];
-
-    ContactList.push( new ContactNumbers(DoctorContactIdArr[0]== 0 ? 0 : DoctorContactIdArr[0],Contact1,0));
-
-    if(Contact2 != "" )
-        ContactList.push(new ContactNumbers(DoctorContactIdArr[1]==0 ? 0 : DoctorContactIdArr[1], Contact2,0))
-
-
-    let Payload = new DoctorSave(id,Title,FirstName,MiddleName,LastName,Email,NIC,1,
-        _UserIdAdmin,RegNumber,DOB,undefined,ContactList);
+    let Payload = new DoctorSave(id, Title, FirstName, MiddleName, LastName, Email, NIC, 1,
+        _UserIdAdmin, RegNumber, DOB, undefined, ContactList);
 
     _Request.Post("doctor/post", Payload, SuccessSaveDoctorDetails);
 
-    DoctorContactIdArr =[0 ,0];
+    DoctorContactIdArr = [0, 0];
 
 }
 
-function SpecializationGetSuccess(Response){
+function SpecializationGetSuccess(Response) {
     console.log(Response)
-    if (Response.Status !== 1000){}
-    else
-    {
+    if (Response.Status !== 1000) {
+    } else {
         let max = Response.Data.length;
-        for (let i = 0; i<max; i++){
+        for (let i = 0; i < max; i++) {
             let opt = document.createElement('option');
             opt.value = Response.Data[i].Id;
             opt.innerHTML = Response.Data[i].Name;
@@ -1143,13 +1176,13 @@ function SpecializationGetSuccess(Response){
         $('#DrpSpecialization').val(DoctorSpecializationDrpId);
     }
 }
-function QualificationGetSuccess(Response){
 
-    if (Response.Status !== 1000){}
-    else
-    {
+function QualificationGetSuccess(Response) {
+
+    if (Response.Status !== 1000) {
+    } else {
         let max = Response.Data.length;
-        for (let i = 0; i<max; i++){
+        for (let i = 0; i < max; i++) {
             let opt = document.createElement('option');
             opt.value = Response.Data[i].Id;
             opt.innerHTML = Response.Data[i].Name;
@@ -1159,41 +1192,39 @@ function QualificationGetSuccess(Response){
     }
 }
 
-function SuccessSaveDoctorDetails(Response)
-{
+function SuccessSaveDoctorDetails(Response) {
     if (Response.Status !== 1000) {
         makeCustomHeader(_UserId);
         ShowMessage("Error !", MessageTypes.Error, "Error!");
 
     } else {
-        let PayLoad = new DoctorBranch($('#DrpBranch').val(),Response.Data.Id,1,_UserIdAdmin);
+        let PayLoad = new DoctorBranch($('#DrpBranch').val(), Response.Data.Id, 1, _UserIdAdmin);
         _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
         });
 
         //create Doctor Specialization object
         let selectedSpecialization = $("#DrpSpecialization").val();
-        let PayloadSp = new DoctorSpecialization(DoctorSpecializationId == 0 ? 0 : DoctorSpecializationId,Response.Data.Id,selectedSpecialization,1,_UserIdAdmin);
+        let PayloadSp = new DoctorSpecialization(DoctorSpecializationId == 0 ? 0 : DoctorSpecializationId, Response.Data.Id, selectedSpecialization, 1, _UserIdAdmin);
         _Request.Post("DoctorSpecialization/Post", PayloadSp, SuccessSaveNewSpecialization);
         DoctorSpecializationId = 0;
 
         //create Doctor Qualification object
-        let selectedQualification =  $("#DrpQualifications").val();
-        let PayloadQu = new DoctorQualification(DoctorQualificationId == 0 ? 0 : DoctorQualificationId,Response.Data.Id,selectedQualification,1,_UserIdAdmin);
+        let selectedQualification = $("#DrpQualifications").val();
+        let PayloadQu = new DoctorQualification(DoctorQualificationId == 0 ? 0 : DoctorQualificationId, Response.Data.Id, selectedQualification, 1, _UserIdAdmin);
         _Request.Post("DoctorQualification/Save", PayloadQu, SuccessSaveNewQualificationtest);
         DoctorQualificationId = 0;
     }
 }
 
 function SuccessSaveNewSpecialization(Response) {
-    if (Response.Status !== 1000){
+    if (Response.Status !== 1000) {
 
         makeCustomHeader(_UserId);
         ShowMessage("Error !", MessageTypes.Error, "Error!");
     }
 }
 
-function SuccessSaveNewQualificationtest(Response)
-{
+function SuccessSaveNewQualificationtest(Response) {
     makeCustomHeader(_UserId);
     DoctorBranch_Search();
     $('#ModalForBranchAddOrUpdate').modal('hide');
@@ -1209,44 +1240,40 @@ function ChangeDoctorPassword(doctorId) {
 
     let UserName = document.getElementById("TxtDoctorUser_Name").value;
     let Password = document.getElementById("TxtDoctorPassword").value;
-    let ConfirmPassword= document.getElementById("TxtDoctorConfirm_Password").value;
+    let ConfirmPassword = document.getElementById("TxtDoctorConfirm_Password").value;
 
-    if(!(Password===ConfirmPassword)){
+    if (!(Password === ConfirmPassword)) {
         ShowMessage("Please check your password", MessageTypes.Error, "Error !");
         return;
     }
 
     makeCustomHeader(_UserIdAdmin);
 
-    let Payload = new User(0,UserName,Password,3,1,SelectedDoctor,undefined);
+    let Payload = new User(0, UserName, Password, 3, 1, SelectedDoctor, undefined);
     _Request.Post("User/Post", Payload, SuccessSaveUserLoginDetails);
 }
 
-function SuccessSaveUserLoginDetails(Response){
+function SuccessSaveUserLoginDetails(Response) {
 
-    if (Response.Status !== 1000){
+    if (Response.Status !== 1000) {
         makeCustomHeader(_UserId);
         ShowMessage("Error", MessageTypes.Error, "Error !");
-    }
-    else
-    {
-        let Payload = new DoctorUser(0,Response.Data.Id,parseInt(SelectedDoctor),SelectedDoctor);   //Error in DoctorId
+    } else {
+        let Payload = new DoctorUser(0, Response.Data.Id, parseInt(SelectedDoctor), SelectedDoctor);   //Error in DoctorId
         _Request.Post("UserDoctor/Save", Payload, SuccessSaveDoctorUserLoginDetails);
     }
 }
-function SuccessSaveDoctorUserLoginDetails(Response)
-{
+
+function SuccessSaveDoctorUserLoginDetails(Response) {
     makeCustomHeader(_UserId);
     if (Response.Status !== 1000)
 
         ShowMessage("Error", MessageTypes.Error, "Error !");
-    else
-    {
+    else {
         $('#ModalDoctorsLogin').modal('hide');
         ShowMessage("Doctor Login Details Saved Successfully !", MessageTypes.Success, "Success !");
     }
 }
-
 
 
 //report
@@ -1255,8 +1282,8 @@ function Report_Search() {
 
     let branch = $('#DrpBranch').val();
     let doctor = $('#DrpDoctor').val();
-    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
-    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+    let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
 
     // let FromDate = moment(document.getElementById('TxtReportFrom_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 00:00:00";
     // let ToDate = moment(document.getElementById('TxtReportTo_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 23:59:59";
@@ -1271,7 +1298,7 @@ function Report_Search() {
             for (let Count = 0; Count < Response.length; Count++) {
                 Data = Response[Count];
                 ResultsData.push({
-                    "No": (Count+1),
+                    "No": (Count + 1),
                     "Date & Time": formatDateAndTime(new Date(Data.DateCreated)),
                     "Prescription No": Data.PrescriptionId,
                     "Patient Name": Data.PatientFullName,
