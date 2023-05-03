@@ -436,7 +436,9 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     if (_PatientId !== null && _PatientId !== undefined) {
         document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
         document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " + SessionDetails;
-        document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
+        // document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
+        const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === _PatientId)[0];
+        document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + PatientMatched.FirstName + ' ' + PatientMatched.LastName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
     } else {
