@@ -8,7 +8,7 @@ let LoopCount = 0;
 let selectedRowSessionId = 0;
 let selectedRowAppointmentId = 0;
 let selectedRowPatientId = 0;
-let DoctorContactIdArr =  [0 , 0];
+let DoctorContactIdArr = [0, 0];
 let DoctorSpecializationId = 0;
 let DoctorSpecializationDrpId = 0;
 let DoctorQualificationId = 0;
@@ -519,7 +519,7 @@ function FilterAppointedPatientData(Data) {
             ChannelingStatus = 'Successful';
         } else if (ChannelingStatusOriginal.includes('pending')) {
             ChannelingStatus = 'Pending';
-        } else if(ChannelingStatusOriginal.includes('cancelled')){
+        } else if (ChannelingStatusOriginal.includes('cancelled')) {
             ChannelingStatus = 'Cancelled';
         }
 
@@ -544,7 +544,7 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ','+Data[Count].SessionId+','+Data[Count].PatientId+')">' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
                     '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
@@ -607,7 +607,7 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId,SessionId,PatientId) {
+function AppointmentDetailsEdit(AppointmentId, SessionId, PatientId) {
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
@@ -1278,7 +1278,10 @@ function BranchAddOrUpdate(BranchId) {
     const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
     const ContactNo = document.getElementById("TxtBranchUpdateContactNo").value.trim();
     // const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
-    const Numbers = [new ContactNumbers(0, ContactNo, 1)];
+    const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
+    // console.log('BranchAddOrUpdate.BranchMatched:', BranchMatched);
+    const Numbers = [new ContactNumbers(BranchMatched !== undefined ? BranchMatched.Postcode.split('|')[2] : 0, ContactNo, 1)];
+    // console.log('BranchAddOrUpdate.Numbers:', Numbers);
     const Status = 1;
     const UserSavedId = getCookie("UserId");
     const InstituteId = _NurseBranch.InstituteId;
@@ -1337,32 +1340,30 @@ function BranchWardAdd(BranchId) {
 function EditPassword() {
     $('#TxtDoctorConfirm_Password').show();
     $('#LblDoctorConfirm_Password').show();
-    $('#TxtDoctorUser_Name').prop('disabled',false);
-    $('#TxtDoctorPassword').prop('disabled',false);
+    $('#TxtDoctorUser_Name').prop('disabled', false);
+    $('#TxtDoctorPassword').prop('disabled', false);
 }
 
 
 //report
 
-function DownloadReport()
-{
+function DownloadReport() {
 
     let doctor = $('#DrpDoctor').val();
-    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
-    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+    let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
 
     makeCustomHeader(_UserIdAdmin);
-    _Request.Post("PrescriptionRecord/GetPrescriptionRecord",new NewDailyCollection(FromDate,ToDate,doctor,"ALL"),function (res) {
+    _Request.Post("PrescriptionRecord/GetPrescriptionRecord", new NewDailyCollection(FromDate, ToDate, doctor, "ALL"), function (res) {
 
         makeCustomHeader(_UserId);
         var csv_data = [];
         csv_data.push('#,Date & Time,Prescription No,Patient Name,Patient Mobile,Patient Age,Presenting Symptoms,Diagnosis,Drug Name')
-        for (var i = 0; i < res.Data.length; i++)
-        {
+        for (var i = 0; i < res.Data.length; i++) {
             let data = res.Data[i];
-            csv_data.push(i+','+data.DateCreated+','+data.PrescriptionId+','+
-                data.PatientFullName+','+data.Mobile+','+data.AgeYears+','
-                +data.PositiveSx.replaceAll(',','-')+','+data.Diagnosis.replaceAll(',','-')+','+data.DrugName)
+            csv_data.push(i + ',' + data.DateCreated + ',' + data.PrescriptionId + ',' +
+                data.PatientFullName + ',' + data.Mobile + ',' + data.AgeYears + ','
+                + data.PositiveSx.replaceAll(',', '-') + ',' + data.Diagnosis.replaceAll(',', '-') + ',' + data.DrugName)
         }
         // Combine each row data with new line character
         csv_data = csv_data.join('\n');
@@ -1373,8 +1374,7 @@ function DownloadReport()
 
 }
 
-function downloadCSVFile(csv_data)
-{
+function downloadCSVFile(csv_data) {
 
     // Create CSV file object and feed
     // our csv_data into it
@@ -1388,10 +1388,10 @@ function downloadCSVFile(csv_data)
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0,10);
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
-    temp_link.download = "PrescriptionList-"+TodaysDate+".csv";
+    temp_link.download = "PrescriptionList-" + TodaysDate + ".csv";
     temp_link.href = window.URL.createObjectURL(CSVFile);
 
     // This link should not be displayed
