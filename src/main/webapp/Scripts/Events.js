@@ -502,7 +502,7 @@ function AppointmentUpdate() {
     let val = $('#TxtAppointmentUpdateDoctorSession').val();
 
     selectedRowSessionId = parseInt(val);
-    console.log(selectedRowSessionId.isNuN);
+    console.log(selectedRowSessionId.isNaN);
     if (isNaN(selectedRowSessionId)) {
         return ShowMessage("Please Select Session", MessageTypes.Warning, "Warning!");
     } else {
@@ -532,6 +532,26 @@ function AppointmentUpdate() {
 function SaveAppointment_Success_Update(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         CmdAppoinments_Click();
+        // send sms to patient
+        _Request.Post(ServiceMethods.SENDSMS, {
+            "ScheduleMedium": [
+                {
+                    "MediumId": 1,
+                    "Destination": _PatientMobileNo,
+                    "Status": 0
+                }
+            ],
+            "ScheduleMediumType": [
+                {
+                    "MediumId": 1,
+                    "Destination": _PatientMobileNo,
+                    "Status": 0
+                }
+            ],
+            "NotifactionType": 1,
+            "Message": "Click to View  Refarral Letter http://doctoronline.lk/Documents/?Id=1009&Status=1",
+            "Status": 0
+        }, null);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
     }
 }

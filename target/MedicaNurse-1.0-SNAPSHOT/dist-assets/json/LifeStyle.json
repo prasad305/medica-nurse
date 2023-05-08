@@ -1,0 +1,255 @@
+{
+  "Questionnaire": [
+    {
+      "0401": "Life Style",
+      "Answers": [
+        {
+          "040101": "Yes",
+          "040102": "No"
+        }
+      ]
+    },
+    {
+      "0402": "Are you exposed to following Risk factors at work or home?",
+      "Answers": [
+        {
+          "040110": "Indoor air pollution",
+          "040111": "Biomass fuel for cooking",
+          "040112": "Kerosene for cooking",
+          "040113": "Gas for cooking",
+          "040114": "Electricity for cooking",
+          "040115": "Ambient air pollution",
+          "040116": "Vehicle emission exposure",
+          "040117": "Coal power plant worker",
+          "040118": "Coal power plant area resident",
+          "040119": "Manufacturing industry worker",
+          "040120": "Waste incineration exposure",
+          "040121": "Agriculture worker",
+          "040122": "Mining worker",
+          "040123": "Carcinogens",
+          "040124": "Asthmagens",
+          "040125": "Air borne particulate matter",
+          "040126": "Gases and fumes",
+          "040127": "Noise",
+          "040128": "Injuries",
+          "040129": "Sexually transmitted infections",
+          "040130": "Alcohol",
+          "040131": "Substance abuse",
+          "040132": "Heat",
+          "040133": "Cold",
+          "040134": "Road traffic accidents",
+          "040135": "Miners",
+          "040136": "Construction worker",
+          "040137": "Welder",
+          "040138": "Farmer",
+          "040139": "Grain handlers",
+          "040140": "Cotton worker",
+          "040141": "Flax worker",
+          "040142": "Hemp worker",
+          "040143": "Diesel fume exposure",
+          "040144": "Noise exposure",
+          "040145": "Nylon fiber exposure",
+          "040146": "Pop corn workers",
+          "040147": "Lead exposure"
+        }
+      ]
+    },
+    {
+      "0403": "What is your current quality of Life?",
+      "Answers": [
+        {
+          "040301": "Bood sugar tests never done",
+          "040302": "Urine tests never done",
+          "040303": "Us scan never done",
+          "040304": "Xrays never done",
+          "040305": "Ct/mri never done",
+          "040306": "Strip tests never done<",
+          "040307": "Saliva, phlegm tests never done",
+          "040308": "Tissue pieces tests never done",
+          "040309": "Body scraping tests never done",
+          "040310": "Bood sugar done",
+          "040311": "Urine tests done",
+          "040312": "Us scan done",
+          "040313": "Xrays done",
+          "040314": "Ct/mri done",
+          "040315": "Strip tests done",
+          "040316": "Saliva, phlegm tests done",
+          "040317": "Tissue pieces tests done",
+          "040318": "Body scraping tests done"
+        }
+      ]
+    },
+    {
+      "0404": "How is your Rest?",
+      "Answers": [
+        {
+          "040401": "Bed rest",
+          "040402": "Bed rest at least 15 min",
+          "040403": "Bed rest at least 4 hrs",
+          "040404": "Bed rest in short spells",
+          "040405": "Reading",
+          "040406": "Computer use",
+          "040407": "Tv viewing",
+          "040408": "Gossiping",
+          "040409": "Studying",
+          "040410": "100% of waking time",
+          "040411": "75% of waking time",
+          "040412": "50% of waking time",
+          "040413": "25% of waking time"
+        }
+      ]
+    },
+    {
+      "0405": "Do you take following medications prescribed or none prescribed?",
+      "Answers": [
+        {
+          "040501": "Antioxidant Supplements",
+          "040502": "Vit C intake",
+          "040503": "Vit E intake",
+          "040504": "Multivitamin supplements",
+          "040505": "Calcium supplements",
+          "040506": "Creatine supplements",
+          "040507": "recent use of GTN",
+          "040508": "recent use of L-arginine",
+          "040509": "recent use of ISMN",
+          "040510": "recent use of ISDN",
+          "040511": "recent use of Sodium nitroprusside",
+          "040512": "recent use of tadalafil",
+          "040513": "recent use of sildenafil",
+          "040514": "recent use of vardenafil",
+          "040515": "gastric tablets",
+          "040516": "acid syrups",
+          "040517": "pressure tablets",
+          "040518": "diabetes tablets",
+          "040519": "cholesterol tablets",
+          "040520": "fever tablets",
+          "040521": "antibiotics",
+          "040522": "gas acid tablets",
+          "040523": "Pain killers",
+          "040524": "Arthritis tablets",
+          "040525": "depression tablets",
+          "040526": "anxiety tablets",
+          "040527": "mental health tablets",
+          "040528": "family planning tablets",
+          "040529": "family planning injections"
+        }
+      ]
+    },
+    {
+      "0406": "Imunisation",
+      "Answers": [
+        {
+          "040601": "BCG vaccine",
+          "040602": "Hepatitis B vaccine 1",
+          "040603": "Hepatitis B vaccine 2",
+          "040604": "Hepatitis B vaccine 3",
+          "040605": "Rotavirus vaccine 1",
+          "040606": "Rotavirus vaccine 2",
+          "040607": "Rotavirus vaccine 3",
+          "040608": "DTaP vaccine 1",
+          "040609": "DTaP vaccine 2",
+          "040610": "DTaP vaccine 3",
+          "040611": "DTaP vaccine 4",
+          "040612": "DTaP vaccine 5",
+          "040613": "Hib vaccine 1",
+          "040614": "Hib vaccine 2",
+          "040615": "Hib vaccine 3",
+          "040616": "Hib vaccine 4",
+          "040617": "PCV 1",
+          "040618": "PCV 2",
+          "040619": "PCV 3",
+          "040620": "PCV 4",
+          "040621": "IPV 1",
+          "040622": "IPV 2",
+          "040623": "IPV 3",
+          "040624": "IPV 4",
+          "040625": "IPV 5",
+          "040626": "OPV 1",
+          "040627": "OPV 2",
+          "040628": "OPV 3",
+          "040629": "OPV 4",
+          "040630": "OPV 5",
+          "040631": "MMR 1",
+          "040632": "MMR 2",
+          "040633": "Varicella vaccine 1",
+          "040634": "Varicella vaccine 2",
+          "040635": "Influenza vaccine 1",
+          "040636": "Influenza vaccine 2",
+          "040637": "HPV vaccine 1",
+          "040638": "HPV vaccine 2",
+          "040639": "HPV vaccine 3",
+          "040640": "Meningococcal vaccine 1",
+          "040641": "Meningococcal vaccine 2",
+          "040642": "Zoster vaccine",
+          "040643": "Tetanus toxoid vaccine 1",
+          "040644": "Tetanus toxoid vaccine 2",
+          "040645": "Tetanus toxoid vaccine 3",
+          "040646": "Tetanus toxoid vaccine booster"
+        }
+      ]
+    },
+    {
+      "0407": "What is your Computer Literacy?",
+      "Answers": [
+        {
+          "040701": "Ability to use a computer",
+          "040702": "Ability to send emails",
+          "040703": "Ability to receive emails",
+          "040704": "Play computer games"
+        }
+      ]
+    },
+    {
+      "0408": "What is your Computer Literacy?",
+      "Answers": [
+        {
+          "040801": "Ability to use a computer",
+          "040802": "Ability to use a lap top",
+          "040803": "Ability to use a tablet",
+          "040804": "Ability to use a smart phone"
+        }
+      ]
+    },
+
+    {
+      "0409": "What is your Health Literacy? Clearly Written Medical Prescription – CWMP",
+      "Answers": [
+        {
+          "040901": "Understand a CWMP unaided",
+          "040902": "Can act on a CWMP unaided",
+          "040903": "CWMP need little help for understanding",
+          "040904": "CWMP need fair help for understanding",
+          "040905": "CWMP need lot of help for understanding",
+          "040906": "CWMP need little help to act on it",
+          "040907": "CWMP need fair help to act on it",
+          "040908": "CWMP need lot of help help to act on it",
+          "040909": "Knows the name of medications prescribed",
+          "040910": "Knows the dose of the medications prescribed",
+          "040911": "Knows the frequency of medications prescribed",
+          "040912": "Knows the numbers  referring to drug doses",
+          "040913": "Knows the numbers referring to drug frequency",
+          "040914": "Understands the substitutes for prescribed drugs",
+          "040915": "Can titrate the drug doses if required",
+          "040916": "Family members support medication taking",
+          "040917": "Medicines re-packed for ease of use",
+          "040918": "Use a pill counter"
+        }
+      ]
+    },
+    {
+      "0410": "What is your Self Efficacy?",
+      "Answers": [
+        {
+          "041001": "Able to achieve goals in life",
+          "041002": "Certain to accomplish difficult tasks",
+          "041003": "Can achieve important outcomes",
+          "041004": "Can succeed any endeavour set for me",
+          "041005": "Can overcome challenges successfully",
+          "041006": "Confident of task performance",
+          "041007": "Task performance better than others",
+          "041008": "Task performance despite tough circumstances"
+        }
+      ]
+    }
+  ]
+}

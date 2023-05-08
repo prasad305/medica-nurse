@@ -131,6 +131,7 @@ const ServiceMethods =
         AddressPost: "Address/POST",
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
+        SENDSMS: "/Schedule/Save",
     };
 
 const MessageTypes =

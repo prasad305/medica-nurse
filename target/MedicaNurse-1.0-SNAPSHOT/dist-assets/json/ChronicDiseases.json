@@ -1,0 +1,170 @@
+{
+  "Questionnaire": [
+    {
+      "0601": "Do you have any Chronic Diseases?",
+      "Answers": [
+        {
+          "060101": "Yes",
+          "060102": "No"
+        }
+      ]
+    },
+    {
+      "0602": "Have made/done any of the following?",
+      "Answers": [
+        {
+          "060201": "Doctor consultations more than 4 last year",
+          "060202": "Hospital clinic visits more than 4 last year",
+          "060203": "Hospital opd visits more than 4 last year",
+          "060204": "Hospital admissions several last year",
+          "060205": "Lab testing more than 4 last year",
+          "060206": "Prescription refills more than 4 last year",
+          "060207": "Injections taken regularly",
+          "060208": "Lab testing more than 4 last year",
+          "060209": "Physician made diagnosis present",
+          "060210": "Undiagnosed illness despite consultations"
+        }
+      ]
+    },
+    {
+      "0603": "Do you have any of the following? Select many as you have",
+      "Answers": [
+        {
+          "060301": "Anxiety disorders",
+          "060302": "Arthritis",
+          "060303": "Asthma",
+          "060304": "Chronic Phlegm Diseases",
+          "060305": "Depressive disorders",
+          "060306": "Diabetes",
+          "060307": "Cholesterol problems",
+          "060308": "High Blood Pressure",
+          "060309": "Triglyceride high",
+          "060310": "Worry over disease",
+          "060311": "IBS",
+          "060312": "Migraine",
+          "060313": "Somatization",
+          "060314": "Tension headache"
+        }
+      ]
+    },
+    {
+      "0604": "How does you illness effect you?",
+      "Answers": [
+        {
+          "060401": "House work done as usual",
+          "060402": "Office work done as usual",
+          "060403": "Role function done as usual",
+          "060404": "Leisure work done as usual",
+          "060405": "House work less than 10 pc affected",
+          "060406": "Office work less than 10 pc affected",
+          "060407": "Role function less than 10 pc affected",
+          "060408": "Leisure work less than 10 pc affected",
+          "060409": "House work 10-50 pc affected",
+          "060410": "Office work 10-50 pc affected",
+          "060411": "Role function 10-50 pc affected",
+          "060412": "Leisure work 10-50 pc affected",
+          "060413": "House work more than 50 pc affected",
+          "060414": "Office work more than 50 pc affected",
+          "060415": "Role function more than 50 pc affected",
+          "060416": "Leisure work more than 50 pc affected",
+          "060417": "Social Interaction as usual",
+          "060418": "Family interaction as usual",
+          "060419": "Friends interaction as usual",
+          "060420": "Coworker interaction as usual",
+          "060421": "Associates interaction as usual",
+          "060422": "Social interaction as usual",
+          "060423": "Family interaction less than 30 pc affected",
+          "060424": "Friends interaction less than 30 pc affected",
+          "060425": "Coworker interaction less than 30 pc affected",
+          "060426": "Associates interaction less than 30 pc affected",
+          "060427": "Social interaction less than 30 pc affected",
+          "060428": "Family interaction 35-50 pc affected",
+          "060429": "Friends interaction 35-50 pc affected",
+          "060430": "Coworker interaction 35-50 pc affected",
+          "060431": "Associates interaction 35-50 pc affected",
+          "060432": "Social interaction 35-50 pc affected",
+          "060433": "Family interaction more than 50 pc affected",
+          "060434": "Friends interaction more than 50 pc affected",
+          "060435": "Coworker interaction more than 50 pc affected",
+          "060436": "Associates interaction more than 50 pc affected",
+          "060437": "Social interaction more than 50 pc affected"
+        }
+      ]
+    },
+    {
+      "0605": "What do you feel about your illness?",
+      "Answers": [
+        {
+          "060501": "Lab results within normal limits",
+          "060502": "Lab results near lower normal limits",
+          "060503": "Lab results near upper normal limits",
+          "060504": "Lab results high",
+          "060505": "Lab results low",
+          "060506": "Lab results very high",
+          "060507": "Lab results very low",
+          "060508": "Lab results repeatedly low or high",
+          "060509": "symptoms absent",
+          "060510": "symptoms present",
+          "060511": "symptoms of the disease",
+          "060512": "symptoms of the disease complications",
+          "060513": "synptoms of associated diseases",
+          "060514": "symptoms unrelated to disease",
+          "060515": "symptoms increasing",
+          "060516": "symptoms reducing",
+          "060517": "symptoms due to drugs",
+          "060518": "symptoms of emotional origin",
+          "060519": "synmptoms unexplained",
+          "060520": "symptpoms breakthrough",
+          "060521": "symtoms relaps",
+          "060522": "symptoms recurrent",
+          "060523": "symptoms suggestive of anxiety",
+          "060524": "symptoms suggestive of depression",
+          "060525": "symptoms suggestive of somatization",
+          "060526": "symptoms suggestive of hypochondriasis",
+          "060527": "sympyoms suggestive of nocebo",
+          "060528": "symptoms of placebo",
+          "060529": "symptoms of drug allergy",
+          "060530": "symptoms of drug intolerance",
+          "060531": "symptoms of drug adverse effect"
+        }
+      ]
+    },
+    {
+      "0606": "How do you feel you are..",
+      "Answers": [
+        {
+          "060601": "Perception of wellnesss",
+          "060602": "Perception of good finances",
+          "060603": "Perception of normal emotional health",
+          "060604": "Perception of good physical health",
+          "060605": "Perception of coping ability",
+          "060606": "Perception of sickliness",
+          "060607": "Perception of poor finances",
+          "060608": "Perception of poor emotional health",
+          "060609": "Perception  poor physical health",
+          "060610": "Perception of coping inability",
+          "060611": "Perception of self efficacy",
+          "060612": "Perception of coping with disease",
+          "060613": "Perception of coping with illness",
+          "060614": "Emotions handled well",
+          "060615": "Disease knowledge adequate",
+          "060616": "Illness knowledge adequate",
+          "060617": "Tools for disease used",
+          "060618": "Tools for disease not used",
+          "060619": "Resources for disease used",
+          "060620": "Resources for disease not used",
+          "060621": "Disease selfhelp groups used",
+          "060622": "Disease selfhelp groups not used",
+          "060623": "Perception of self efficacy normal",
+          "060624": "Perception of self efficacy low",
+          "060625": "Coping with disease well",
+          "060626": "Coping with disease poor",
+          "060627": "Disease induced emotions handled",
+          "060628": "Disease induced emotions not handled",
+          "060629": "Fears and concerns positive",
+          "060630": "Fears and concerns negative"
+        }
+      ]
+    }
+  ]
+}
