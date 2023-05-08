@@ -233,6 +233,27 @@ function SavePatient_Click() {
     _Request.Post(ServiceMethods.SavePatient, PatientData, SaveDetails_Success);
 }
 
+function SaveBillData(printData) {
+
+    var dataset = [];
+
+    $('#TblPatientInvoice > tbody  > tr').each(function(index, tr) {
+        dataset.push(new BillData(tr.cells[3].children[0].value,tr.cells[2].children[0].value,tr.cells[1].children[0].value))
+    });
+
+     var allData  = new Bill(billId,selectedSessionId,selectedDoctorId,selectedPatientId
+        ,$('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0
+        ,$('#TxtTotal').text(),selectedAppId,dataset,selectedAppointmentId)
+
+    console.log(allData);
+
+    _Request.Post(ServiceMethods.BillSave,allData,function (res) {
+        printData.Bill.BillNumber = 'SO/SC/'+String( res.Data.Id).padStart(5, '0');
+        medicalBillSaveInLocalStorage(JSON.stringify(printData));
+    });
+}
+
+
 function SetPatientDataByNIC() {
     let NIC = document.getElementById('TxtAddMobileNumber').value;
     if (GetDateOfBirthByNIC(NIC) === null)
@@ -299,6 +320,10 @@ function CmdSaveSession_Click() {
 function CmdSessionSearch_Click() {
     _DoctorId = document.getElementById('DrpSessionDoctor').value;
     _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
+    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
+    selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
+    _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
 
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
@@ -393,7 +418,7 @@ function Appointments_Search() {
 }
 
 function SaveAppointment_Click() {
-    _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0, parseInt(document.getElementById('TxtAppoinmentNumber').value), _AppointmentSessionId, _PatientId, null, 1, _UserId), SaveAppointment_Success);
+    _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0, parseInt(document.getElementById('TxtAppoinmentNumber').value), _AppointmentSessionId, _PatientId, null, 2, _UserId), SaveAppointment_Success);
 }
 
 function AddPatientAppointment_Click() {
@@ -520,7 +545,7 @@ function AppointmentUpdate() {
                 parseInt(Res.Data.Number),
                 selectedRowSessionId,
                 selectedRowPatientId, null,
-                1, _UserId)
+                2, _UserId)
                 , SaveAppointment_Success_Update);
         });
     }
@@ -799,6 +824,7 @@ function LnkSignOut_Click() {
 function CmdBtnClickable_Click(Event) {
     CmdBtnColorRemove_Click();
     Event.style.backgroundColor = "#BDC3C7";
+
 }
 
 function CmdBtnColorRemove_Click() {
@@ -1262,7 +1288,7 @@ function Report_Search() {
     // let ToDate = moment(document.getElementById('TxtReportTo_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 23:59:59";
 
     makeCustomHeader(_UserIdAdmin);
-    _Request.Post("PrescriptionRecord/GetPrescriptionRecord", new NewDailyCollection(FromDate, ToDate, doctor, null), function (Response) {
+    _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch,_UserIdAdmin), function (Response) {
         makeCustomHeader(_UserId);
         const ResultsData = [];
         Response = Response.Data;
@@ -1273,8 +1299,8 @@ function Report_Search() {
                 ResultsData.push({
                     "No": (Count+1),
                     "Date & Time": formatDateAndTime(new Date(Data.DateCreated)),
-                    "Prescription No": Data.PrescriptionId,
-                    "Patient Name": Data.PatientFullName,
+                    "Appointment No": Data.Number,
+                    "Patient Name": Data.FirstName+" "+Data.LastName,
                     "Patient Mobile": Data.Mobile
                 });
             }

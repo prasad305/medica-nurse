@@ -12,6 +12,12 @@ let DoctorContactIdArr =  [0 , 0];
 let DoctorSpecializationId = 0;
 let DoctorSpecializationDrpId = 0;
 let DoctorQualificationId = 0;
+var selectedDoctorId;
+var selectedSessionId;
+var selectedAppId;
+var selectedAppointmentId;
+var selectedPatientId;
+var billId = 0;
 
 function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
@@ -253,11 +259,9 @@ function GetSessionDoctorId_Success(Response) {
 
 function GetDoctorData_Success(Response) {
     _DoctorSessionData.push(Response.Data);
-    // console.log('GetDoctorData_Success._DoctorSessionData:',_DoctorSessionData);
 }
 
 function SetDoctorData(Id) {
-    // console.log('SetDoctorData.Id:', Id);
     let Count;
     let DataLength = _DoctorSessionData.length;
     //all doctors - as the first option
@@ -649,13 +653,28 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(PatientId) {
-    // console.log(appId);
-    // console.log('MedicalBillDisplay.PatientId:', PatientId);
-    // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
-    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
-    // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
-    new MedicalBill(PatientMatched).Render(Containers.Footer);
+function MedicalBillDisplay(AppointmentId, appId) {
+    console.log(appId)
+    selectedAppId = appId;
+    selectedAppointmentId = AppointmentId;
+    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === AppointmentId)[0];
+
+    var allData  = new Bill(undefined,selectedSessionId,selectedDoctorId,selectedPatientId
+        ,undefined
+        ,undefined,selectedAppId,undefined,AppointmentId)
+    _Request.Post(ServiceMethods.BillGet,allData,function (res) {
+        console.log(res);
+
+        if(res.Data?.Id){
+            billId = res.Data.Id;
+            //pass data to ui
+        }else {
+            billId = 0;
+        }
+
+    });
+
+    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
 }
 
 function medicalBillTableFirstRowReplace() {
@@ -775,10 +794,10 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillSave(PatientId) {
+function medicalBillSave(PatientId,appId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
     // console.log('medicalBillSave._ArrayPatientSearchResultsData:', _ArrayPatientSearchResultsData);
-    const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === PatientId)[0];
+    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
     const MedicalBillItems = [];
     // let TotalInputElements = 0;
     // let FilledInputElements = 0;
@@ -794,6 +813,7 @@ function medicalBillSave(PatientId) {
         let FeeType = '-';
         let FeeAmount = 0;
         let MedicalBillItem = {};
+        const MedicalBillItems = [];
 
         for (let i = 0; i < TableRows.length; i++) {
             TableRow = TableRows[i];
@@ -819,7 +839,7 @@ function medicalBillSave(PatientId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-    let month = parseInt(date.getMonth()) + 1;
+    let month = parseInt(date.getMonth())+1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
@@ -827,8 +847,7 @@ function medicalBillSave(PatientId) {
         ("0" + date.getMinutes()).slice(-2);
 
     const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
-
-    // console.log('medicalBillSave._DoctorSessionData:', _DoctorSessionData);
+    // console.log('PatientsAge:', PatientsAge);
 
     const Patient = {
         'Doctor': 'Dr. Maester Luwin',
@@ -841,8 +860,7 @@ function medicalBillSave(PatientId) {
         'Discount': $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0,
         'Total': $('#TxtTotal').text(),
         'AppDate': DateTime,
-        // 'AppNumber': appId,
-        'AppNumber': 1,
+        'AppNumber': appId,
         'BillNumber': 'SO/SC/57333',
         'BillDate': DateTime.split(' ')[0],
         'BillUser': 'Margery',
@@ -854,11 +872,7 @@ function medicalBillSave(PatientId) {
         'UserId': _UserId,
     }
 
-    // if (FilledInputElements === TotalInputElements) {
-    medicalBillSaveInLocalStorage(JSON.stringify(JsonObjectToSave));
-    // } else {
-    //     return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
-    // }
+     SaveBillData(JsonObjectToSave);
 }
 
 function medicalBillSaveInLocalStorage(JsonString) {
@@ -1327,28 +1341,67 @@ function EditPassword() {
 function DownloadReport()
 {
 
+    let branch = $('#DrpBranch').val();
     let doctor = $('#DrpDoctor').val();
     let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
     let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
 
-    makeCustomHeader(_UserIdAdmin);
-    _Request.Post("PrescriptionRecord/GetPrescriptionRecord",new NewDailyCollection(FromDate,ToDate,doctor,"ALL"),function (res) {
+    _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch,_UserIdAdmin),function (res) {
 
-        makeCustomHeader(_UserId);
+        let ttlDoctor=0;
+        let ttlHospital=0;
+        let ttlOther=0;
+        let ttlBookingFee=0;
         var csv_data = [];
-        csv_data.push('#,Date & Time,Prescription No,Patient Name,Patient Mobile,Patient Age,Presenting Symptoms,Diagnosis,Drug Name')
+        csv_data.push(['#','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
+            'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges'])
         for (var i = 0; i < res.Data.length; i++)
         {
             let data = res.Data[i];
-            csv_data.push(i+','+data.DateCreated+','+data.PrescriptionId+','+
-                data.PatientFullName+','+data.Mobile+','+data.AgeYears+','
-                +data.PositiveSx.replaceAll(',','-')+','+data.Diagnosis.replaceAll(',','-')+','+data.DrugName)
+            console.log(data);
+
+            let hospital = data.HospitalFee==null?0:data.HospitalFee;
+            let DoctorFee = data.DoctorFee==null?0:data.DoctorFee;
+            let AllOtherFee = data.AllOtherFee==null?0:data.AllOtherFee;
+            let BookingFee = data.BookingFee==null?0:data.BookingFee;
+            ttlOther+=AllOtherFee;
+            ttlHospital+=hospital;
+            ttlDoctor+=DoctorFee;
+            ttlBookingFee+=BookingFee;
+            var d = [i,
+            formatDateAndTime(new Date(data.TimeStart))+' '+formatDateAndTime(new Date(data.TimeEnd)),
+            data.Number,
+            data.FirstName+" "+data.LastName,
+            data.Mobile,
+            data.Type,
+            'PAID',
+            hospital,
+            DoctorFee,
+            AllOtherFee,AllOtherFee];
+            console.log(d)
+            csv_data.push(d);
+
         }
-        // Combine each row data with new line character
-        csv_data = csv_data.join('\n');
+        // =SUM(I2:I4)
+        var d = ["",
+            "",
+            "",
+            "",
+            "",
+            "",
+            '',
+            ttlHospital,
+            ttlDoctor,
+            ttlBookingFee,
+            ttlOther];
+        csv_data.push(d)
+
+        // console.log(csv_data);
+        // // Combine each row data with new line character
+        // csv_data = csv_data.join('\n');
 
         // Call this function to download csv file
-        downloadCSVFile(csv_data);
+        createExcel(csv_data);
     });
 
 }
@@ -1382,4 +1435,40 @@ function downloadCSVFile(csv_data)
     // trigger download
     temp_link.click();
     document.body.removeChild(temp_link);
+}
+
+function createExcel(data){
+
+
+    var workbook = XLSX.utils.book_new(),
+        worksheet = XLSX.utils.aoa_to_sheet(data);
+    workbook.SheetNames.push("First");
+    workbook.Sheets["First"] = worksheet;
+
+    XLSX.writeFile(workbook, "demo.xlsx");
+
+    var xlsblob = new Blob(
+        [new Uint8Array(XLSX.write(workbook, { bookType: "xlsx", type: "array" }))],
+        {type:"application/octet-stream"}
+    );
+
+    // Create to temporary link to initiate
+    // download process
+    var temp_link = document.createElement('a');
+
+    const TodaysDate = new Date().toISOString().slice(0,10);
+
+    // Download csv file
+    temp_link.download = "ReportList-"+TodaysDate+".xlsx";
+    temp_link.href = window.URL.createObjectURL(xlsblob);
+
+    // This link should not be displayed
+    temp_link.style.display = "none";
+    document.body.appendChild(temp_link);
+
+    // Automatically click the link to
+    // trigger download
+    temp_link.click();
+    document.body.removeChild(temp_link);
+
 }
