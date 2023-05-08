@@ -336,4 +336,32 @@ function NewDailyCollection(FromDate, ToDate,DoctorId,SearchType)
     this.DoctorId = DoctorId;
     this.SearchType = SearchType;
 
+}function AppointmentReport(FromDate, ToDate,DoctorId,BranchId,UserId)
+{
+    this.FromDate = FromDate;
+    this.ToDate = ToDate;
+    this.DoctorId = DoctorId;
+    this.BranchId = BranchId;
+    this.UserId = UserId;
+
+}
+
+function Bill(Id, SessionId, DoctorId, PatientId,Discount,Total, AppointmentNumber,BillData,AppointmentId)
+{
+    this.Id = Id;
+    this.SessionId = SessionId;
+    this.DoctorId = DoctorId;
+    this.PatientId = PatientId;
+    this.Discount = Discount;
+    this.Total = Total;
+    this.AppointmentNumber = AppointmentNumber;
+    this.AppointmentId = AppointmentId;
+    this.BillData = BillData;
+}
+
+function BillData(Amount, FeeType, ItemName)
+{
+    this.Amount = Amount;
+    this.FeeType = FeeType;
+    this.ItemName = ItemName;
 }

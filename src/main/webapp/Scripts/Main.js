@@ -131,6 +131,8 @@ const ServiceMethods =
         AddressPost: "Address/POST",
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
+        BillSave:"Bill/Post",
+        BillGet:"Bill/Get"
     };
 
 const MessageTypes =
@@ -357,6 +359,7 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<option value="Hospital Fee"> Hospital Fee</option> ' +
     '<option value="Doctor Fee">Doctor Fee</option> ' +
     '<option value="Investigation Fee">Investigation Fee</option> ' +
+    '<option value="Booking Fee">Booking Fee</option> ' +
     '<option value="Other Fee">Other Fee</option>' +
     '</select> ' +
     '</td> ' +
