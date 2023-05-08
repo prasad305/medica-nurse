@@ -1,1 +1,0 @@
-﻿jQuery(document).ready(Page_Load);

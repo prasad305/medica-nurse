@@ -537,19 +537,19 @@ function SaveAppointment_Success_Update(Response) {
             "ScheduleMedium": [
                 {
                     "MediumId": 1,
-                    "Destination": _PatientMobileNo,
+                    "Destination": _PatientMobile,
                     "Status": 0
                 }
             ],
             "ScheduleMediumType": [
                 {
                     "MediumId": 1,
-                    "Destination": _PatientMobileNo,
+                    "Destination": _PatientMobile,
                     "Status": 0
                 }
             ],
             "NotifactionType": 1,
-            "Message": "Click to View  Refarral Letter http://doctoronline.lk/Documents/?Id=1009&Status=1",
+            "Message": `Appointment Updated`,
             "Status": 0
         }, null);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
