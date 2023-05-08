@@ -543,7 +543,7 @@ function SaveAppointment_Success_Update(Response) {
 
         shareAppointmentDetailsWithPatient({
             messageTitle: 'Appointment Updated!',
-            mobileNumber: '0770543422',
+            mobileNumber: patientMobileNo,
             appointmentNumber: appointmentNumber,
             appointmentId: appointmentId,
             doctorName: doctorName,

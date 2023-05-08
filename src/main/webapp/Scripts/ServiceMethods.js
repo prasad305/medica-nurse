@@ -516,7 +516,7 @@ function SaveAppointment_Success(Response) {
 
         shareAppointmentDetailsWithPatient({
             messageTitle: 'New Appointment Placed!',
-            mobileNumber: '0770543422',
+            mobileNumber: patientMobileNo,
             appointmentNumber: appointmentNumber,
             appointmentId: appointmentId,
             doctorName: doctorName,
