@@ -654,8 +654,8 @@ function UploadFile(PatientId) {
 function MedicalBillDisplay(PatientId) {
     // console.log(appId);
     // console.log('MedicalBillDisplay.PatientId:', PatientId);
-    // console.log('MedicalBillDisplay._AppointmentDetails:', _AppointmentDetails);
-    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('MedicalBillDisplay._ArrayAppointmentsForToday:', _ArrayAppointmentsForToday);
+    const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === PatientId)[0];
     // console.log('MedicalBillDisplay.PatientMatched:', PatientMatched);
     new MedicalBill(PatientMatched).Render(Containers.Footer);
 }
@@ -779,8 +779,9 @@ function medicalBillTableButtonsReset() {
 
 function medicalBillSave(PatientId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
-    // console.log('medicalBillSave._ArrayPatientSearchResultsData:', _ArrayPatientSearchResultsData);
-    const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('medicalBillSave._ArrayAppointmentsForToday:', _ArrayAppointmentsForToday);
+    const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === PatientId)[0];
+    // console.log('medicalBillSave.PatientMatched:', PatientMatched);
     const MedicalBillItems = [];
     // let TotalInputElements = 0;
     // let FilledInputElements = 0;
