@@ -532,26 +532,24 @@ function AppointmentUpdate() {
 function SaveAppointment_Success_Update(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         CmdAppoinments_Click();
+        console.log(Response)
         // send sms to patient
-        _Request.Post(ServiceMethods.SENDSMS, {
-            "ScheduleMedium": [
-                {
-                    "MediumId": 1,
-                    "Destination": _PatientMobile,
-                    "Status": 0
-                }
-            ],
-            "ScheduleMediumType": [
-                {
-                    "MediumId": 1,
-                    "Destination": _PatientMobile,
-                    "Status": 0
-                }
-            ],
-            "NotifactionType": 1,
-            "Message": `Appointment Updated`,
-            "Status": 0
-        }, null);
+        let appointmentNumber = Response.Data.Number;
+        let appointmentId = Response.Data.Id;
+        let doctorName = Response.Data.DoctorName;
+        let startingDateTime = Response.Data.TimeStart;
+
+        let patientMobileNo = Response.Data.Mobile;
+
+        shareAppointmentDetailsWithPatient({
+            messageTitle: 'Appointment Updated!',
+            mobileNumber: '0770543422',
+            appointmentNumber: appointmentNumber,
+            appointmentId: appointmentId,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
+
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
     }
 }

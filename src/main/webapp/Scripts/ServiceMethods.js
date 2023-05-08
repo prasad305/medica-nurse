@@ -459,6 +459,23 @@ function GetNextAppoinmentNumber_Sucess(Response) {
 
 function SaveAppointment_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+        //send message to patient
+        let appointmentNumber = Response.Data.Number;
+        let appointmentId = Response.Data.Id;
+        let doctorName = Response.Data.DoctorName;
+        let startingDateTime = Response.Data.TimeStart;
+        let patientMobileNo = Response.Data.Mobile;
+
+        shareAppointmentDetailsWithPatient({
+            messageTitle: 'New Appointment Placed!',
+            mobileNumber: '0770543422',
+            appointmentNumber: appointmentNumber,
+            appointmentId: appointmentId,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
+
+
         _PatientId = null;
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
@@ -466,6 +483,39 @@ function SaveAppointment_Success(Response) {
         //SavePatientAnalytics(Response.Data);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
     }
+}
+
+/**
+ * Sends SMS to patient with appointment details
+ * @param {string} messageTitle - Title of the message
+ * @param {string} mobileNumber - Mobile number of the patient
+ * @param {string} appointmentNumber - Appointment number'
+ * @param {string} appointmentId - Appointment id
+ * @param {string} doctorName - Name of the doctor
+ * @param {string} startingDateTime - Starting date and time of the appointment
+ * @param {string} doctorName - Name of the doctor
+ * @param {string} startingDateTime - Starting date and time of the appointment
+ * */
+function shareAppointmentDetailsWithPatient ({messageTitle, mobileNumber, appointmentNumber, appointmentId, doctorName, startingDateTime}) {
+    _Request.Post(ServiceMethods.SENDSMS, {
+        "ScheduleMedium": [
+            {
+                "MediumId": 1,
+                "Destination": mobileNumber,
+                "Status": 0
+            }
+        ],
+        "ScheduleMediumType": [
+            {
+                "MediumId": 1,
+                "Destination": mobileNumber,
+                "Status": 0
+            }
+        ],
+        "NotifactionType": 1,
+        "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+        "Status": 0
+    }, null);
 }
 
 function GetDoctorAppoinmentList() {
