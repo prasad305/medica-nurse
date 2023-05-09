@@ -235,26 +235,33 @@ async function SaveSession_Success(Response) {
 
         CmdCancelSession_Click();
         console.log(Response)
-        //send notification to all patients
-        //get all appointments in the session
-        const response = await PostAsync({
-            serviceMethod: ServiceMethods.GetAppoinment,
-            requestBody:new SessionId(Response.Data.Id)
-        });
-        console.log(response)
-        let doctorName = '';
-        let startingDateTime =Response.Data.TimeStart;
+        if(_UpdateSession){
+            try{
+                //send notification to all patients
+                //get all appointments in the session
+                const response = await PostAsync({
+                    serviceMethod: ServiceMethods.GetAppoinment,
+                    requestBody:new SessionId(Response.Data.Id)
+                });
+                console.log(response)
+                let doctorName = '';
+                let startingDateTime =Response.Data.TimeStart;
 
-        if(response.Data.length > 0){
-            doctorName = response.Data[0].DoctorName;
+                if(response.Data.length > 0){
+                    doctorName = response.Data[0].DoctorName;
+                }
+                await shareSessionUpdateWithPatients(response.Data, {
+                    messageTitle: "Session Updated",
+                    doctorName: doctorName,
+                    startingDateTime: startingDateTime
+                });
+
+            }catch (e) {
+                console.log(e)
+            }
+        }else{
+            ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
-        await shareSessionUpdateWithPatients(response.Data, {
-            messageTitle: "Session Updated",
-            doctorName: doctorName,
-            startingDateTime: startingDateTime
-        });
-
-        // ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
     }
 }
 /**
@@ -271,8 +278,8 @@ async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  d
         count.innerHTML = `Sending message ${completed} of ${appointments.length}`;
         completed++;
     }
-    function hideProgressDialog(){
-        count.innerHTML = `All patients updated`;
+    function setCompletedStatus(){
+        count.innerHTML = `All patients notified`;
     }
 
     for (let i = 0; i < appointments.length; i++) {
@@ -306,7 +313,7 @@ async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  d
         setCompletedCount()
 
     }
-    hideProgressDialog();
+    setCompletedStatus();
 }
 
 function GetSessionDoctorId() {
