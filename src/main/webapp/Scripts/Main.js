@@ -133,6 +133,7 @@ const ServiceMethods =
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
         BillSave:"Bill/Post",
         BillGet:"Bill/Get"
+        SENDSMS: "/Schedule/Save",
     };
 
 const MessageTypes =
