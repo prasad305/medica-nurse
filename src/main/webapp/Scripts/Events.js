@@ -245,7 +245,7 @@ function SaveBillData(printData) {
         ,$('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0
         ,$('#TxtTotal').text(),selectedAppId,dataset,selectedAppointmentId)
 
-    console.log(allData);
+    // console.log(allData);
 
     _Request.Post(ServiceMethods.BillSave,allData,function (res) {
         printData.Bill.BillNumber = 'SO/SC/'+String( res.Data.Id).padStart(5, '0');
