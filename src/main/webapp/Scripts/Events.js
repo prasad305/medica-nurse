@@ -203,7 +203,7 @@ async function cancelAllAppointments(){
                 })
 
             // notify patients
-            await PostAsync({
+            let status = await PostAsync({
                 serviceMethod: ServiceMethods.SENDSMS,
                 requestBody: {
                     "ScheduleMedium": [
