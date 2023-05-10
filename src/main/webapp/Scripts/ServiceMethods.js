@@ -232,8 +232,6 @@ function PatientMedicalBillModalDisplay(PatientId) {
 async function SaveSession_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let appointments = [];
-
-        CmdCancelSession_Click();
         console.log(Response)
         if(_UpdateSession){
             try{
@@ -251,7 +249,7 @@ async function SaveSession_Success(Response) {
                     doctorName = response.Data[0].DoctorName;
                 }
                 await shareSessionUpdateWithPatients(response.Data, {
-                    messageTitle: "Session Updated",
+                    messageTitle: "Session Updated!",
                     doctorName: doctorName,
                     startingDateTime: startingDateTime
                 });
@@ -262,6 +260,9 @@ async function SaveSession_Success(Response) {
         }else{
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
+
+        CmdCancelSession_Click();
+
     }
 }
 /**
@@ -397,6 +398,7 @@ function LoadSessionData(Id) {
     GetInstituteBranches();
     DatePicker();
     TimePicker();
+    _UpdateSession = true;
 
     _Request.Get(ServiceMethods.SessionGet + Id, undefined, LoadSessionData_Success);
 }

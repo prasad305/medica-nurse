@@ -172,14 +172,18 @@ async function cancelAllAppointments(){
     function setCompletedStatus(){
         count.innerHTML = `All appointments cancelled and patients notified`;
     }
-    for(let i = 0; i < _ArrayAppointedPatientData.length; i++){
+
+    //filter out appointments that are not cancelled already
+    for(let i = 0; i < _ArrayAppointmentsForToday.length; i++){
         try{
-            let doctorName = _ArrayAppointedPatientData[i].DoctorName;
-            let startingDateTime = _ArrayAppointedPatientData[i].StartingDateTime;
-            let id = _ArrayAppointedPatientData[i].Id;
-            let number = _ArrayAppointedPatientData[i].Number;
-            let patientId = _ArrayAppointedPatientData[i].PatientId;
-            let sessionId = _ArrayAppointedPatientData[i].SessionId;
+            let doctorName = _ArrayAppointmentsForToday[i].DoctorName;
+            let startingDateTime = _ArrayAppointmentsForToday[i].TimeStart;
+            let id = _ArrayAppointmentsForToday[i].Id;
+            let number = _ArrayAppointmentsForToday[i].Number;
+            let patientId = _ArrayAppointmentsForToday[i].PatientId;
+            let sessionId = _ArrayAppointmentsForToday[i].SessionId;
+
+            console.log(_ArrayAppointmentsForToday[i])
 
             let result = await PostAsync({
                     serviceMethod: ServiceMethods.ChanalingStatusSave,
@@ -375,6 +379,7 @@ function CmdSessionSearch_Click() {
 
 function CmdCancelSession_Click() {
     CmdSession_Click();
+    _UpdateSession = false;
     document.getElementById('DrpSessionDoctor').value = _DoctorId;
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
 }
