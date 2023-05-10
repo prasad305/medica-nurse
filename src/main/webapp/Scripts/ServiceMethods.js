@@ -235,32 +235,48 @@ function PatientMedicalBillModalDisplay(PatientId) {
 		Session Methods
  =================================*/
 
-function SaveSession_Success(Response) {
+async function SaveSession_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let appointments = [];
-        function  setAppointments(Response){
-            appointments = Response.Data
-        }
+
         CmdCancelSession_Click();
         console.log(Response)
-        //send notification to all patients
-        //get all appointments in the session
-        _Request.Post(ServiceMethods.GetAppoinment, new SessionId(Response.Data.Id), setAppointments);
-        shareSessionUpdateWithPatients(appointments, {
-            messageTitle: "Session Updated",
-            doctorName: 'doctorName',
-            startingDateTime: 'startingDateTime'
-        });
+        if(_UpdateSession){
+            try{
+                //send notification to all patients
+                //get all appointments in the session
+                const response = await PostAsync({
+                    serviceMethod: ServiceMethods.GetAppoinment,
+                    requestBody:new SessionId(Response.Data.Id)
+                });
+                console.log(response)
+                let doctorName = '';
+                let startingDateTime =Response.Data.TimeStart;
 
-        // ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
+                if(response.Data.length > 0){
+                    doctorName = response.Data[0].DoctorName;
+                }
+                await shareSessionUpdateWithPatients(response.Data, {
+                    messageTitle: "Session Updated",
+                    doctorName: doctorName,
+                    startingDateTime: startingDateTime
+                });
+
+            }catch (e) {
+                console.log(e)
+            }
+        }else{
+            ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
+        }
     }
 }
 /**
  * Share updated session details with patients
  * @param {Array} appointments
  * */
-function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime}){
-    ShowMessage(`<i id='count' Sending message 0 of ${appointments.length}</i>`, MessageTypes.Success, "Success!");
+async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime}){
+    ShowMessage(`<i id='count'> Sending message 0 of ${appointments.length}</i>`, MessageTypes.Success, "Success!");
+
     const count = document.getElementById('count');
 
     let completed = 1;
@@ -268,26 +284,42 @@ function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorN
         count.innerHTML = `Sending message ${completed} of ${appointments.length}`;
         completed++;
     }
-    function hideProgressDialog(){
-        ShowMessage("All patients updated", MessageTypes.Success, "Success!");
+    function setCompletedStatus(){
+        count.innerHTML = `All patients notified`;
     }
-    let callBack = setCompletedCount;
+
     for (let i = 0; i < appointments.length; i++) {
         //check whether the appointment is the last in list
-        if(i === appointments.length - 1){
-            callBack = hideProgressDialog;
-        }
+
         const appointment = appointments[i];
-        const { AppointmentId,Mobile,Number} = appointment;
-        shareAppointmentDetailsWithPatient({
-            messageTitle: "Session details updated!",
-            mobileNumber:'0770543422',
-            appointmentNumber:Number,
-            appointmentId:AppointmentId,
-            doctorName:doctorName,
-            startingDateTime:startingDateTime
-        },callBack);
+        const { Id,Mobile,Number} = appointment;
+
+        let status = await PostAsync({
+            serviceMethod: ServiceMethods.SENDSMS,
+            requestBody: {
+                "ScheduleMedium": [
+                    {
+                        "MediumId": 1,
+                        "Destination": Mobile,
+                        "Status": 0
+                    }
+                ],
+                "ScheduleMediumType": [
+                    {
+                        "MediumId": 1,
+                        "Destination":  Mobile,
+                        "Status": 0
+                    }
+                ],
+                "NotifactionType": 1,
+                "Message": `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+                "Status": 0
+            }
+        })
+        setCompletedCount()
+
     }
+    setCompletedStatus();
 }
 
 function GetSessionDoctorId() {
@@ -570,6 +602,8 @@ function shareAppointmentDetailsWithPatient ({messageTitle, mobileNumber, appoin
         "Status": 0
     }, onSuccess);
 }
+
+
 
 function GetDoctorAppoinmentList() {
     _ArrayAppointedPatientData = [];

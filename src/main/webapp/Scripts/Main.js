@@ -64,6 +64,7 @@ var _AppointmentPatientId;
 var _AppointmentDoctorName;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
+var _UpdateSession=false;
 
 var _ArrayDrugData = [];
 var _DoctorSessionData = [];
