@@ -160,30 +160,35 @@ function LoadSessionViceAppointments(Object, SessionId) {
 }
 
 async function cancelAllAppointments(){
-    ShowMessage(`<i id='count'> Cancelling appointments 0 of ${_ArrayAppointedPatientData.length}</i>`, MessageTypes.Success, "Success!");
+
+    //filter out appointments that are not cancelled already
+    let appointmentsNotCancelled = _ArrayAppointmentsForToday.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
+    console.log(_ArrayAppointmentsForToday);
+    console.log(_SessionId);
+    ShowMessage(`<i id='count'> Cancelling appointments 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
 
     const count = document.getElementById('count');
 
     let completed = 1;
     function setCompletedCount (){
-        count.innerHTML = `Cancelling appointments ${completed} of ${_ArrayAppointedPatientData.length}`;
+        count.innerHTML = `Cancelling appointments ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
     }
     function setCompletedStatus(){
-        count.innerHTML = `All appointments cancelled and patients notified`;
+        count.innerHTML = `All appointments cancelled and patients were notified`;
     }
 
-    //filter out appointments that are not cancelled already
-    for(let i = 0; i < _ArrayAppointmentsForToday.length; i++){
+    for(let i = 0; i < appointmentsNotCancelled.length; i++){
         try{
-            let doctorName = _ArrayAppointmentsForToday[i].DoctorName;
-            let startingDateTime = _ArrayAppointmentsForToday[i].TimeStart;
-            let id = _ArrayAppointmentsForToday[i].Id;
-            let number = _ArrayAppointmentsForToday[i].Number;
-            let patientId = _ArrayAppointmentsForToday[i].PatientId;
-            let sessionId = _ArrayAppointmentsForToday[i].SessionId;
+            let doctorName = appointmentsNotCancelled[i].DoctorName;
+            let startingDateTime = appointmentsNotCancelled[i].TimeStart;
+            let id = appointmentsNotCancelled[i].Id;
+            let number = appointmentsNotCancelled[i].Number;
+            let patientId = appointmentsNotCancelled[i].PatientId;
+            let sessionId = appointmentsNotCancelled[i].SessionId;
+            let mobile = appointmentsNotCancelled[i].Mobile;
 
-            console.log(_ArrayAppointmentsForToday[i])
+            console.log(appointmentsNotCancelled[i])
 
             let result = await PostAsync({
                     serviceMethod: ServiceMethods.ChanalingStatusSave,
@@ -197,21 +202,21 @@ async function cancelAllAppointments(){
                         }
                 })
 
-            //notify patient
-            let status = await PostAsync({
+            // notify patients
+            await PostAsync({
                 serviceMethod: ServiceMethods.SENDSMS,
                 requestBody: {
                     "ScheduleMedium": [
                         {
                             "MediumId": 1,
-                            "Destination": '0770543422',
+                            "Destination": mobile,
                             "Status": 0
                         }
                     ],
                     "ScheduleMediumType": [
                         {
                             "MediumId": 1,
-                            "Destination":  '0770543422',
+                            "Destination":  mobile,
                             "Status": 0
                         }
                     ],
@@ -221,12 +226,12 @@ async function cancelAllAppointments(){
                 }
             })
             setCompletedCount();
-            console.log(result, status);
         }catch (e) {
             console.log(e);
         }
     }
     setCompletedStatus();
+    GetDoctorAppoinmentList();
 
 }
 
