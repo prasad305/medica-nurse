@@ -1346,7 +1346,7 @@ function SuccessInstituteBranchSave(Response) {
         _AddressId = 0;
         return ShowMessage(Messages.BranchSaveSuccess, MessageTypes.Success, "Success!");
     } else {
-        return ShowMessage(Messages.Message, MessageTypes.Warning, "Warning!");
+        return ShowMessage(Response.Message.split('-')[1].trim(), MessageTypes.Warning, "Warning!");
     }
 }
 
