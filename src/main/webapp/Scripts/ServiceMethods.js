@@ -1445,7 +1445,7 @@ function SuccessInstituteBranchSave(Response) {
         _AddressId = 0;
         return ShowMessage(Messages.BranchSaveSuccess, MessageTypes.Success, "Success!");
     } else {
-        return ShowMessage(Messages.Message, MessageTypes.Warning, "Warning!");
+        return ShowMessage(Response.Message.split('-')[1].trim(), MessageTypes.Warning, "Warning!");
     }
 }
 
@@ -1474,10 +1474,10 @@ function DownloadReport() {
 
     _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch,_UserIdAdmin),function (res) {
 
-        let ttlDoctor=0;
-        let ttlHospital=0;
-        let ttlOther=0;
-        let ttlBookingFee=0;
+        let ttlDoctor = 0;
+        let ttlHospital = 0;
+        let ttlOther = 0;
+        let ttlBookingFee = 0;
         var csv_data = [];
         csv_data.push(['#','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
             'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges'])
@@ -1486,24 +1486,24 @@ function DownloadReport() {
             let data = res.Data[i];
             console.log(data);
 
-            let hospital = data.HospitalFee==null?0:data.HospitalFee;
-            let DoctorFee = data.DoctorFee==null?0:data.DoctorFee;
-            let AllOtherFee = data.AllOtherFee==null?0:data.AllOtherFee;
-            let BookingFee = data.BookingFee==null?0:data.BookingFee;
-            ttlOther+=AllOtherFee;
-            ttlHospital+=hospital;
-            ttlDoctor+=DoctorFee;
-            ttlBookingFee+=BookingFee;
+            let hospital = data.HospitalFee == null ? 0 : data.HospitalFee;
+            let DoctorFee = data.DoctorFee == null ? 0 : data.DoctorFee;
+            let AllOtherFee = data.AllOtherFee == null ? 0 : data.AllOtherFee;
+            let BookingFee = data.BookingFee == null ? 0 : data.BookingFee;
+            ttlOther += AllOtherFee;
+            ttlHospital += hospital;
+            ttlDoctor += DoctorFee;
+            ttlBookingFee += BookingFee;
             var d = [i,
-            formatDateAndTime(new Date(data.TimeStart))+' '+formatDateAndTime(new Date(data.TimeEnd)),
-            data.Number,
-            data.FirstName+" "+data.LastName,
-            data.Mobile,
-            data.Type,
-            'PAID',
-            hospital,
-            DoctorFee,
-            AllOtherFee,AllOtherFee];
+                formatDateAndTime(new Date(data.TimeStart)) + ' ' + formatDateAndTime(new Date(data.TimeEnd)),
+                data.Number,
+                data.FirstName + " " + data.LastName,
+                data.Mobile,
+                data.Type,
+                'PAID',
+                hospital,
+                DoctorFee,
+                AllOtherFee, AllOtherFee];
             console.log(d)
             csv_data.push(d);
 
@@ -1562,7 +1562,7 @@ function downloadCSVFile(csv_data) {
     document.body.removeChild(temp_link);
 }
 
-function createExcel(data){
+function createExcel(data) {
 
 
     var workbook = XLSX.utils.book_new(),
@@ -1573,18 +1573,18 @@ function createExcel(data){
     XLSX.writeFile(workbook, "demo.xlsx");
 
     var xlsblob = new Blob(
-        [new Uint8Array(XLSX.write(workbook, { bookType: "xlsx", type: "array" }))],
-        {type:"application/octet-stream"}
+        [new Uint8Array(XLSX.write(workbook, {bookType: "xlsx", type: "array"}))],
+        {type: "application/octet-stream"}
     );
 
     // Create to temporary link to initiate
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0,10);
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
-    temp_link.download = "ReportList-"+TodaysDate+".xlsx";
+    temp_link.download = "ReportList-" + TodaysDate + ".xlsx";
     temp_link.href = window.URL.createObjectURL(xlsblob);
 
     // This link should not be displayed
