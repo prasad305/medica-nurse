@@ -132,7 +132,7 @@ const ServiceMethods =
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
         BillSave:"Bill/Post",
-        BillGet:"Bill/Get"
+        BillGet:"Bill/Get",
         SENDSMS: "/Schedule/Save",
     };
 
