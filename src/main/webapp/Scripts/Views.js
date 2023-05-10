@@ -1330,7 +1330,10 @@ function TablePatientAppointment() {
 
         let HeadingPrescriptions = new Heading4("Patient Appointments", undefined);
 
-        DivHeadingPrescriptions.appendChild(HeadingPrescriptions);
+        DivHeadingPrescriptions.innerHTML = `<div class="row px-0 d-flex justify-content-between mb-2">
+        <h4>Patient Appointments</h4>
+        <button class="btn btn-primary btn-rounded btn-sm " onclick="cancelAllAppointments()">Cancel All</button>
+        </div>`;
 
         DivMainAppointmnetTable.appendChild(DivHeadingPrescriptions);
 
@@ -2819,6 +2822,7 @@ function ReportSearchResultsTable() {
         BindView(Container, ParentRow);
     }
 }
+
 /*=================================
              Misc
  =================================*/

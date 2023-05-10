@@ -8,7 +8,7 @@ let LoopCount = 0;
 let selectedRowSessionId = 0;
 let selectedRowAppointmentId = 0;
 let selectedRowPatientId = 0;
-let DoctorContactIdArr =  [0 , 0];
+let DoctorContactIdArr = [0, 0];
 let DoctorSpecializationId = 0;
 let DoctorSpecializationDrpId = 0;
 let DoctorQualificationId = 0;
@@ -229,11 +229,92 @@ function PatientMedicalBillModalDisplay(PatientId) {
 		Session Methods
  =================================*/
 
-function SaveSession_Success(Response) {
+async function SaveSession_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+        let appointments = [];
+        console.log(Response)
+        if(_UpdateSession){
+            try{
+                //send notification to all patients
+                //get all appointments in the session
+                const response = await PostAsync({
+                    serviceMethod: ServiceMethods.GetAppoinment,
+                    requestBody:new SessionId(Response.Data.Id)
+                });
+                console.log(response)
+                let doctorName = '';
+                let startingDateTime =Response.Data.TimeStart;
+
+                if(response.Data.length > 0){
+                    doctorName = response.Data[0].DoctorName;
+                }
+                await shareSessionUpdateWithPatients(response.Data, {
+                    messageTitle: "Session Updated!",
+                    doctorName: doctorName,
+                    startingDateTime: startingDateTime
+                });
+
+            }catch (e) {
+                console.log(e)
+            }
+        }else{
+            ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
+        }
+
         CmdCancelSession_Click();
-        return ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
+
     }
+}
+/**
+ * Share updated session details with patients
+ * @param {Array} appointments
+ * */
+async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime}){
+    ShowMessage(`<i id='count'> Sending message 0 of ${appointments.length}</i>`, MessageTypes.Success, "Success!");
+
+    const count = document.getElementById('count');
+
+    let completed = 1;
+    function setCompletedCount (){
+        count.innerHTML = `Sending message ${completed} of ${appointments.length}`;
+        completed++;
+    }
+    function setCompletedStatus(){
+        count.innerHTML = `All patients notified`;
+    }
+
+    for (let i = 0; i < appointments.length; i++) {
+        //check whether the appointment is the last in list
+
+        const appointment = appointments[i];
+        const { Id,Mobile,Number} = appointment;
+
+        let status = await PostAsync({
+            serviceMethod: ServiceMethods.SENDSMS,
+            requestBody: {
+                "ScheduleMedium": [
+                    {
+                        "MediumId": 1,
+                        "Destination": Mobile,
+                        "Status": 0
+                    }
+                ],
+                "ScheduleMediumType": [
+                    {
+                        "MediumId": 1,
+                        "Destination":  Mobile,
+                        "Status": 0
+                    }
+                ],
+                "NotifactionType": 1,
+                "Message": `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+                "Status": 0
+            }
+        })
+        setCompletedCount()
+
+    }
+    setCompletedStatus();
 }
 
 function GetSessionDoctorId() {
@@ -317,6 +398,7 @@ function LoadSessionData(Id) {
     GetInstituteBranches();
     DatePicker();
     TimePicker();
+    _UpdateSession = true;
 
     _Request.Get(ServiceMethods.SessionGet + Id, undefined, LoadSessionData_Success);
 }
@@ -436,7 +518,9 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     if (_PatientId !== null && _PatientId !== undefined) {
         document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
         document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " + SessionDetails;
-        document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
+        // document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
+        const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === _PatientId)[0];
+        document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + PatientMatched.FirstName + ' ' + PatientMatched.LastName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
     } else {
@@ -457,6 +541,23 @@ function GetNextAppoinmentNumber_Sucess(Response) {
 
 function SaveAppointment_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+        //send message to patient
+        let appointmentNumber = Response.Data.Number;
+        let appointmentId = Response.Data.Id;
+        let doctorName = Response.Data.DoctorName;
+        let startingDateTime = Response.Data.TimeStart;
+        let patientMobileNo = Response.Data.Mobile;
+
+        shareAppointmentDetailsWithPatient({
+            messageTitle: 'New Appointment Placed!',
+            mobileNumber: patientMobileNo,
+            appointmentNumber: appointmentNumber,
+            appointmentId: appointmentId,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
+
+
         _PatientId = null;
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
@@ -465,6 +566,42 @@ function SaveAppointment_Success(Response) {
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
     }
 }
+
+/**
+ * Sends SMS to patient with appointment details
+ * @param {string} messageTitle - Title of the message
+ * @param {string} mobileNumber - Mobile number of the patient
+ * @param {string} appointmentNumber - Appointment number'
+ * @param {string} appointmentId - Appointment id
+ * @param {string} doctorName - Name of the doctor
+ * @param {string} startingDateTime - Starting date and time of the appointment
+ * @param {string} doctorName - Name of the doctor
+ * @param {string} startingDateTime - Starting date and time of the appointment
+ * @param {function} onSuccess - Callback function
+ * */
+function shareAppointmentDetailsWithPatient ({messageTitle, mobileNumber, appointmentNumber, appointmentId, doctorName, startingDateTime}, onSuccess=null) {
+    _Request.Post(ServiceMethods.SENDSMS, {
+        "ScheduleMedium": [
+            {
+                "MediumId": 1,
+                "Destination": mobileNumber,
+                "Status": 0
+            }
+        ],
+        "ScheduleMediumType": [
+            {
+                "MediumId": 1,
+                "Destination": mobileNumber,
+                "Status": 0
+            }
+        ],
+        "NotifactionType": 1,
+        "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+        "Status": 0
+    }, onSuccess);
+}
+
+
 
 function GetDoctorAppoinmentList() {
     _ArrayAppointedPatientData = [];
@@ -519,7 +656,7 @@ function FilterAppointedPatientData(Data) {
             ChannelingStatus = 'Successful';
         } else if (ChannelingStatusOriginal.includes('pending')) {
             ChannelingStatus = 'Pending';
-        } else if(ChannelingStatusOriginal.includes('cancelled')){
+        } else if (ChannelingStatusOriginal.includes('cancelled')) {
             ChannelingStatus = 'Cancelled';
         }
 
@@ -544,7 +681,7 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ','+Data[Count].SessionId+','+Data[Count].PatientId+')">' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
                     '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
@@ -607,7 +744,7 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId,SessionId,PatientId) {
+function AppointmentDetailsEdit(AppointmentId, SessionId, PatientId) {
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
@@ -1249,7 +1386,7 @@ function BranchAddOrUpdateModalView(BranchId) {
         new BranchAddOrUpdateModal().Render(Containers.Footer, BranchId, 'Update');
         //pass data
         const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
-        console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
+        // console.log('BranchAddOrUpdateModalView.BranchMatched:', BranchMatched);
         $('#TxtBranchUpdateBranchName').val(BranchMatched.Name);
         $('#TxtBranchUpdateEmail').val(BranchMatched.Email);
         $('#TxtBranchUpdateWebsite').val(BranchMatched.Website);
@@ -1276,17 +1413,40 @@ function BranchAddOrUpdate(BranchId) {
     const PostCode = document.getElementById("TxtBranchUpdatePostCode").value.trim();
     const Email = document.getElementById("TxtBranchUpdateEmail").value.trim();
     const Website = document.getElementById("TxtBranchUpdateWebsite").value.trim();
+    const ContactNo = document.getElementById("TxtBranchUpdateContactNo").value.trim();
     // const Numbers = [0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1];
-    const Numbers = [new ContactNumbers(0, document.getElementById("TxtBranchUpdateContactNo").value.trim(), 1)];
+    const BranchMatched = _ArrayAllBranchesOfTheInstituteResultsData.filter((Branch) => Branch.Id === BranchId)[0];
+    // console.log('BranchAddOrUpdate.BranchMatched:', BranchMatched);
+    const Numbers = [new ContactNumbers(BranchMatched !== undefined ? BranchMatched.Postcode.split('|')[2] : 0, ContactNo, 1)];
+    // console.log('BranchAddOrUpdate.Numbers:', Numbers);
     const Status = 1;
     const UserSavedId = getCookie("UserId");
     const InstituteId = _NurseBranch.InstituteId;
+
+    //validation
+    if (Name === "")
+        return ShowMessage('Invalid Branch Name!', MessageTypes.Warning, "Warning!");
+
+    if (Email === "")
+        return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
+
+    if (Address1 === "")
+        return ShowMessage('Invalid Address!', MessageTypes.Warning, "Warning!");
+
+    if (City === "")
+        return ShowMessage('Invalid City!', MessageTypes.Warning, "Warning!");
+
+    if (ContactNo === "")
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+
+    if (ValidateMobile(ContactNo) === false && ContactNo !== "")
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
 
     const AddressPayLoad = new Address(_AddressId, Address1, Address2, Suburb, City, PostCode, 1, 2);
 
     _Request.Post(ServiceMethods.AddressPost, AddressPayLoad, function (Response) {
         // console.log('AddressPost.Response:', Response);
-        if (Response.Data != null) {
+        if (Response.Status === 1000) {
             const AddressSavedId = Response.Data.Id;
             // console.log('AddressSavedId:', AddressSavedId);
             const BranchPayLoad = new InstituteBranchSave(parseInt(BranchId), InstituteId, Name, AddressSavedId, Email, Website, Numbers, Status, 2);
@@ -1317,32 +1477,30 @@ function BranchWardAdd(BranchId) {
 function EditPassword() {
     $('#TxtDoctorConfirm_Password').show();
     $('#LblDoctorConfirm_Password').show();
-    $('#TxtDoctorUser_Name').prop('disabled',false);
-    $('#TxtDoctorPassword').prop('disabled',false);
+    $('#TxtDoctorUser_Name').prop('disabled', false);
+    $('#TxtDoctorPassword').prop('disabled', false);
 }
 
 
 //report
 
-function DownloadReport()
-{
+function DownloadReport() {
 
     let doctor = $('#DrpDoctor').val();
-    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
-    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+    let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
 
     makeCustomHeader(_UserIdAdmin);
-    _Request.Post("PrescriptionRecord/GetPrescriptionRecord",new NewDailyCollection(FromDate,ToDate,doctor,"ALL"),function (res) {
+    _Request.Post("PrescriptionRecord/GetPrescriptionRecord", new NewDailyCollection(FromDate, ToDate, doctor, "ALL"), function (res) {
 
         makeCustomHeader(_UserId);
         var csv_data = [];
         csv_data.push('#,Date & Time,Prescription No,Patient Name,Patient Mobile,Patient Age,Presenting Symptoms,Diagnosis,Drug Name')
-        for (var i = 0; i < res.Data.length; i++)
-        {
+        for (var i = 0; i < res.Data.length; i++) {
             let data = res.Data[i];
-            csv_data.push(i+','+data.DateCreated+','+data.PrescriptionId+','+
-                data.PatientFullName+','+data.Mobile+','+data.AgeYears+','
-                +data.PositiveSx.replaceAll(',','-')+','+data.Diagnosis.replaceAll(',','-')+','+data.DrugName)
+            csv_data.push(i + ',' + data.DateCreated + ',' + data.PrescriptionId + ',' +
+                data.PatientFullName + ',' + data.Mobile + ',' + data.AgeYears + ','
+                + data.PositiveSx.replaceAll(',', '-') + ',' + data.Diagnosis.replaceAll(',', '-') + ',' + data.DrugName)
         }
         // Combine each row data with new line character
         csv_data = csv_data.join('\n');
@@ -1353,8 +1511,7 @@ function DownloadReport()
 
 }
 
-function downloadCSVFile(csv_data)
-{
+function downloadCSVFile(csv_data) {
 
     // Create CSV file object and feed
     // our csv_data into it
@@ -1368,10 +1525,10 @@ function downloadCSVFile(csv_data)
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0,10);
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
-    temp_link.download = "PrescriptionList-"+TodaysDate+".csv";
+    temp_link.download = "PrescriptionList-" + TodaysDate + ".csv";
     temp_link.href = window.URL.createObjectURL(CSVFile);
 
     // This link should not be displayed
