@@ -1342,7 +1342,7 @@ function TablePatientAppointment() {
     }
 }
 
-function MedicalBill(Patient,appId) {
+function MedicalBill(Patient, appId) {
     this.Render = function (Container) {
 
         const MedicalBillModal = new Div("ModalMedicalBill", "modal");
@@ -1414,14 +1414,14 @@ function MedicalBill(Patient,appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+ ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
                 // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+ ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
                 // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
@@ -2227,7 +2227,7 @@ function Branches() {
 
 function BranchesSearchResultsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["Branch Name", "Action"];
+        let Headers = ["Name", "Contact No", "Address", "Email", "Actions"];
 
         let ParentRow = new Div(undefined, "row");
 
@@ -2483,6 +2483,7 @@ function Doctors() {
         new DoctorSearch().Render(Containers.MainContent)
     }
 }
+
 function DoctorSearch() {
     this.Render = function (Container) {
         let CardAddAppoinment = new Div(undefined, "card text-left");
@@ -2494,7 +2495,6 @@ function DoctorSearch() {
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
-
 
 
         let DoctorSearchRow = new Div("DoctorSearchRow", "row");
@@ -2533,6 +2533,7 @@ function DoctorSearch() {
 
     }
 }
+
 function DoctorsSearchResultsTable() {
     this.Render = function (Container, Data) {
         let Headers = ["Doctor Name", "Action"];
@@ -2593,20 +2594,20 @@ function DoctorsAddOrUpdateModal() {
         data.push(new SelectItem("Miss.", "Miss", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Rev.", "Rev", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
-        DropDown("col-sm-3  mt-2","Doctor","Title","",data,ParentRow);
+        DropDown("col-sm-3  mt-2", "Doctor", "Title", "", data, ParentRow);
 
-        LableAndTextFeild("col-sm-9","Doctor","First Name","First Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Middle Name","Middle Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Last Name","Last Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Contact No.","Contact No.","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Phone No.","Phone No.","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Email","Email","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","N.I.C","N.I.C","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Registration Number","Registration Number","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Date Of Birth","Date Of Birth","","",ParentRow,"date");
+        LableAndTextFeild("col-sm-9", "Doctor", "First Name", "First Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Middle Name", "Middle Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Last Name", "Last Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Contact No.", "Contact No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Phone No.", "Phone No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Email", "Email", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "N.I.C", "N.I.C", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Registration Number", "Registration Number", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Date Of Birth", "Date Of Birth", "", "", ParentRow, "date");
 
-        DropDown("col-sm-6  mt-2","Doctor","Specialization","",undefined,ParentRow);
-        DropDown("col-sm-6  mt-2","Doctor","Qualifications","",undefined,ParentRow);
+        DropDown("col-sm-6  mt-2", "Doctor", "Specialization", "", undefined, ParentRow);
+        DropDown("col-sm-6  mt-2", "Doctor", "Qualifications", "", undefined, ParentRow);
 
 
         ModalContentBody.appendChild(ParentRow);
@@ -2631,7 +2632,7 @@ function DoctorsAddOrUpdateModal() {
 
         BindView(Container, Modal);
 
-        $('#TxtDoctorDate_Of_Birth').prop('type','date');
+        $('#TxtDoctorDate_Of_Birth').prop('type', 'date');
         $("#TxtDoctorDate_Of_Birth").prop('disabled', true);
         $('#ModalForBranchAddOrUpdate').modal('show');
         // $("#TxtDoctorNIC").on('focusout', DoctorsDateOfBirthDisplay());
@@ -2663,10 +2664,10 @@ function DoctorsLoginModal() {
 
         const ParentRow = new Div(undefined, "row");
 
-        LableAndTextFeild("col-sm-12","Doctor","User Name","User Name","","",ParentRow);
-        LableAndTextFeild("col-sm-12","Doctor","Password","Password","","",ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "User Name", "User Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "Password", "Password", "", "", ParentRow);
 
-        LableAndTextFeild("col-sm-12","Doctor","Confirm Password","Confirm Password","","",ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "Confirm Password", "Confirm Password", "", "", ParentRow);
 
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
@@ -2687,8 +2688,8 @@ function DoctorsLoginModal() {
 
         BindView(Container, Modal);
 
-        $('#TxtDoctorUser_Name').prop('disabled',true);
-        $('#TxtDoctorPassword').prop('disabled',true);
+        $('#TxtDoctorUser_Name').prop('disabled', true);
+        $('#TxtDoctorPassword').prop('disabled', true);
 
         $('#TxtDoctorConfirm_Password').hide();
         $('#LblDoctorConfirm_Password').hide();
@@ -2740,7 +2741,6 @@ function ReportSearch() {
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
 
 
-
         let DoctorSearchRow = new Div("ReportSearchRow", "row");
         let SearchColumnOne = new Div(undefined, "col-lg-12 text-center");
         DoctorSearchRow.appendChild(SearchColumnOne);
@@ -2767,8 +2767,8 @@ function ReportSearch() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
         FormRow0Appoinment.appendChild(DivFormRowDoctor1);
 
-        LableAndTextFeild("col-sm-3","Report","From Date","From Date","","",FormRow0Appoinment,"date");
-        LableAndTextFeild("col-sm-3","Report","To Date","To Date","","",FormRow0Appoinment,"date");
+        LableAndTextFeild("col-sm-3", "Report", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "Report", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
 
         const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
         FormRow0Appoinment.appendChild(ColumnContactNo);
@@ -2792,14 +2792,14 @@ function ReportSearch() {
 
         BindView(Container, CardAddAppoinment);
 
-        $('#TxtReportFrom_Date').prop('type','date');
-        $('#TxtReportTo_Date').prop('type','date');
+        $('#TxtReportFrom_Date').prop('type', 'date');
+        $('#TxtReportTo_Date').prop('type', 'date');
     }
 }
 
 function ReportSearchResultsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["No","Date & Time","Appointment No","Patient Name","Patient Mobile"];
+        let Headers = ["No", "Date & Time", "Appointment No", "Patient Name", "Patient Mobile"];
 
         let ParentRow = new Div(undefined, "row");
 
@@ -2824,6 +2824,7 @@ function ReportSearchResultsTable() {
         BindView(Container, ParentRow);
     }
 }
+
 /*=================================
              Misc
  =================================*/
@@ -2850,11 +2851,11 @@ function Misc() {
     }
 }
 
-function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,type){
-    const ColumnBranch = new Div(undefined, classCol+" mt-2");
-    const LabelBranch = new Label("Lbl"+id+lbl.replaceAll(" ","_").replaceAll(".",""), lbl,
+function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, ParentRow, type) {
+    const ColumnBranch = new Div(undefined, classCol + " mt-2");
+    const LabelBranch = new Label("Lbl" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""), lbl,
         [new Attribute(_AttributeClass, "col-form-label"),
-            new Attribute(_AttributeFor, "Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""))]
+            new Attribute(_AttributeFor, "Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""))]
     );
 
     var att = [];
@@ -2866,7 +2867,7 @@ function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,t
     if (type == "date") {
         att.push(new Attribute(_AttributeType, 'date'));
     }
-    const TextBranch = new Textbox("Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""),
+    const TextBranch = new Textbox("Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""),
         "form-control form-control-rounded",
         att
     );
@@ -2874,18 +2875,21 @@ function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,t
     ColumnBranch.appendChild(TextBranch);
     ParentRow.appendChild(ColumnBranch);
 }
-function DropDown(classCol,id,lbl,functionExec,customOptions,ParentRow){
+
+function DropDown(classCol, id, lbl, functionExec, customOptions, ParentRow) {
 
     let DivFormRowDoctor = new Div(undefined, classCol);
-    let LabelAppoinment = new Label(undefined, "Select "+lbl, [new Attribute(_AttributeClass, "col-form-label"),
-        new Attribute(_AttributeFor, "Drp"+lbl.replaceAll(" ","_").replaceAll(".",""))]);
-    let SelectBranch = new Select("Drp"+lbl.replaceAll(" ","_").replaceAll(".",""), [new Attribute(_AttributeClass,
+    let LabelAppoinment = new Label(undefined, "Select " + lbl, [new Attribute(_AttributeClass, "col-form-label"),
+        new Attribute(_AttributeFor, "Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""))]);
+    let SelectBranch = new Select("Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""), [new Attribute(_AttributeClass,
         "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, functionExec)]);
     SelectBranch.appendChild(
-        new SelectItem("Select "+lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        new SelectItem("Select " + lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
 
-    if(customOptions){
-        customOptions.forEach((currentElement) => {  SelectBranch.appendChild(currentElement); })
+    if (customOptions) {
+        customOptions.forEach((currentElement) => {
+            SelectBranch.appendChild(currentElement);
+        })
     }
     DivFormRowDoctor.appendChild(LabelAppoinment);
     DivFormRowDoctor.appendChild(SelectBranch);
