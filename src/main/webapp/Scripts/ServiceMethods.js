@@ -238,8 +238,6 @@ function PatientMedicalBillModalDisplay(PatientId) {
 async function SaveSession_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let appointments = [];
-
-        CmdCancelSession_Click();
         console.log(Response)
         if(_UpdateSession){
             try{
@@ -257,7 +255,7 @@ async function SaveSession_Success(Response) {
                     doctorName = response.Data[0].DoctorName;
                 }
                 await shareSessionUpdateWithPatients(response.Data, {
-                    messageTitle: "Session Updated",
+                    messageTitle: "Session Updated!",
                     doctorName: doctorName,
                     startingDateTime: startingDateTime
                 });
@@ -268,6 +266,9 @@ async function SaveSession_Success(Response) {
         }else{
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
+
+        CmdCancelSession_Click();
+
     }
 }
 /**
@@ -275,23 +276,27 @@ async function SaveSession_Success(Response) {
  * @param {Array} appointments
  * */
 async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime}){
-    ShowMessage(`<i id='count'> Sending message 0 of ${appointments.length}</i>`, MessageTypes.Success, "Success!");
+
+    //filter appointments that are not cancelled
+    let appointmentsNotCancelled = appointments.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
+
+    ShowMessage(`<i id='count'> Sending message 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
 
     const count = document.getElementById('count');
 
     let completed = 1;
     function setCompletedCount (){
-        count.innerHTML = `Sending message ${completed} of ${appointments.length}`;
+        count.innerHTML = `Sending message ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
     }
     function setCompletedStatus(){
         count.innerHTML = `All patients notified`;
     }
 
-    for (let i = 0; i < appointments.length; i++) {
+    for (let i = 0; i < appointmentsNotCancelled.length; i++) {
         //check whether the appointment is the last in list
 
-        const appointment = appointments[i];
+        const appointment = appointmentsNotCancelled[i];
         const { Id,Mobile,Number} = appointment;
 
         let status = await PostAsync({
@@ -317,7 +322,6 @@ async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  d
             }
         })
         setCompletedCount()
-
     }
     setCompletedStatus();
 }
@@ -401,6 +405,7 @@ function LoadSessionData(Id) {
     GetInstituteBranches();
     DatePicker();
     TimePicker();
+    _UpdateSession = true;
 
     _Request.Get(ServiceMethods.SessionGet + Id, undefined, LoadSessionData_Success);
 }
@@ -620,9 +625,7 @@ function GetDoctorAppoinmentList_Success(Response) {
         //GetAppointedPatients(Response.Data);
 
         if (Response.Data.length > 0) {
-            for (let i = 0; i < Response.Data.length; i++) {
-                _ArrayAppointmentsForToday.push(Response.Data[i]);
-            }
+            _ArrayAppointmentsForToday = Response.Data;
         }
 
         //*******new

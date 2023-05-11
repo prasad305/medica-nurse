@@ -211,6 +211,8 @@ var GlobalFail = function (Response) {
 };
 
 
+
+
 var ShowLoader = function () {
     if (_LayoutCommon !== undefined)
         _LayoutCommon.RenderLoader();
