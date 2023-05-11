@@ -1330,12 +1330,15 @@ function TablePatientAppointment() {
 
         let HeadingPrescriptions = new Heading4("Patient Appointments", undefined);
 
-        DivHeadingPrescriptions.innerHTML = `<div class="row px-0 d-flex justify-content-between mb-2">
+        if( _CardClicked != 'Appointments'){
+            DivHeadingPrescriptions.innerHTML = `<div class="row px-0 d-flex justify-content-between mb-2">
         <h4>Patient Appointments</h4>
-        <button class="btn btn-primary btn-rounded btn-sm " onclick="cancelAllAppointments()">Cancel All</button>
+        <button id="cancelAllBtn" class="btn btn-primary btn-rounded btn-sm " onclick="cancelAllAppointments()">Cancel All</button>
         </div>`;
 
-        DivMainAppointmnetTable.appendChild(DivHeadingPrescriptions);
+            DivMainAppointmnetTable.appendChild(DivHeadingPrescriptions);
+
+        }
 
         let DivTablePrescriptions = new Div(undefined, "table-responsive");
         DivTablePrescriptions.appendChild(new TableView("TableAppointedPatient", "table table-striped display responsive", Headers, Data, undefined));
@@ -2590,12 +2593,12 @@ function DoctorsAddOrUpdateModal() {
 
         let data = [];
         data.push(new SelectItem("Select Title", "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Dr.", "Dr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Prof.", "Prof", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Mr.", "Mr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Mrs.", "Mrs", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Miss.", "Miss", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Rev.", "Rev", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Dr.", "Dr.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Prof.", "Prof.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mr.", "Mr.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mrs.", "Mrs.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Miss.", "Miss.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Rev.", "Rev.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
         DropDown("col-sm-3  mt-2", "Doctor", "Title", "", data, ParentRow);
 

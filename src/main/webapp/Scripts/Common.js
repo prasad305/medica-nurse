@@ -216,12 +216,25 @@ function ValidateMobile(MobileNo) {
     if (MobileNo === null || MobileNo === undefined)
         return false;
 
-    if (MobileNo.length !== 10)
+    if (MobileNo.length !== 10 && MobileNo.length !== 11 )
         return false;
-
-    if (MobileNo.startsWith("070") === false && MobileNo.startsWith("071") === false && MobileNo.startsWith("072") === false && MobileNo.startsWith("075") === false && MobileNo.startsWith("076") === false
-        && MobileNo.startsWith("077") === false && MobileNo.startsWith("078") === false)
-        return false;
+8
+    // if (
+    //     MobileNo.startsWith("070") === false &&
+    //     MobileNo.startsWith("9470") === false
+    //     && MobileNo.startsWith("071") === false &&
+    //      MobileNo.startsWith("9471") === false
+    //     && MobileNo.startsWith("072") === false &&
+    //      MobileNo.startsWith("9472") === false
+    //     && MobileNo.startsWith("075") === false &&
+    //      MobileNo.startsWith("9475") === false
+    //     && MobileNo.startsWith("076") === false &&
+    //      MobileNo.startsWith("9476") === false
+    //     && MobileNo.startsWith("077") === false &&
+    //      MobileNo.startsWith("9477") === false
+    //     && MobileNo.startsWith("078") === false &&
+    //      MobileNo.startsWith("9478") === false)
+    //     return false;
 }
 
 // function isInvalid(String) {

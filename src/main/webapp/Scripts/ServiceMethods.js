@@ -637,7 +637,7 @@ function FilterAppointedPatientData(Data) {
 
     for (let Count = 0; Count < DataLength; Count++) {
 
-        let PaymentStatus = '-';
+        let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
 
         switch (Data[Count].Status) {
             case 2:
@@ -1512,9 +1512,10 @@ function DownloadReport() {
         let ttlHospital = 0;
         let ttlOther = 0;
         let ttlBookingFee = 0;
+        let ttlTotalDiscount = 0;
         var csv_data = [];
-        csv_data.push(['#','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
-            'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges'])
+        csv_data.push(['#','Doctor Name','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
+            'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges','Discount Amount'])
         for (var i = 0; i < res.Data.length; i++)
         {
             let data = res.Data[i];
@@ -1524,12 +1525,15 @@ function DownloadReport() {
             let DoctorFee = data.DoctorFee == null ? 0 : data.DoctorFee;
             let AllOtherFee = data.AllOtherFee == null ? 0 : data.AllOtherFee;
             let BookingFee = data.BookingFee == null ? 0 : data.BookingFee;
-            ttlOther += AllOtherFee;
-            ttlHospital += hospital;
-            ttlDoctor += DoctorFee;
-            ttlBookingFee += BookingFee;
+            let TotalDiscount = data.TotalDiscount == null ? 0 : data.TotalDiscount;
+            ttlOther += parseInt(AllOtherFee);
+            ttlHospital += parseInt(hospital);
+            ttlDoctor += parseInt(DoctorFee);
+            ttlBookingFee += parseInt(BookingFee);
+            ttlTotalDiscount += parseInt(TotalDiscount);
             var d = [i,
-                formatDateAndTime(new Date(data.TimeStart)) + ' ' + formatDateAndTime(new Date(data.TimeEnd)),
+                data.DoctorName,
+                data.TimeStart.replace("T"," ") + ' ' + data.TimeEnd.replace("T"," "),
                 data.Number,
                 data.FirstName + " " + data.LastName,
                 data.Mobile,
@@ -1537,7 +1541,7 @@ function DownloadReport() {
                 'PAID',
                 hospital,
                 DoctorFee,
-                AllOtherFee, AllOtherFee];
+                BookingFee, AllOtherFee,TotalDiscount];
             console.log(d)
             csv_data.push(d);
 
@@ -1549,11 +1553,13 @@ function DownloadReport() {
             "",
             "",
             "",
+            "",
             '',
             ttlHospital,
             ttlDoctor,
             ttlBookingFee,
-            ttlOther];
+            ttlOther,
+            ttlTotalDiscount];
         csv_data.push(d)
 
         // console.log(csv_data);

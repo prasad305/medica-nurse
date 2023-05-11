@@ -353,6 +353,7 @@ function CmdAddPatientCancel_Click() {
  =================================*/
 
 function CmdSession_Click() {
+    _CardClicked = 'Session';
     new Session().Render(Containers.MainContent);
     SetDoctorData('DrpSessionDoctor');
 }
@@ -387,10 +388,10 @@ function CmdSaveSession_Click() {
 function CmdSessionSearch_Click() {
     _DoctorId = document.getElementById('DrpSessionDoctor').value;
     _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
-    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
-    _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
-    selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
+    // _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
+    // selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
+    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    // selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
 
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
@@ -1107,6 +1108,7 @@ function doctorDrpData(Res) {
     let Count;
     let DataLength = Res.length;
     //all doctors - as the first option
+    $('#DrpDoctor').append('<option value="0">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpDoctor').append('<option value="' + Res[Count].Id + '">' +
             Res[Count].Title + ' ' + Res[Count].FirstName + ' ' + Res[Count].LastName + '</option>');
@@ -1331,7 +1333,7 @@ function SuccessSaveNewSpecialization(Response) {
     if (Response.Status !== 1000) {
 
         makeCustomHeader(_UserId);
-        ShowMessage("Error !", MessageTypes.Error, "Error!");
+        // ShowMessage("Error !", MessageTypes.Error, "Error!");
     }
 }
 
