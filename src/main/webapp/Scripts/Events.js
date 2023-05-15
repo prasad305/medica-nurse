@@ -320,10 +320,10 @@ function CmdSaveSession_Click() {
 function CmdSessionSearch_Click() {
     _DoctorId = document.getElementById('DrpSessionDoctor').value;
     _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
-    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
-    _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
-    selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
+    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDoctor').value);
+    selectedDoctorId = $("#DrpSessionDoctor option:selected")[0].value;
+    _SessionDetails = $("#DrpSessionDoctor option:selected").text();
+    selectedSessionId = $("#DrpSessionDoctor option:selected")[0].value;
 
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
@@ -574,8 +574,9 @@ function DoctorChannelingStatusUpdate_Success(Response)
  =================================*/
 
 function CmdPrescription_Click() {
-    //javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
+    new Pharmacy().Render(Containers.MainContent);
     GetPrescriptionList();
+    SetDoctorData('TxtPrescriptionsSearchDoctor');
 }
 
 function LoadPrescriptionRecordDrugs(Id) {

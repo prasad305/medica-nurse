@@ -8,7 +8,7 @@ let LoopCount = 0;
 let selectedRowSessionId = 0;
 let selectedRowAppointmentId = 0;
 let selectedRowPatientId = 0;
-let DoctorContactIdArr =  [0 , 0];
+let DoctorContactIdArr = [0, 0];
 let DoctorSpecializationId = 0;
 let DoctorSpecializationDrpId = 0;
 let DoctorQualificationId = 0;
@@ -523,7 +523,7 @@ function FilterAppointedPatientData(Data) {
             ChannelingStatus = 'Successful';
         } else if (ChannelingStatusOriginal.includes('pending')) {
             ChannelingStatus = 'Pending';
-        } else if(ChannelingStatusOriginal.includes('cancelled')){
+        } else if (ChannelingStatusOriginal.includes('cancelled')) {
             ChannelingStatus = 'Cancelled';
         }
 
@@ -548,7 +548,7 @@ function FilterAppointedPatientData(Data) {
                 "M/F": Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ','+Data[Count].SessionId+','+Data[Count].PatientId+')">' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
                     '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
@@ -611,7 +611,7 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId,SessionId,PatientId) {
+function AppointmentDetailsEdit(AppointmentId, SessionId, PatientId) {
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
@@ -659,22 +659,22 @@ function MedicalBillDisplay(AppointmentId, appId) {
     selectedAppointmentId = AppointmentId;
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === AppointmentId)[0];
 
-    var allData  = new Bill(undefined,selectedSessionId,selectedDoctorId,selectedPatientId
-        ,undefined
-        ,undefined,selectedAppId,undefined,AppointmentId)
-    _Request.Post(ServiceMethods.BillGet,allData,function (res) {
+    var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId
+        , undefined
+        , undefined, selectedAppId, undefined, AppointmentId)
+    _Request.Post(ServiceMethods.BillGet, allData, function (res) {
         console.log(res);
 
-        if(res.Data?.Id){
+        if (res.Data?.Id) {
             billId = res.Data.Id;
             //pass data to ui
-        }else {
+        } else {
             billId = 0;
         }
 
     });
 
-    new MedicalBill(PatientMatched,appId).Render(Containers.Footer);
+    new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
 }
 
 function medicalBillTableFirstRowReplace() {
@@ -794,7 +794,7 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillSave(PatientId,appId) {
+function medicalBillSave(PatientId, appId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
     // console.log('medicalBillSave._ArrayPatientSearchResultsData:', _ArrayPatientSearchResultsData);
     const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === PatientId)[0];
@@ -839,7 +839,7 @@ function medicalBillSave(PatientId,appId) {
 
     // console.log('medicalBillInputsValidate.MedicalBillItems:', MedicalBillItems);
     let date = new Date();
-    let month = parseInt(date.getMonth())+1;
+    let month = parseInt(date.getMonth()) + 1;
     const DateTime = date.getFullYear() + '-' +
         ("0" + month).slice(-2) + '-' +
         ("0" + date.getDate()).slice(-2) + ' ' +
@@ -872,7 +872,7 @@ function medicalBillSave(PatientId,appId) {
         'UserId': _UserId,
     }
 
-     SaveBillData(JsonObjectToSave);
+    SaveBillData(JsonObjectToSave);
 }
 
 function medicalBillSaveInLocalStorage(JsonString) {
@@ -965,7 +965,6 @@ function BMICalculator() {
     document.getElementById('TxtBMIValue').innerHTML = "Your BMI Is: " + BMI;
 }
 
-
 /*=================================
 		Pharmacy Methods
  =================================*/
@@ -980,11 +979,9 @@ function GetPrescriptionList_Success(Response) {
 
 function FilterPrescriptionData(Data) {
     _ArrayPrescriptionData = Data;
-    let DataLength = Data.length;
-    let Count = 0;
     let ArrayPrescriptionData = [];
 
-    for (Count; Count < DataLength; Count++) {
+    for (Count = 0; Count < Data.length; Count++) {
         let Status;
         let NextStatus;
         switch (Data[Count].Status) {
@@ -1014,9 +1011,61 @@ function FilterPrescriptionData(Data) {
                 '<button class="btn btn-info btn-icon" onclick= "ClinicMedicalBillPrint(' + Data[Count].Id + ')">Print</button>'
         });
     }
-    new Pharmacy().Render(Containers.MainContent, ArrayPrescriptionData);
-    CreateDataTable('TablePharmacyPrescription');
+
+    new PharmacySearchResultsTable().Render('PrescriptionsSearchResultsTableWrapper', ArrayPrescriptionData);
+    CreateDataTable('TablePharmacySearchResults');
 }
+
+function GetDoctorSessionDataForPharmacy() {
+    const DoctorId = document.getElementById('TxtPrescriptionsSearchDoctor').value;
+    const AppointmentSearchDate = $('#TxtPrescriptionsSearchDate').val();
+    _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(DoctorId, AppointmentSearchDate, null), GetDoctorSessionDataForPharmacy_Success);
+}
+
+function GetDoctorSessionDataForPharmacy_Success(Response) {
+    const SessionDropdown = $("#TxtPrescriptionsSearchSession");
+    $(SessionDropdown).empty();
+
+    if (Response.Status != 1000) {
+        $(SessionDropdown).append('<option value="all">All Sessions</option>');
+    } else {
+        let DataLength = Response.Data.length;
+        let Count = 0;
+        let Type;
+        if (DataLength === 0) {
+            $(SessionDropdown).append('<option value="all">All Sessions</option>');
+        } else {
+            $(SessionDropdown).append('<option value="all">All Sessions</option>');
+            for (Count = 0; Count < DataLength; Count++) {
+                let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
+                let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
+
+                let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+                const StartTime = new Date(TimeFormat.DateFormat + TimeStart + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+
+                let TimeEndSplit = Response.Data[Count].TimeEnd.split("T")[1].split(":");
+                let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+                const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+
+                if (Response.Data[Count].Type === 1) Type = "Virtual"; else if (Response.Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
+
+                $(SessionDropdown).append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
+            }
+        }
+    }
+}
+
+function Prescriptions_Search(){
+
+}
+
+/*=================================
+		Clinic Bill Methods
+ =================================*/
 
 function ClinicMedicalBillPrint(PrescriptionId) {
     const PrescriptionMatched = _ArrayPrescriptionData.filter((Prescription) => Prescription.Id === PrescriptionId)[0];
@@ -1331,53 +1380,51 @@ function BranchWardAdd(BranchId) {
 function EditPassword() {
     $('#TxtDoctorConfirm_Password').show();
     $('#LblDoctorConfirm_Password').show();
-    $('#TxtDoctorUser_Name').prop('disabled',false);
-    $('#TxtDoctorPassword').prop('disabled',false);
+    $('#TxtDoctorUser_Name').prop('disabled', false);
+    $('#TxtDoctorPassword').prop('disabled', false);
 }
 
 
 //report
 
-function DownloadReport()
-{
+function DownloadReport() {
 
     let branch = $('#DrpBranch').val();
     let doctor = $('#DrpDoctor').val();
-    let FromDate = $('#TxtReportFrom_Date').val()+" 00:00:00";
-    let ToDate = $('#TxtReportTo_Date').val()+" 23:59:59";
+    let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
+    let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
 
-    _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch,_UserIdAdmin),function (res) {
+    _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch, _UserIdAdmin), function (res) {
 
-        let ttlDoctor=0;
-        let ttlHospital=0;
-        let ttlOther=0;
-        let ttlBookingFee=0;
+        let ttlDoctor = 0;
+        let ttlHospital = 0;
+        let ttlOther = 0;
+        let ttlBookingFee = 0;
         var csv_data = [];
-        csv_data.push(['#','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
-            'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges'])
-        for (var i = 0; i < res.Data.length; i++)
-        {
+        csv_data.push(['#', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile',
+            'Booking Type', 'Payment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges'])
+        for (var i = 0; i < res.Data.length; i++) {
             let data = res.Data[i];
             console.log(data);
 
-            let hospital = data.HospitalFee==null?0:data.HospitalFee;
-            let DoctorFee = data.DoctorFee==null?0:data.DoctorFee;
-            let AllOtherFee = data.AllOtherFee==null?0:data.AllOtherFee;
-            let BookingFee = data.BookingFee==null?0:data.BookingFee;
-            ttlOther+=AllOtherFee;
-            ttlHospital+=hospital;
-            ttlDoctor+=DoctorFee;
-            ttlBookingFee+=BookingFee;
+            let hospital = data.HospitalFee == null ? 0 : data.HospitalFee;
+            let DoctorFee = data.DoctorFee == null ? 0 : data.DoctorFee;
+            let AllOtherFee = data.AllOtherFee == null ? 0 : data.AllOtherFee;
+            let BookingFee = data.BookingFee == null ? 0 : data.BookingFee;
+            ttlOther += AllOtherFee;
+            ttlHospital += hospital;
+            ttlDoctor += DoctorFee;
+            ttlBookingFee += BookingFee;
             var d = [i,
-            formatDateAndTime(new Date(data.TimeStart))+' '+formatDateAndTime(new Date(data.TimeEnd)),
-            data.Number,
-            data.FirstName+" "+data.LastName,
-            data.Mobile,
-            data.Type,
-            'PAID',
-            hospital,
-            DoctorFee,
-            AllOtherFee,AllOtherFee];
+                formatDateAndTime(new Date(data.TimeStart)) + ' ' + formatDateAndTime(new Date(data.TimeEnd)),
+                data.Number,
+                data.FirstName + " " + data.LastName,
+                data.Mobile,
+                data.Type,
+                'PAID',
+                hospital,
+                DoctorFee,
+                AllOtherFee, AllOtherFee];
             console.log(d)
             csv_data.push(d);
 
@@ -1406,8 +1453,7 @@ function DownloadReport()
 
 }
 
-function downloadCSVFile(csv_data)
-{
+function downloadCSVFile(csv_data) {
 
     // Create CSV file object and feed
     // our csv_data into it
@@ -1421,10 +1467,10 @@ function downloadCSVFile(csv_data)
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0,10);
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
-    temp_link.download = "PrescriptionList-"+TodaysDate+".csv";
+    temp_link.download = "PrescriptionList-" + TodaysDate + ".csv";
     temp_link.href = window.URL.createObjectURL(CSVFile);
 
     // This link should not be displayed
@@ -1437,7 +1483,7 @@ function downloadCSVFile(csv_data)
     document.body.removeChild(temp_link);
 }
 
-function createExcel(data){
+function createExcel(data) {
 
 
     var workbook = XLSX.utils.book_new(),
@@ -1448,18 +1494,18 @@ function createExcel(data){
     XLSX.writeFile(workbook, "demo.xlsx");
 
     var xlsblob = new Blob(
-        [new Uint8Array(XLSX.write(workbook, { bookType: "xlsx", type: "array" }))],
-        {type:"application/octet-stream"}
+        [new Uint8Array(XLSX.write(workbook, {bookType: "xlsx", type: "array"}))],
+        {type: "application/octet-stream"}
     );
 
     // Create to temporary link to initiate
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0,10);
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
-    temp_link.download = "ReportList-"+TodaysDate+".xlsx";
+    temp_link.download = "ReportList-" + TodaysDate + ".xlsx";
     temp_link.href = window.URL.createObjectURL(xlsblob);
 
     // This link should not be displayed
