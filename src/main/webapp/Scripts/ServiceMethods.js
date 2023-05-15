@@ -279,7 +279,7 @@ async function SaveSession_Success(Response) {
  * */
 async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime,endingDateTime}){
 
-    //filter appointments that are not cancelled
+     //filter appointments that are not cancelled
     let appointmentsNotCancelled = appointments.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
 
     ShowMessage(`<i id='count'> Sending message 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
