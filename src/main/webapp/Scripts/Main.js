@@ -64,6 +64,7 @@ var _AppointmentPatientId;
 var _AppointmentDoctorName;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
+var _UpdateSession=false;
 
 var _ArrayDrugData = [];
 var _DoctorSessionData = [];
@@ -132,7 +133,8 @@ const ServiceMethods =
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
         BillSave:"Bill/Post",
-        BillGet:"Bill/Get"
+        BillGet:"Bill/Get",
+        SENDSMS: "/Schedule/Save",
     };
 
 const MessageTypes =
@@ -207,6 +209,8 @@ var GlobalFail = function (Response) {
     else
         alert("Global Fail : " + JSON.stringify(Response));
 };
+
+
 
 
 var ShowLoader = function () {
