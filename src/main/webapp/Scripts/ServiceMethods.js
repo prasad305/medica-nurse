@@ -817,7 +817,6 @@ function MedicalBillDisplay(AppointmentId, appId) {
         } else {
             billId = 0;
         }
-
     });
 
     new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
