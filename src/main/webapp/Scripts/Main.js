@@ -73,6 +73,7 @@ var _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
+var _ArrayPrescriptionSearchResultsData = [];
 
 let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
@@ -88,6 +89,8 @@ let _ArrayAllInstitutes = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
+
+let CmdCardClicked = '';
 
 //-- Admin UI
 
@@ -120,6 +123,7 @@ const ServiceMethods =
         PatientReportUpload: "patientreport/uploads/",
         PatientReportSave: "PatientReport/Save",
         PrescriptionRecords: "PrescriptionRecord/GetPrescriptionByInstituteBranch",
+        GetPrescriptionRecord: "PrescriptionRecord/GetPrescriptionRecord",
         DrugsPrescriptions: "PrescriptionRecord/PresciptionRcordDrugGet",
         ReadyPrescription: "AppointmentPrescriptionRecord/Update",
         InstituteBranch: "InstituteBranch/GetInstituteBranch",
@@ -220,13 +224,11 @@ var HideLoader = function () {
 };
 
 function InitRequestHandler() {
-    // console.log('InitRequestHandler._IsAllBranchesGetClicked:', _IsAllBranchesGetClicked);
     if (_IsAdminUserIdRequired) {
         _UserId = 2;
     } else {
         _UserId = getCookie("UserId");
     }
-    // console.log('InitRequestHandler._UserId:', _UserId);
 
     let Headers = new Array();
 
@@ -235,8 +237,6 @@ function InitRequestHandler() {
 
     if (_PatientId !== null && _PatientId !== undefined && _PatientId !== "")
         Headers.push(new HttpHeader("PatientId", _PatientId));
-
-    // console.log('InitRequestHandler.Headers:', Headers);
 
     _Request = GetRequest(_ServiceURL, Headers);
 

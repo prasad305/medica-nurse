@@ -158,6 +158,13 @@ function PrescriptionRecord(Id) {
     this.PrescriptionRecordId = Id;
 }
 
+function GetPrescriptionRecord(FromDate, ToDate, DoctorId, SearchType) {
+    this.FromDate = FromDate;
+    this.ToDate = ToDate;
+    this.DoctorId = DoctorId;
+    this.SearchType = SearchType;
+}
+
 function RecordDrugsUpdates(Status, Id, DrugId) {
     this.Status = Status;
     this.Id = Id;
@@ -223,15 +230,13 @@ function PatientUploadInformation(PatientId, Type, FileName, Name, UserSaved) {
 		Admin Proxy Classes
  =================================*/
 
-function InstituteBranch(Id, UserId, InstituteId)
-{
+function InstituteBranch(Id, UserId, InstituteId) {
     this.Id = Id;
     this.UserId = UserId;
     this.InstituteId = InstituteId;
 }
 
-function InstituteBranchSave(Id, InstituteId, Name, AddressId, Email, Website, Numbers, Status, UserSaved)
-{
+function InstituteBranchSave(Id, InstituteId, Name, AddressId, Email, Website, Numbers, Status, UserSaved) {
     this.Id = Id;
     this.InstituteId = InstituteId;
     this.Name = Name;
@@ -243,8 +248,7 @@ function InstituteBranchSave(Id, InstituteId, Name, AddressId, Email, Website, N
     this.UserSaved = UserSaved;
 }
 
-function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status, UserSaved)
-{
+function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status, UserSaved) {
     this.Id = Id;
     this.AddressLine1 = AddressLine1;
     this.AddressLine2 = AddressLine2;
@@ -255,8 +259,7 @@ function Address(Id, AddressLine1, AddressLine2, Suburb, City, Postcode, Status,
     this.UserSaved = UserSaved;
 }
 
-function DoctorChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id)
-{
+function DoctorChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id) {
     this.AppointmentId = AppointmentId;
     this.SessionId = SessionId;
     this.PatientId = PatientId;
@@ -265,33 +268,33 @@ function DoctorChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatu
     this.Id = Id;
 }
 
-function GetDoctorsByInstituteBranchId(InstituteBranchId)
-{
+function GetDoctorsByInstituteBranchId(InstituteBranchId) {
     this.InstituteBranchId = InstituteBranchId;
 }
 
-function ContactNumbers(Id,ContactNumber,Status){
+function ContactNumbers(Id, ContactNumber, Status) {
     this.Id = Id;
-    this.ContactNumber=ContactNumber;
-    this.Status=Status;
-}
-function DoctorSpecialization(Id,DoctorId,SpecializationId,Status,UserSaved){
-    this.Id = Id;
-    this.DoctorId=DoctorId;
-    this.SpecializationId=SpecializationId;
-    this.Status=Status;
-    this.UserSaved=UserSaved;
-}
-function DoctorQualification(Id,DoctorId,QualificationId,Status,UserSaved){
-    this.Id = Id;
-    this.DoctorId=DoctorId;
-    this.QualificationId=QualificationId;
-    this.Status=Status;
-    this.UserSaved=UserSaved;
+    this.ContactNumber = ContactNumber;
+    this.Status = Status;
 }
 
-function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers)
-{
+function DoctorSpecialization(Id, DoctorId, SpecializationId, Status, UserSaved) {
+    this.Id = Id;
+    this.DoctorId = DoctorId;
+    this.SpecializationId = SpecializationId;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+}
+
+function DoctorQualification(Id, DoctorId, QualificationId, Status, UserSaved) {
+    this.Id = Id;
+    this.DoctorId = DoctorId;
+    this.QualificationId = QualificationId;
+    this.Status = Status;
+    this.UserSaved = UserSaved;
+}
+
+function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers) {
     this.Id = Id;
     this.Title = Title;
     this.FirstName = FirstName;
@@ -306,38 +309,40 @@ function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Stat
     this.Addresses = Addresses;
     this.ContactNumbers = ContactNumbers;
 }
-function DoctorBranch(InstituteBranchId, DoctorId, Status, UserSaved)
-{
+
+function DoctorBranch(InstituteBranchId, DoctorId, Status, UserSaved) {
     this.InstituteBranchId = InstituteBranchId;
     this.DoctorId = DoctorId;
     this.Status = Status;
     this.UserSaved = UserSaved;
 }
 
-function User(Id, Username,Password    , UserGroupId, Status, UserCreated, UserModified ){
+function User(Id, Username, Password, UserGroupId, Status, UserCreated, UserModified) {
     this.Id = Id;
     this.Username = Username;
-    this.Password =Password;
+    this.Password = Password;
     this.UserGroupId = UserGroupId;
     this.Status = Status;
-    this.UserCreated=UserCreated;
-    this.UserModified=UserModified;
+    this.UserCreated = UserCreated;
+    this.UserModified = UserModified;
 }
-function DoctorUser(Id, UserId, DoctorId, UserSaved){
+
+function DoctorUser(Id, UserId, DoctorId, UserSaved) {
     this.Id = Id;
-    this.UserId=UserId;
-    this.DoctorId =DoctorId;
-    this.UserSaved=UserSaved;
+    this.UserId = UserId;
+    this.DoctorId = DoctorId;
+    this.UserSaved = UserSaved;
 }
-function NewDailyCollection(FromDate, ToDate,DoctorId,SearchType)
-{
+
+function NewDailyCollection(FromDate, ToDate, DoctorId, SearchType) {
     this.FromDate = FromDate;
     this.ToDate = ToDate;
     this.DoctorId = DoctorId;
     this.SearchType = SearchType;
 
-}function AppointmentReport(FromDate, ToDate,DoctorId,BranchId,UserId)
-{
+}
+
+function AppointmentReport(FromDate, ToDate, DoctorId, BranchId, UserId) {
     this.FromDate = FromDate;
     this.ToDate = ToDate;
     this.DoctorId = DoctorId;
@@ -346,8 +351,7 @@ function NewDailyCollection(FromDate, ToDate,DoctorId,SearchType)
 
 }
 
-function Bill(Id, SessionId, DoctorId, PatientId,Discount,Total, AppointmentNumber,BillData,AppointmentId)
-{
+function Bill(Id, SessionId, DoctorId, PatientId, Discount, Total, AppointmentNumber, BillData, AppointmentId) {
     this.Id = Id;
     this.SessionId = SessionId;
     this.DoctorId = DoctorId;
@@ -359,8 +363,7 @@ function Bill(Id, SessionId, DoctorId, PatientId,Discount,Total, AppointmentNumb
     this.BillData = BillData;
 }
 
-function BillData(Amount, FeeType, ItemName)
-{
+function BillData(Amount, FeeType, ItemName) {
     this.Amount = Amount;
     this.FeeType = FeeType;
     this.ItemName = ItemName;

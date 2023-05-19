@@ -1858,6 +1858,8 @@ function Pharmacy() {
                 new Attribute(_AttributeOnChange, "GetDoctorSessionDataForPharmacy()")
             ]
         );
+        DropdownSelectDoctor.appendChild(new SelectItem("All Doctors", "null",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         ColumnDoctor.appendChild(LabelSelectDoctor);
         ColumnDoctor.appendChild(DropdownSelectDoctor);
         RowSearch.appendChild(ColumnDoctor);
@@ -1867,6 +1869,8 @@ function Pharmacy() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPrescriptionsSearchSession")]);
         let DropdownSelectSession = new Select("TxtPrescriptionsSearchSession",
             [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
+        DropdownSelectSession.appendChild(new SelectItem("All Sessions", "null",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         ColumnSession.appendChild(LabelSelectSession);
         ColumnSession.appendChild(DropdownSelectSession);
         RowSearch.appendChild(ColumnSession);
@@ -1947,7 +1951,7 @@ function PharmacyPrescription() {
 
 function PharmacySearchResultsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ['No', 'Name', 'Mobile', 'Gender', 'Payment', 'Status', 'Action'];
+        let Headers = ['No', 'Patient', 'Age', 'Mobile', 'Actions'];
 
         let ParentRow = new Div(undefined, "row");
         let ColumnOne = new Div(undefined, "col-md-12 mt-2");
@@ -1962,6 +1966,47 @@ function PharmacySearchResultsTable() {
         ParentRow.appendChild(ColumnOne);
 
         BindView(Container, ParentRow);
+    }
+}
+
+function PharmacyPrescriptionIframeModal() {
+    this.Render = function (Container, PrescriptionId) {
+
+        const IframeModal = new Div("ModalForPharmacyPrescriptionIframe", "modal");
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        // const ModalDialogHeader = new Div(undefined, "modal-header");
+        // ModalDialogHeader.appendChild(new Button('BtnPrintPrescription', 'Print', 'btn btn-primary mr-2',
+        //     [
+        //         new Attribute(_AttributeOnClick, 'window.print();')
+        //     ]
+        // ));
+        // ModalDialogHeader.appendChild(new Button(undefined, 'Close', 'btn btn-danger',
+        //     [
+        //         new Attribute('data-dismiss', 'modal'),
+        //     ]
+        // ));
+        // ModalDialog.appendChild(ModalDialogHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const Row = new Div(undefined, "row");
+        const ColumnOne = new Div("PrescriptionIframeWrapper", "col-md-12 mt-2");
+        // ColumnOne.appendChild(new Label(undefined, "Modal body", undefined));
+
+        Row.appendChild(ColumnOne);
+        ModalContentBody.appendChild(Row);
+
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        IframeModal.appendChild(ModalDialog);
+
+        BindView(Container, IframeModal);
+
+        $('#ModalForPharmacyPrescriptionIframe').modal('show');
     }
 }
 

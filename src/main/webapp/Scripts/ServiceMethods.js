@@ -657,7 +657,7 @@ function MedicalBillDisplay(AppointmentId, appId) {
     console.log(appId)
     selectedAppId = appId;
     selectedAppointmentId = AppointmentId;
-    const PatientMatched = _AppointmentDetails.filter((Patient) => Patient.Id === AppointmentId)[0];
+    const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === AppointmentId)[0];
 
     var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId
         , undefined
@@ -970,15 +970,43 @@ function BMICalculator() {
  =================================*/
 
 function GetPrescriptionList() {
-    _Request.Post(ServiceMethods.PrescriptionRecords, new Prescription(0, _UserBranchId), GetPrescriptionList_Success)
+    //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
+    _IsAdminUserIdRequired = true;
+    //rerun
+    InitRequestHandler();
+
+    _ArrayPrescriptionSearchResultsData = [];
+
+    _Request.Post(ServiceMethods.GetPrescriptionRecord,
+        new GetPrescriptionRecord(
+            $('#TxtPrescriptionsSearchDate').val() + " 00:00:00",
+            // '2023-04-16',
+            $('#TxtPrescriptionsSearchDate').val() + " 23:59:59",
+            parseInt($('#TxtPrescriptionsSearchDoctor').val()),
+            null
+        ),
+        GetPrescriptionList_Success);
 }
 
 function GetPrescriptionList_Success(Response) {
-    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else FilterPrescriptionData(Response.Data);
+    if ($('#PrescriptionsSearchButton').prop('disabled', true)) {
+        $('#PrescriptionsSearchButton').prop('disabled', false);
+    }
+
+    //reset flag
+    _IsAdminUserIdRequired = false;
+    //reset
+    InitRequestHandler();
+
+    if (Response.Status != 1000) {
+        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    } else {
+        FilterPrescriptionData(Response.Data);
+    }
 }
 
 function FilterPrescriptionData(Data) {
-    _ArrayPrescriptionData = Data;
+    _ArrayPrescriptionSearchResultsData = Data;
     let ArrayPrescriptionData = [];
 
     for (Count = 0; Count < Data.length; Count++) {
@@ -1000,15 +1028,20 @@ function FilterPrescriptionData(Data) {
         }
 
         ArrayPrescriptionData.push({
+            // "No": Count + 1,
+            // "Prescription Id": Data[Count].PrescriptionId,
+            // "Name": Data[Count].PatientFullName,
+            // "Health Id": Data[Count].HealthId !== null ? Data[Count].HealthId : '-',
+            // "Status": '<button class="btn btn-info btn-icon mr-2">' + Status + '</button>' +
+            //     '<button class="btn btn-primary btn-icon mr-2" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')">View</button>' +
+            //     '<button class="btn btn-info btn-icon mr-2" onclick= "LoadContactData(' + Data[Count].Id + ')">Contact</button>' +
+            //     '<button class="btn btn-info btn-icon mr-2" onclick= "UpdateIssueStatus(' + Data[Count].Id + ')">' + NextStatus + '</button>' +
+            //     '<button class="btn btn-info btn-icon" onclick= "ClinicMedicalBillPrint(' + Data[Count].Id + ')">Print</button>'
             "No": Count + 1,
-            "Prescription Id": Data[Count].PrescriptionId,
-            "Name": Data[Count].PatientFullName,
-            "Health Id": Data[Count].HealthId !== null ? Data[Count].HealthId : '-',
-            "Status": '<button class="btn btn-info btn-icon mr-2">' + Status + '</button>' +
-                '<button class="btn btn-primary btn-icon mr-2" onclick= "LoadPrescriptionRecordDrugs(' + Data[Count].Id + ')">View</button>' +
-                '<button class="btn btn-info btn-icon mr-2" onclick= "LoadContactData(' + Data[Count].Id + ')">Contact</button>' +
-                '<button class="btn btn-info btn-icon mr-2" onclick= "UpdateIssueStatus(' + Data[Count].Id + ')">' + NextStatus + '</button>' +
-                '<button class="btn btn-info btn-icon" onclick= "ClinicMedicalBillPrint(' + Data[Count].Id + ')">Print</button>'
+            "Patient": Data[Count].PatientFullName,
+            "Age": Data[Count].AgeYears + 'y ' + Data[Count].AgeMonths + 'm',
+            "Mobile": Data[Count].Mobile,
+            "Actions": '<button class="btn btn-primary btn-icon mr-2" onclick= "PrescriptionView(' + Data[Count].Id + ')">View</button>'
         });
     }
 
@@ -1059,8 +1092,27 @@ function GetDoctorSessionDataForPharmacy_Success(Response) {
     }
 }
 
-function Prescriptions_Search(){
+function Prescriptions_Search() {
+    $('#PrescriptionsSearchButton').prop('disabled', true);
+    GetPrescriptionList();
+}
 
+function PrescriptionView(PrescriptionId) {
+    const PrescriptionMatched = _ArrayPrescriptionSearchResultsData.filter((Prescription) => Prescription.Id === PrescriptionId)[0];
+    // console.log('PrescriptionView.PrescriptionMatched:', PrescriptionMatched);
+    // new PharmacyPrescriptionIframeModal().Render(Containers.Footer, PrescriptionId);
+
+    // const IframeUrl = 'https://docnote.medica.lk/Prescription?Id=334322799953';
+    const IframeUrl = 'https://docnote.medica.lk/Prescription?Id=' + PrescriptionId;
+    const Iframe = '<iframe src="' + IframeUrl + '" title="Prescription" height="700px" class="w-100 border-0"></iframe>';
+    // $('#PrescriptionIframeWrapper').append(Iframe);
+
+    // //reset flag
+    // _IsAdminUserIdRequired = false;
+    // //reset
+    // InitRequestHandler();
+
+    window.open(IframeUrl);
 }
 
 /*=================================
