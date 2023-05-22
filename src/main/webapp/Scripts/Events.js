@@ -166,6 +166,82 @@ function LoadSessionViceAppointments(Object, SessionId) {
     ViewAppointmentedPatientList();
 }
 
+async function cancelAllAppointments(){
+
+    //filter out appointments that are not cancelled already
+    let appointmentsNotCancelled = _ArrayAppointmentsForToday.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
+    console.log(_ArrayAppointmentsForToday);
+    console.log(_SessionId);
+    ShowMessage(`<i id='count'> Cancelling appointments 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
+
+    const count = document.getElementById('count');
+
+    let completed = 1;
+    function setCompletedCount (){
+        count.innerHTML = `Cancelling appointments ${completed} of ${appointmentsNotCancelled.length}`;
+        completed++;
+    }
+    function setCompletedStatus(){
+        count.innerHTML = `All appointments cancelled and patients were notified`;
+    }
+
+    for(let i = 0; i < appointmentsNotCancelled.length; i++){
+        try{
+            let doctorName = appointmentsNotCancelled[i].DoctorName;
+            let startingDateTime = appointmentsNotCancelled[i].TimeStart;
+            let id = appointmentsNotCancelled[i].Id;
+            let number = appointmentsNotCancelled[i].Number;
+            let patientId = appointmentsNotCancelled[i].PatientId;
+            let sessionId = appointmentsNotCancelled[i].SessionId;
+            let mobile = appointmentsNotCancelled[i].Mobile;
+
+            console.log(appointmentsNotCancelled[i])
+
+            let result = await PostAsync({
+                    serviceMethod: ServiceMethods.ChanalingStatusSave,
+                    requestBody:{
+                            "AppointmentId": id,
+                            "SessionId": sessionId,
+                            "PatientId": patientId,
+                            "DoctorStatus": "Cancel Appointment",
+                            "ChanalingStatus": "cancelled",
+                            "Id": 0
+                        }
+                })
+
+            // notify patients
+            let status = await PostAsync({
+                serviceMethod: ServiceMethods.SENDSMS,
+                requestBody: {
+                    "ScheduleMedium": [
+                        {
+                            "MediumId": 1,
+                            "Destination": mobile,
+                            "Status": 0
+                        }
+                    ],
+                    "ScheduleMediumType": [
+                        {
+                            "MediumId": 1,
+                            "Destination":  mobile,
+                            "Status": 0
+                        }
+                    ],
+                    "NotifactionType": 1,
+                    "Message": `Appointment Cancelled! Docnote Booking Reference Number : ${id}, Appointment Number: ${number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+                    "Status": 0
+                }
+            })
+            setCompletedCount();
+        }catch (e) {
+            console.log(e);
+        }
+    }
+    setCompletedStatus();
+    GetDoctorAppoinmentList();
+
+}
+
 function SetAppointmentPatient(Object, PatientId) {
     var CurrentRow = $(Object).closest("tr");
     _AppointmentPatientName = CurrentRow.find("td:eq(1)").text();
@@ -252,7 +328,7 @@ function SaveBillData(printData) {
         , $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0
         , $('#TxtTotal').text(), selectedAppId, dataset, selectedAppointmentId)
 
-    console.log(allData);
+    // console.log(allData);
 
     _Request.Post(ServiceMethods.BillSave, allData, function (res) {
         printData.Bill.BillNumber = 'SO/SC/' + String(res.Data.Id).padStart(5, '0');
@@ -333,10 +409,10 @@ function CmdSaveSession_Click() {
 function CmdSessionSearch_Click() {
     _DoctorId = document.getElementById('DrpSessionDoctor').value;
     _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
-    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDoctor').value);
-    selectedDoctorId = $("#DrpSessionDoctor option:selected")[0].value;
-    _SessionDetails = $("#DrpSessionDoctor option:selected").text();
-    selectedSessionId = $("#DrpSessionDoctor option:selected")[0].value;
+    // _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
+    // selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
+    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    // selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
 
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
@@ -346,6 +422,7 @@ function CmdSessionSearch_Click() {
 
 function CmdCancelSession_Click() {
     CmdSession_Click();
+    _UpdateSession = false;
     document.getElementById('DrpSessionDoctor').value = _DoctorId;
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
 }
@@ -545,7 +622,7 @@ function AppointmentUpdate() {
     let val = $('#TxtAppointmentUpdateDoctorSession').val();
 
     selectedRowSessionId = parseInt(val);
-    console.log(selectedRowSessionId.isNuN);
+    console.log(selectedRowSessionId.isNaN);
     if (isNaN(selectedRowSessionId)) {
         return ShowMessage("Please Select Session", MessageTypes.Warning, "Warning!");
     } else {
@@ -575,6 +652,24 @@ function AppointmentUpdate() {
 function SaveAppointment_Success_Update(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         CmdAppoinments_Click();
+        console.log(Response)
+        // send sms to patient
+        let appointmentNumber = Response.Data.Number;
+        let appointmentId = Response.Data.Id;
+        let doctorName = Response.Data.DoctorName;
+        let startingDateTime = Response.Data.TimeStart;
+
+        let patientMobileNo = Response.Data.Mobile;
+
+        shareAppointmentDetailsWithPatient({
+            messageTitle: 'Appointment Updated!',
+            mobileNumber: patientMobileNo,
+            appointmentNumber: appointmentNumber,
+            appointmentId: appointmentId,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
+
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
     }
 }
@@ -1017,7 +1112,7 @@ function GetDoctorByBranch() {
                     curDoctor++;
                     AllDoctor.push(Res.Data);
                     if (curDoctor === ttlDoctors) {
-                        console.log(AllDoctor);
+                        // console.log(AllDoctor);
                         doctorDrpData(AllDoctor);
                     }
                 });
@@ -1058,7 +1153,7 @@ function LoadDoctorToTable(Res) {
     curDoctor++;
     AllDoctor.push(Res.Data);
     if (curDoctor === ttlDoctors) {
-        console.log(AllDoctor);
+        // console.log(AllDoctor);
         doctorTblData(AllDoctor);
     }
 }
@@ -1067,6 +1162,7 @@ function doctorDrpData(Res) {
     let Count;
     let DataLength = Res.length;
     //all doctors - as the first option
+    $('#DrpDoctor').append('<option value="0">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpDoctor').append('<option value="' + Res[Count].Id + '">' +
             Res[Count].Title + ' ' + Res[Count].FirstName + ' ' + Res[Count].LastName + '</option>');
@@ -1157,23 +1253,64 @@ function DoctorAddOrUpdateModalView(index, id) {
 
 }
 
+function DoctorsDateOfBirthDisplay() {
+    let NIC = $("#TxtDoctorNIC").val().trim();
+    if (NIC === "" || (ValidateNIC(NIC) === false && NIC !== "")) {
+        $("#TxtDoctorDate_Of_Birth").val('');
+        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!");
+    }
+    const dob = GetDateOfBirthByNIC(NIC);
+    const dobReformatted = dob.split('/')[0] + '-' + dob.split('/')[1].padStart(2, '0') + '-' + dob.split('/')[2].padStart(2, '0');
+    $("#TxtDoctorDate_Of_Birth").val(dobReformatted);
+}
+
 function AddOrUpdateDoctor(id) {
     makeCustomHeader(_UserIdAdmin);
     if (!id) {
         id = 0;
     }
 
-    let Title = $("#DrpTitle").val();
-    let FirstName = $("#TxtDoctorFirst_Name").val();
-    let MiddleName = $("#TxtDoctorMiddle_Name").val();
-    let LastName = $("#TxtDoctorLast_Name").val();
-    let Contact1 = $("#TxtDoctorContact_No").val();
-    let Contact2 = $("#TxtDoctorPhone_No").val();
-    let Email = $("#TxtDoctorEmail").val();
-    let NIC = $("#TxtDoctorNIC").val();
-    let RegNumber = $("#TxtDoctorRegistration_Number").val();
-    let DOB = $("#TxtDoctorDate_Of_Birth").val();
+    let Title = $("#DrpTitle").val().trim();
+    let FirstName = $("#TxtDoctorFirst_Name").val().trim();
+    let MiddleName = $("#TxtDoctorMiddle_Name").val().trim();
+    let LastName = $("#TxtDoctorLast_Name").val().trim();
+    let Contact1 = $("#TxtDoctorContact_No").val().trim();
+    let Contact2 = $("#TxtDoctorPhone_No").val().trim();
+    let Email = $("#TxtDoctorEmail").val().trim();
+    let NIC = $("#TxtDoctorNIC").val().trim();
+    let RegNumber = $("#TxtDoctorRegistration_Number").val().trim();
+    let DOB = $("#TxtDoctorDate_Of_Birth").val().trim();
+    let Specialization = $("#DrpSpecialization").val();
+    let Qualification = $("#DrpQualifications").val();
+    // console.log('AddOrUpdateDoctor:', Specialization, Qualification);
 
+    //validation
+    if (Title === "")
+        return ShowMessage('Invalid Title!', MessageTypes.Warning, "Warning!");
+
+    if (FirstName === "")
+        return ShowMessage('Invalid First Name!', MessageTypes.Warning, "Warning!");
+
+    if (LastName === "")
+        return ShowMessage('Invalid Last Name!', MessageTypes.Warning, "Warning!");
+
+    if (Contact1 === "" || (ValidateMobile(Contact1) === false && Contact1 !== ""))
+        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+
+    if (Email === "")
+        return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
+
+    if (NIC === "" || (ValidateNIC(NIC) === false && NIC !== ""))
+        return ShowMessage(Messages.InvalidNIC, MessageTypes.Warning, "Warning!");
+
+    if (DOB === "")
+        return ShowMessage('Invalid Date of Birth!', MessageTypes.Warning, "Warning!");
+
+    if (Specialization === null)
+        return ShowMessage('Invalid Specialization!', MessageTypes.Warning, "Warning!");
+
+    if (Qualification === null)
+        return ShowMessage('Invalid Qualification!', MessageTypes.Warning, "Warning!");
 
     let ContactList = [];
 
@@ -1250,7 +1387,7 @@ function SuccessSaveNewSpecialization(Response) {
     if (Response.Status !== 1000) {
 
         makeCustomHeader(_UserId);
-        ShowMessage("Error !", MessageTypes.Error, "Error!");
+        // ShowMessage("Error !", MessageTypes.Error, "Error!");
     }
 }
 
