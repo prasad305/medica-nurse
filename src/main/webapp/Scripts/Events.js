@@ -166,7 +166,7 @@ function LoadSessionViceAppointments(Object, SessionId) {
     ViewAppointmentedPatientList();
 }
 
-async function cancelAllAppointments(){
+async function cancelAllAppointments() {
 
     //filter out appointments that are not cancelled already
     let appointmentsNotCancelled = _ArrayAppointmentsForToday.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
@@ -177,16 +177,18 @@ async function cancelAllAppointments(){
     const count = document.getElementById('count');
 
     let completed = 1;
-    function setCompletedCount (){
+
+    function setCompletedCount() {
         count.innerHTML = `Cancelling appointments ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
     }
-    function setCompletedStatus(){
+
+    function setCompletedStatus() {
         count.innerHTML = `All appointments cancelled and patients were notified`;
     }
 
-    for(let i = 0; i < appointmentsNotCancelled.length; i++){
-        try{
+    for (let i = 0; i < appointmentsNotCancelled.length; i++) {
+        try {
             let doctorName = appointmentsNotCancelled[i].DoctorName;
             let startingDateTime = appointmentsNotCancelled[i].TimeStart;
             let id = appointmentsNotCancelled[i].Id;
@@ -198,16 +200,16 @@ async function cancelAllAppointments(){
             console.log(appointmentsNotCancelled[i])
 
             let result = await PostAsync({
-                    serviceMethod: ServiceMethods.ChanalingStatusSave,
-                    requestBody:{
-                            "AppointmentId": id,
-                            "SessionId": sessionId,
-                            "PatientId": patientId,
-                            "DoctorStatus": "Cancel Appointment",
-                            "ChanalingStatus": "cancelled",
-                            "Id": 0
-                        }
-                })
+                serviceMethod: ServiceMethods.ChanalingStatusSave,
+                requestBody: {
+                    "AppointmentId": id,
+                    "SessionId": sessionId,
+                    "PatientId": patientId,
+                    "DoctorStatus": "Cancel Appointment",
+                    "ChanalingStatus": "cancelled",
+                    "Id": 0
+                }
+            })
 
             // notify patients
             let status = await PostAsync({
@@ -223,17 +225,21 @@ async function cancelAllAppointments(){
                     "ScheduleMediumType": [
                         {
                             "MediumId": 1,
-                            "Destination":  mobile,
+                            "Destination": mobile,
                             "Status": 0
                         }
                     ],
                     "NotifactionType": 1,
-                    "Message": `Appointment Cancelled! Docnote Booking Reference Number : ${id}, Appointment Number: ${number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+                    "Message": `Appointment Cancelled! Docnote Booking Reference Number : ${id}, Appointment Number: ${number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                    })}`,
                     "Status": 0
                 }
             })
             setCompletedCount();
-        }catch (e) {
+        } catch (e) {
             console.log(e);
         }
     }
@@ -421,7 +427,8 @@ function CmdSessionSearch_Click() {
 }
 
 function CmdCancelSession_Click() {
-    CmdSession_Click();
+    // CmdSession_Click();
+    CmdSession_Click(document.getElementById('SessionCard'));
     _UpdateSession = false;
     document.getElementById('DrpSessionDoctor').value = _DoctorId;
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
@@ -1176,9 +1183,11 @@ function doctorTblData(Response) {
         let Doctor = {};
         for (let Count = 0; Count < Response.length; Count++) {
             Doctor = Response[Count];
-
             ArrayDoctorSearchResultsData.push({
                 "Doctor Name": Doctor.Title + ' ' + Doctor.FirstName + ' ' + Doctor.LastName,
+                "Email": Doctor.Email,
+                "NIC": isNull(Doctor.NIC),
+                "Registration Number": isNull(Doctor.RegistrationNumber),
                 "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>' +
@@ -1191,6 +1200,7 @@ function doctorTblData(Response) {
     }
 
     new DoctorsSearchResultsTable().Render('DoctorsSearchResults', ArrayDoctorSearchResultsData);
+    CreateDataTable('TableDoctorsSearchResults');
 }
 
 

@@ -356,7 +356,7 @@ function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
     //all doctors - as the first option
-    $('#' + Id).append('<option value="all">All Doctors</option>');
+    // $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
