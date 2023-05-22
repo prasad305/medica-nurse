@@ -1475,32 +1475,26 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
     InitRequestHandler();
     _ArrayAllBranchesOfTheInstituteResultsData = Response.Data;
 
-    const ArrayBranchesSearchResultsData = [];
+    const TableData = [];
 
     if (Response.Data.length > 0) {
-
         let Branch = {};
-
         for (let Count = 0; Count < Response.Data.length; Count++) {
-
             Branch = Response.Data[Count];
-            // console.log('AllBranchesOfTheInstituteGet_Success.Branch:', Branch);
-
-            ArrayBranchesSearchResultsData.push({
+            TableData.push({
                 "Branch Name": Branch.Name,
+                "Contact No": isEmpty(Branch.Postcode.split('|')[1]),
+                "Address": Branch.AddressLine1,
+                "Email": Branch.Email,
                 "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>'
             });
-
         }
-
     }
 
-    // console.log('AllBranchesOfTheInstituteGet_Success.ArrayBranchesSearchResultsData:', ArrayBranchesSearchResultsData);
-
-    new BranchesSearchResultsTable().Render('BranchesSearchResults', ArrayBranchesSearchResultsData);
-    // CreateDataTable('TableBranchesSearchResults');
+    new BranchesSearchResultsTable().Render('BranchesSearchResults', TableData);
+    CreateDataTable('TableBranchesSearchResults');
 
 }
 

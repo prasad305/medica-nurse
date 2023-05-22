@@ -252,10 +252,10 @@ function isNullOrUndefined(String) {
 // function isUndefined(String) {
 //     return String !== undefined ? String : '-';
 // }
-//
-// function isEmpty(String) {
-//     return String.trim() !== '' ? String : '-';
-// }
+
+function isEmpty(String) {
+    return String.trim() !== '' ? String : '-';
+}
 
 
 function FieldsValidation(Field) {

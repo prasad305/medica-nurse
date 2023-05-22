@@ -1161,7 +1161,7 @@ function NewAppoinment() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
         );
         let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('min', DateToday), new Attribute('value', DateToday)]);
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday)]);
 
         DivFormRowDate.appendChild(LabelAppointmentDate);
         DivFormRowDate.appendChild(AppointmentDateSelect);
@@ -1887,7 +1887,7 @@ function Pharmacy() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPrescriptionsSearchDate")]
         );
         let TextSelectDate = new Textbox("TxtPrescriptionsSearchDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('min', DateToday), new Attribute('value', DateToday)]);
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday)]);
         ColumnDate.appendChild(LabelSelectDate);
         ColumnDate.appendChild(TextSelectDate);
         RowSearch.appendChild(ColumnDate);
@@ -2343,7 +2343,7 @@ function Branches() {
 
 function BranchesSearchResultsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["Branch Name", "Action"];
+        let Headers = ["Branch Name", "Contact No", "Address", "Email", "Action"];
 
         let ParentRow = new Div(undefined, "row");
 
