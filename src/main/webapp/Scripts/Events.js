@@ -429,9 +429,11 @@ function CmdSessionSearch_Click() {
 function CmdCancelSession_Click() {
     // CmdSession_Click();
     CmdSession_Click(document.getElementById('SessionCard'));
-    _UpdateSession = false;
-    document.getElementById('DrpSessionDoctor').value = _DoctorId;
-    _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
+    // _UpdateSession = false;
+    // document.getElementById('DrpSessionDoctor').value = _DoctorId;
+    // _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
+    new Session().Render(Containers.MainContent);
+    SetDoctorData('DrpSessionDoctor');
 }
 
 
