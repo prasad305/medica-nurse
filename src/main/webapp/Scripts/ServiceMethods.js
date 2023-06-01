@@ -451,17 +451,17 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
 
     if (Response.Status != 1000) {
         $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-        $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
+        $('#DrpSessionDateDoctor').append('<option value="0">All Sessions</option>');
     } else {
         let DataLength = Response.Data.length;
         let Count = 0;
         let Type;
         if (DataLength === 0) {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-            $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
+            $('#DrpSessionDateDoctor').append('<option value="0">All Sessions</option>');
         } else {
             $('#DrpSessionDateDoctor').append('<option value=" ">Select Session</option>');
-            $('#DrpSessionDateDoctor').append('<option value="all">All Sessions</option>');
+            $('#DrpSessionDateDoctor').append('<option value="0">All Sessions</option>');
             for (Count = 0; Count < DataLength; Count++) {
                 let TimeStartSplit = Response.Data[Count].TimeStart.split("T")[1].split(":");
                 let SessionDate = Response.Data[Count].TimeStart.split("T")[0].split(":");
@@ -715,11 +715,15 @@ function GetAllPatientAppointmentsList(SearchType) {
 
     const GetCurrentDate = new Date();
     const GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
-    // _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsList_Success);
-    if (SearchType === 'search') {
-        const AppointmentDate = $('#TxtAppointmentSearchDate').val();
+    const AppointmentDate = $('#TxtAppointmentSearchDate').val();
+    const DoctorId = $('#DrpAppoinmentDoctor option:selected').val();
+    if (SearchType === 'sessions') {
+        _Request.Post(ServiceMethods.GetAppoinment,
+            new AppointmentListAllSessions(undefined, _UserId, 999999, _SessionId, AppointmentDate, DoctorId),
+            GetAllPatientAppointmentsForTodayList_Success);
+    } else if (SearchType === 'search') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
-    } else {
+    } else if (SearchType === 'all') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
     }
 }

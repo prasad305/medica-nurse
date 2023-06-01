@@ -105,6 +105,15 @@ function AppointmentList(Id, UserId, Number, SessionId) {
     this.SessionId = SessionId;
 }
 
+function AppointmentListAllSessions(Id, UserId, Number, SessionId, PatientMobile, PatientId) {
+    this.Id = Id;
+    this.UserId = UserId;
+    this.Number = Number;
+    this.SessionId = SessionId;
+    this.PatientMobile = PatientMobile;
+    this.PatientId = PatientId;
+}
+
 function UserPatient(UserId, PatientId, UserSaved) {
     this.UserId = UserId;
     this.PatientID = PatientId;
