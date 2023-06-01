@@ -633,7 +633,6 @@ function AppointmentUpdate() {
 
 
         //next appoinment
-
         _Request.Post(ServiceMethods.NextAppoinment, new SessionId(selectedRowSessionId), function (Res) {
 
             _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0,
