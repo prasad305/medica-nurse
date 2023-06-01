@@ -13,7 +13,7 @@
     <title>Medica Reception</title>
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet"/>
-    <link href="dist-assets/css/themes/lite-blue.min.css" rel="stylesheet"/>
+    <link href="dist-assets/css/themes/lite-purple.min.css" rel="stylesheet"/>
     <link href="dist-assets/css/plugins/perfect-scrollbar.css" rel="stylesheet"/>
     <link href="dist-assets/css/themes/component-custom-switch.css" rel="stylesheet"/>
     <link href="dist-assets/css/plugins/sweetalert2.min.css" rel="stylesheet"/>

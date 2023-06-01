@@ -291,7 +291,8 @@ input[type=number]
 .LoginTitle
 {
     text-align: center;
-    color: #663399;
+    /*color: #663399;*/
+    color: #673ab7;
     font-family: Source Sans Pro, sans-serif;
 }
 
