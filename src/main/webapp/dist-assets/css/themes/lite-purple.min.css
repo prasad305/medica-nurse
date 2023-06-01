@@ -16133,9 +16133,11 @@ a.typo_link.text-gray-900:after {
       width: 24px;
       display: inline-block; }
   .main-header .logo {
-    width: 76px; }
-    .main-header .logo img {
-      width: 60px;
+    /*width: 76px; */
+  }
+
+.main-header .logo img {
+      /*width: 60px;*/
       height: 60px;
       margin: 0 auto;
       display: block; }
@@ -16505,7 +16507,7 @@ a.typo_link.text-gray-900:after {
   .layout-sidebar-large .main-header .logo {
     width: 120px; }
     .layout-sidebar-large .main-header .logo img {
-      width: 60px;
+      /*width: 60px;*/
       height: 60px;
       margin: 0 auto;
       display: block; }
@@ -16881,7 +16883,7 @@ a.typo_link.text-gray-900:after {
   .layout-horizontal-bar .main-header .logo {
     width: 120px; }
     .layout-horizontal-bar .main-header .logo img {
-      width: 60px;
+      /*width: 60px;*/
       height: 60px;
       margin: 0 auto;
       display: block; }
@@ -22733,7 +22735,7 @@ span.fa.fa-chevron-right:before {
   .main-header .logo {
     width: 120px; }
     .main-header .logo img {
-      width: 60px;
+      /*width: 60px;*/
       height: 60px;
       margin: 0 auto;
       display: block; }

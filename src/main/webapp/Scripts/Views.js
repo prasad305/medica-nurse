@@ -98,7 +98,7 @@ function Login() {
 
         let DivRow = new Div(undefined, "row justify-content-center");
 
-        DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/LogoNurse.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default mr-5  medicanurse")]));
+        // DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/LogoNurse.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default mr-5  medicanurse")]));
         DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/docnote.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default ml-2 docnote")]));
         DivContent.appendChild(DivRow);
         DivContent.appendChild(new Heading4("MEDICA Reception Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ")]));
