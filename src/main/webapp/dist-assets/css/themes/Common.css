@@ -454,3 +454,18 @@ m-auto {
 .h-700{
     height: 700px;
 }
+
+/*.mandatory::after {*/
+/*    position: relative;*/
+/*    top: -0.5em;*/
+/*    font-size: 80%;*/
+/*    color: red;*/
+/*    content: ' *';*/
+/*}*/
+
+.mandatory {
+    position: relative;
+    top: -0.5em;
+    font-size: 80% !important;
+    color: red !important;
+}
