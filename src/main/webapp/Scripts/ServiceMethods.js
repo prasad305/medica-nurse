@@ -656,6 +656,9 @@ function FilterAppointedPatientData(Data) {
             case 3:
                 PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
                 break;
+            case 5:
+                PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
+                break;
 
         }
 
