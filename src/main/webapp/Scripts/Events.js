@@ -1177,6 +1177,7 @@ function doctorDrpData(Res) {
     let Count;
     let DataLength = Res.length;
     //all doctors - as the first option
+    $('#DrpDoctor').html('');
     $('#DrpDoctor').append('<option value="0">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpDoctor').append('<option value="' + Res[Count].Id + '">' +
