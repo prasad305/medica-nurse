@@ -438,7 +438,7 @@ function PatientSearch() {
         FormPatientSearch.appendChild(FormRow0PatientSearch);
 
         let DivFormPatient = new Div(undefined, "col-sm-6 col-12 mt-2");
-        DivFormPatient.appendChild(new Label(undefined, "Patient Mobile Number", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPatientMobileNumber")]));
+        DivFormPatient.appendChild(new Label(undefined, "Patient Mobile Number *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPatientMobileNumber")]));
         DivFormPatient.appendChild(new Numberbox("TxtPatientMobileNumber", "form-control form-control-rounded", [new Attribute(_AttributeOnKeyDown, "javascript: return event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key))")]));
         FormRow0PatientSearch.appendChild(DivFormPatient);
 
@@ -628,14 +628,14 @@ function AddPatient() {
 
         let FormGroupRowPatient = new Div(undefined, "form-group row");
         let DivFormGroupRowPatient = new Div(undefined, "col-lg-4 col-12");
-        DivFormGroupRowPatient.appendChild(new Label(undefined, "NIC Number", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAddId")]));
+        DivFormGroupRowPatient.appendChild(new Label(undefined, "NIC Number *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAddId")]));
         DivFormGroupRowPatient.appendChild(new Textbox("TxtAddId", "form-control form-control-rounded Add-Patient patient-form", [new Attribute(_AttributeType, "text"), new Attribute(_AttributeOnBlur, "CmdGetDOBandGender()")]));
         FormGroupRowPatient.appendChild(DivFormGroupRowPatient);
 
         let DivFormGroupRowPassport = new Div(undefined, "col-lg-2 col-4 Add-Patient-Div");
         let LabelPassport = new Label(undefined, undefined, "radio radio-primary mt-4 ");
         LabelPassport.appendChild(new RadioButton("RadioAddPassport", "RadioEdit", [new Attribute(_AttributeValue, "Passport")]));
-        LabelPassport.appendChild(new Span(undefined, "Passport"));
+        LabelPassport.appendChild(new Span(undefined, "Passport *"));
         LabelPassport.appendChild(new Span(undefined, undefined, "checkmark"));
         DivFormGroupRowPassport.appendChild(LabelPassport);
         FormGroupRowPatient.appendChild(DivFormGroupRowPassport);
@@ -655,14 +655,14 @@ function AddPatient() {
 
         let FormGroupRowMobile = new Div(undefined, "form-group row");
         let DivFormGroupRowMobileNumber = new Div(undefined, "col-lg-4 col-12");
-        DivFormGroupRowMobileNumber.appendChild(new Label(undefined, "Mobile Number", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditMobileNumber")]));
+        DivFormGroupRowMobileNumber.appendChild(new Label(undefined, "Mobile Number *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditMobileNumber")]));
         DivFormGroupRowMobileNumber.appendChild(new Textbox("TxtAddMobileNumber", "form-control form-control-rounded Add-Patient patient-form", [new Attribute(_AttributeType, "text")]));
         FormGroupRowMobile.appendChild(DivFormGroupRowMobileNumber);
         FormEditPatient.appendChild(FormGroupRowMobile);
 
         let FormGroupRowDOB = new Div(undefined, "form-group row");
         let DivFormGroupRowDOB = new Div(undefined, "col-lg-4 col-4");
-        DivFormGroupRowDOB.appendChild(new Label(undefined, "Date of Birth", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditDateBirth")]));
+        DivFormGroupRowDOB.appendChild(new Label(undefined, "Date of Birth *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditDateBirth")]));
         DivFormGroupRowDOB.appendChild(new Textbox("TxtAddDateBirth", "form-control form-control-rounded Add-Patient patient-form Date-Picker", [new Attribute(_AttributeType, "text")]));
         FormGroupRowDOB.appendChild(DivFormGroupRowDOB);
 
@@ -686,7 +686,7 @@ function AddPatient() {
         let FormGroupRowTitle = new Div(undefined, "form-group row");
 
         let DivFormGroupRow42 = new Div(undefined, "col-lg-4 col-6");
-        DivFormGroupRow42.appendChild(new Label(undefined, "Title", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "Title")]));
+        DivFormGroupRow42.appendChild(new Label(undefined, "Title *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "Title")]));
         let SelectTitle = new Select("DrpAddPatientTtitle", [new Attribute(_AttributeClass, "form-control form-control-rounded ")]);
         SelectTitle.appendChild(new SelectItem("Mr.", "Mr.", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
         SelectTitle.appendChild(new SelectItem("Mrs.", "Mrs.", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
@@ -699,12 +699,12 @@ function AddPatient() {
         FormGroupRowTitle.appendChild(DivFormGroupRow42);
 
         let DivFormGroupRowFirstName = new Div(undefined, "col-lg-4 col-6");
-        DivFormGroupRowFirstName.appendChild(new Label(undefined, "First Name", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditFirstName")]));
+        DivFormGroupRowFirstName.appendChild(new Label(undefined, "First Name *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditFirstName")]));
         DivFormGroupRowFirstName.appendChild(new Textbox("TxtAddFirstName", "form-control form-control-rounded Add-Patient patient-form", [new Attribute(_AttributeType, "text")]));
         FormGroupRowTitle.appendChild(DivFormGroupRowFirstName);
 
         let DivFormGroupRowLastName = new Div(undefined, "col-lg-4 col-6");
-        DivFormGroupRowLastName.appendChild(new Label(undefined, "Last Name", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditLastName")]));
+        DivFormGroupRowLastName.appendChild(new Label(undefined, "Last Name *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtEditLastName")]));
         DivFormGroupRowLastName.appendChild(new Textbox("TxtAddLastName", "form-control form-control-rounded Add-Patient patient-form", [new Attribute(_AttributeType, "text")]));
         FormGroupRowTitle.appendChild(DivFormGroupRowLastName);
         FormEditPatient.appendChild(FormGroupRowTitle);
@@ -880,7 +880,7 @@ function Session() {
 
         let FormRowSession = new Div(undefined, "form-group row mt-3");
         let DivFormRowSession = new Div(undefined, "col-sm-12 col-12 text-left");
-        let LabelSession = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinments")]);
+        let LabelSession = new Label(undefined, "Select Doctor *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinments")]);
         let SelectSession = new Select("DrpSessionDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
         SelectSession.appendChild(new SelectItem("Select Doctor", "0", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
 
@@ -945,25 +945,25 @@ function AddNewSession() {
 
         let DivFormGroupRowRoom = new Div(undefined, "form-group row");
         let DivFormGroupRowRoomNumber = new Div(undefined, "col-lg-2 col-2");
-        DivFormGroupRowRoomNumber.appendChild(new Label(undefined, "Room No", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionRoomNumber")]));
+        DivFormGroupRowRoomNumber.appendChild(new Label(undefined, "Room No *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionRoomNumber")]));
         DivFormGroupRowRoomNumber.appendChild(new Textbox("TxtSessionRoomNumber", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
         DivFormGroupRowRoom.appendChild(DivFormGroupRowRoomNumber);
 
         let DivFormGroupRowInstitute = new Div(undefined, "col-lg-3 col-3");
-        DivFormGroupRowInstitute.appendChild(new Label(undefined, "Branch Name", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionInstituteBranchId")]));
+        DivFormGroupRowInstitute.appendChild(new Label(undefined, "Branch Name *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionInstituteBranchId")]));
         let DrpSessionInstituteBranch = new Select("DrpSessionInstituteBranchId", [new Attribute(_AttributeClass, "form-control form-control-rounded")]);
         DrpSessionInstituteBranch.appendChild(new SelectItem("Select Branch", "0", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
         DivFormGroupRowInstitute.appendChild(DrpSessionInstituteBranch);
         DivFormGroupRowRoom.appendChild(DivFormGroupRowInstitute);
 
         let DivFormGroupRowSessionDate = new Div(undefined, "col-lg-4 col-4");
-        DivFormGroupRowSessionDate.appendChild(new Label(undefined, "Session Date", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionDate")]));
+        DivFormGroupRowSessionDate.appendChild(new Label(undefined, "Session Date *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionDate")]));
         DivFormGroupRowSessionDate.appendChild(new Textbox("TxtSessionDate", "form-control form-control-rounded Date-Picker", [new Attribute(_AttributeType, "text")]));
         DivFormGroupRowRoom.appendChild(DivFormGroupRowSessionDate);
 
 
         let DivFormGroupRowSessionType = new Div(undefined, "col-lg-3 col-3");
-        DivFormGroupRowSessionType.appendChild(new Label(undefined, "Session Type", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionType")]));
+        DivFormGroupRowSessionType.appendChild(new Label(undefined, "Session Type *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionType")]));
         let DrpSessionType = new Select("DrpSessionType", [new Attribute(_AttributeClass, "form-control form-control-rounded")]);
         DrpSessionType.appendChild(new SelectItem("Physical", "2", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
         DrpSessionType.appendChild(new SelectItem("Virtual", "1", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
@@ -974,12 +974,12 @@ function AddNewSession() {
 
         let DivFormGroupRowStart = new Div(undefined, "form-group row");
         let DivFormGroupRowStartTime = new Div(undefined, "col-lg-6 col-6");
-        DivFormGroupRowStartTime.appendChild(new Label(undefined, "Start Time", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionStart")]));
+        DivFormGroupRowStartTime.appendChild(new Label(undefined, "Start Time *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionStart")]));
         DivFormGroupRowStartTime.appendChild(new Textbox("TxtSessionStart", "form-control form-control-rounded Time-Picker z-1", [new Attribute(_AttributeType, "text")]));
         DivFormGroupRowStart.appendChild(DivFormGroupRowStartTime);
 
         let DivFormGroupRowEnd = new Div(undefined, "col-lg-6 col-6");
-        DivFormGroupRowEnd.appendChild(new Label(undefined, "End Time", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionEnd")]));
+        DivFormGroupRowEnd.appendChild(new Label(undefined, "End Time *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionEnd")]));
         DivFormGroupRowEnd.appendChild(new Textbox("TxtSessionEnd", "form-control form-control-rounded Time-Picker z-1", [new Attribute(_AttributeType, "text")]));
         DivFormGroupRowStart.appendChild(DivFormGroupRowEnd);
         FormAddSession.appendChild(DivFormGroupRowStart);
@@ -1050,7 +1050,7 @@ function Appoinments() {
 
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
         let DivFormRowDoctor = new Div(undefined, "col-sm-12 col-12 text-left ");
-        let LabelAppoinment = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
+        let LabelAppoinment = new Label(undefined, "Select Doctor *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
         let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment('Appoinments')")]);
         SelectAppoinment.appendChild(new SelectItem("Select Doctor", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
@@ -1060,7 +1060,7 @@ function Appoinments() {
 
         let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
         let DivFormRowSession = new Div(undefined, "col-sm-12 col-12 text-left ");
-        let LabelAppoinmentSession = new Label(undefined, "Select Session", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
+        let LabelAppoinmentSession = new Label(undefined, "Select Session *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
         let SelectAppoinmentSession = new Select("DrpSessionDateDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
         SelectAppoinmentSession.appendChild(new SelectItem("Select Session", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowSession.appendChild(LabelAppoinmentSession);
@@ -1106,11 +1106,11 @@ function NewAppoinment() {
         FormGroupRow.appendChild(new Div(undefined, "col-lg-3"));
 
         let DivFormGroupRowCheckAppointment = new Div(undefined, "col-lg-3 text-center");
-        DivFormGroupRowCheckAppointment.appendChild(new Label(undefined, "Paid Appoinment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
+        DivFormGroupRowCheckAppointment.appendChild(new Label(undefined, "Paid Appoinment *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
         DivFormGroupRowCheckAppointment.appendChild(new Checkbox("CheckAppoinmentNumber", undefined, [new Attribute(_AttributeOnClick, "CmdChkAppointment_Click()"), new Attribute(_AttributeClass, "form-control")]));
 
         let DivFormGroupRowAppointment = new Div(undefined, "col-lg-3");
-        DivFormGroupRowAppointment.appendChild(new Label(undefined, "Available Appointment", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
+        DivFormGroupRowAppointment.appendChild(new Label(undefined, "Available Appointment *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppoinmentNumber")]));
         DivFormGroupRowAppointment.appendChild(new Textbox("TxtAppoinmentNumber", "form-control form-control-rounded Time-Picker", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
 
         let DivFormGroupRowSaveAppointment = new Div("IdBtnAppointment", "col-lg-3");
@@ -1133,7 +1133,7 @@ function NewAppoinment() {
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
 
         let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
-        let LabelAppoinment = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
+        let LabelAppoinment = new Label(undefined, "Select Doctor *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinmentsDoctor")]);
         let SelectAppoinment = new Select("DrpAppoinmentDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment('NewAppoinment')")]);
         SelectAppoinment.appendChild(new SelectItem("Select Doctor", " ", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
@@ -1142,7 +1142,7 @@ function NewAppoinment() {
 
         let DivFormRowSession = new Div(undefined, "col-sm-3 text-left");
 
-        let LabelAppoinmentSession = new Label(undefined, "Select Session",
+        let LabelAppoinmentSession = new Label(undefined, "Select Session *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
 
         let SelectAppoinmentSession = new Select("DrpSessionDateDoctor",
@@ -1157,7 +1157,7 @@ function NewAppoinment() {
 
         const DateToday = new Date().toISOString().slice(0, 10);
         let DivFormRowDate = new Div(undefined, "col-sm-3 text-left");
-        let LabelAppointmentDate = new Label(undefined, "Select Date",
+        let LabelAppointmentDate = new Label(undefined, "Select Date *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
         );
         let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
@@ -1306,6 +1306,8 @@ function DocumentUploader() {
         let DivFormRow3PatientReports = new Div(undefined, "col-sm-12 col-12");
         let ButtonUploadPatientReports = new Button(undefined, "Upload", "btn btn-primary btn-rounded w-100", [new Attribute(_AttributeOnClick, "CmdUploadReportFile_Click()")]);
         DivFormRow3PatientReports.appendChild(ButtonUploadPatientReports);
+        let ButtonCloseFileUpload = new Button(undefined, "Close", "btn btn-primary btn-rounded w-100 mt-2", [new Attribute(_AttributeOnClick, "CmdAppoinments_Click('AppoinmentsCard')")]);
+        DivFormRow3PatientReports.appendChild(ButtonCloseFileUpload);
         FormRow2PrescriptionUpload.appendChild(DivFormRow3PatientReports);
         DivFormGroupRowPatientVitals.appendChild(FormRow2PrescriptionUpload);
 
@@ -1330,7 +1332,7 @@ function TablePatientAppointment() {
 
         let HeadingPrescriptions = new Heading4("Patient Appointments", undefined);
 
-        if( _CardClicked != 'Appointments'){
+        if (_CardClicked != 'Appointments') {
             DivHeadingPrescriptions.innerHTML = `<div class="row px-0 d-flex justify-content-between mb-2">
         <h4>Patient Appointments</h4>
         <button id="cancelAllBtn" class="btn btn-primary btn-rounded btn-sm " onclick="cancelAllAppointments()">Cancel All</button>
@@ -1420,14 +1422,14 @@ function MedicalBill(Patient, appId) {
         ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+ ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
                 // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
         ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
             [
                 // new Attribute('data-dismiss', 'modal'),
-                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ','+appId+ ')')
+                new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
                 // new Attribute(_AttributeOnClick, 'medicalBillSave(' + Patient.Id + ',' + appId + ')')
             ]
         ));
@@ -1455,13 +1457,13 @@ function MedicalBillTableWithDynamicRowsGet() {
     const ParentRowColumnTwo = new Div(undefined, 'col-md-12');
 
     const TableWrapper = new Div(undefined, 'table-responsive');
-    const TableHeaders = ["#", "Item", "Fee Type", "Amount (Rs.)", "Actions"];
+    const TableHeaders = ["#", "Item *", "Fee Type *", "Amount (Rs.) *", "Actions"];
     const TableData = [
         {
             '#': '',
-            'Item': '',
-            'Fee Type': '',
-            'Amount (Rs.)': '',
+            'Item *': '',
+            'Fee Type *': '',
+            'Amount (Rs.) *': '',
             'Actions': ''
         }
     ];
@@ -1603,7 +1605,7 @@ function AppointmentDetailsEditModal() {
 
         const FormRowOne = new Div(undefined, "form-group row");
         const ColumnPatientName = new Div(undefined, "col-sm-5 text-left");
-        const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient",
+        const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdatePatientName")]
         );
         const AppointmentPatientName = new Textbox("TxtAppointmentUpdatePatientName", "form-control form-control-rounded",
@@ -1621,7 +1623,7 @@ function AppointmentDetailsEditModal() {
         FormRowOne.appendChild(ColumnPatientName);
 
         const ColumnAppointmentId = new Div(undefined, "col-sm-5 text-left");
-        const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No",
+        const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateAppointmentNo")]
         );
         const AppointmentNoText = new Textbox("TxtAppointmentUpdateAppointmentNo", "form-control form-control-rounded",
@@ -1634,7 +1636,7 @@ function AppointmentDetailsEditModal() {
         //---- row 02
 
         const ColumnDoctor = new Div(undefined, "col-sm-5 text-left mt-2");
-        const AppointmentDoctorLabel = new Label(undefined, "Doctor",
+        const AppointmentDoctorLabel = new Label(undefined, "Doctor *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctor")]
         );
         const AppointmentDoctorSelect = new Select("TxtAppointmentUpdateDoctor",
@@ -1660,7 +1662,7 @@ function AppointmentDetailsEditModal() {
 
         const ColumnDate = new Div(undefined, "col-sm-5 text-left mt-2");
         const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
-        const AppointmentDateLabel = new Label(undefined, "Date",
+        const AppointmentDateLabel = new Label(undefined, "Date *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
         );
         const DateToday = new Date().toISOString().slice(0, 10);
@@ -1685,7 +1687,7 @@ function AppointmentDetailsEditModal() {
         //---- row 03
 
         const ColumnTime = new Div(undefined, "col-sm-5 text-left mt-2");
-        const AppointmentDoctorSessionLabel = new Label(undefined, "Session",
+        const AppointmentDoctorSessionLabel = new Label(undefined, "Session *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
         );
         const AppointmentDoctorSession = new Select("TxtAppointmentUpdateDoctorSession",
@@ -1855,7 +1857,7 @@ function Pharmacy() {
         let RowSearch = new Div(undefined, "form-group row mt-3");
 
         let ColumnDoctor = new Div(undefined, "col-sm-3 text-left");
-        let LabelSelectDoctor = new Label(undefined, "Select Doctor",
+        let LabelSelectDoctor = new Label(undefined, "Select Doctor *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPrescriptionsSearchDoctor")]
         );
         let DropdownSelectDoctor = new Select("TxtPrescriptionsSearchDoctor",
@@ -1871,7 +1873,7 @@ function Pharmacy() {
         RowSearch.appendChild(ColumnDoctor);
 
         let ColumnSession = new Div(undefined, "col-sm-3 text-left");
-        let LabelSelectSession = new Label(undefined, "Select Session",
+        let LabelSelectSession = new Label(undefined, "Select Session *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPrescriptionsSearchSession")]);
         let DropdownSelectSession = new Select("TxtPrescriptionsSearchSession",
             [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
@@ -1883,7 +1885,7 @@ function Pharmacy() {
 
         let ColumnDate = new Div(undefined, "col-sm-3 text-left");
         const DateToday = new Date().toISOString().slice(0, 10);
-        let LabelSelectDate = new Label(undefined, "Select Date",
+        let LabelSelectDate = new Label(undefined, "Select Date *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPrescriptionsSearchDate")]
         );
         let TextSelectDate = new Textbox("TxtPrescriptionsSearchDate", "form-control form-control-rounded Date-Picker",
@@ -2261,7 +2263,7 @@ function AdminSiteButtonBar() {
         let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Schedule.png", undefined, "History Image");
 
         let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2");
-        let HeadingHistory = new Heading4("Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingHistory = new Heading4("Apt. Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageHistory.appendChild(ImageHistory);
         DivWidgetRowHistory.appendChild(DivWidgetImageHistory);
@@ -2291,7 +2293,7 @@ function AdminSiteButtonBar() {
         let ImageAllergies = new Imagebox(undefined, "dist-assets/images/Nurse/Pharmacy.png", undefined, "Allergies Image");
 
         let DivWidgetContentAllergies = new Div("MiscHeading", "ul-widget__content-v2");
-        let HeadingAllergies = new Heading4("Misc", [new Attribute(_AttributeClass, "heading mt-3")]);
+        let HeadingAllergies = new Heading4("Inv. Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageAllergies.appendChild(ImageAllergies);
         DivWidgetRowAllergies.appendChild(DivWidgetImageAllergies);
@@ -2393,7 +2395,7 @@ function BranchAddOrUpdateModal() {
         const ParentRow = new Div(undefined, "row");
 
         const ColumnInstitute = new Div(undefined, "col-sm-6 mt-2");
-        const LabelInstitute = new Label(undefined, "Institute",
+        const LabelInstitute = new Label(undefined, "Institute *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateInstituteName")]
         );
         const TextInstitute = new Textbox("TxtBranchUpdateInstituteName", "form-control form-control-rounded",
@@ -2409,7 +2411,7 @@ function BranchAddOrUpdateModal() {
         ParentRow.appendChild(ColumnInstitute);
 
         const ColumnBranch = new Div(undefined, "col-sm-6 mt-2");
-        const LabelBranch = new Label(undefined, "Branch",
+        const LabelBranch = new Label(undefined, "Branch *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateBranchName")]
         );
         const TextBranch = new Textbox("TxtBranchUpdateBranchName", "form-control form-control-rounded",
@@ -2424,7 +2426,7 @@ function BranchAddOrUpdateModal() {
         ParentRow.appendChild(ColumnBranch);
 
         const ColumnEmail = new Div(undefined, "col-sm-6 mt-2");
-        const LabelEmail = new Label(undefined, "Email",
+        const LabelEmail = new Label(undefined, "Email *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateEmail")]
         );
         const TextEmail = new Textbox("TxtBranchUpdateEmail", "form-control form-control-rounded",
@@ -2454,7 +2456,7 @@ function BranchAddOrUpdateModal() {
         ParentRow.appendChild(ColumnWebsite);
 
         const ColumnAddressLine1 = new Div(undefined, "col-sm-6 mt-2");
-        const LabelAddressLine1 = new Label(undefined, "Address Line 1",
+        const LabelAddressLine1 = new Label(undefined, "Address Line 1 *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine1")]
         );
         const TextAddressLine1 = new Textbox("TxtBranchUpdateAddressLine1", "form-control form-control-rounded",
@@ -2515,7 +2517,7 @@ function BranchAddOrUpdateModal() {
         ParentRow.appendChild(ColumnSuburb);
 
         const ColumnCity = new Div(undefined, "col-sm-6 mt-2");
-        const LabelCity = new Label(undefined, "City",
+        const LabelCity = new Label(undefined, "City *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateCity")]
         );
         const TextCity = new Textbox("TxtBranchUpdateCity", "form-control form-control-rounded",
@@ -2530,7 +2532,7 @@ function BranchAddOrUpdateModal() {
         ParentRow.appendChild(ColumnCity);
 
         const ColumnContactNo = new Div(undefined, "col-sm-6 mt-2");
-        const LabelContactNo = new Label(undefined, "Contact No",
+        const LabelContactNo = new Label(undefined, "Contact No *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateContactNo")]
         );
         const TextContactNo = new Textbox("TxtBranchUpdateContactNo", "form-control form-control-rounded",
@@ -2621,7 +2623,7 @@ function DoctorSearch() {
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-3");
 
         let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
-        let LabelAppoinment = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let LabelAppoinment = new Label(undefined, "Select Branch *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
         let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorByBranch()")]);
         SelectBranch.appendChild(new SelectItem("Select Branch", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
@@ -2651,7 +2653,7 @@ function DoctorSearch() {
 
 function DoctorsSearchResultsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["Doctor Name", "Action"];
+        let Headers = ["Doctor Name", "Email", "NIC", "Registration Number", "Action"];
 
         let ParentRow = new Div(undefined, "row");
 
@@ -2709,20 +2711,20 @@ function DoctorsAddOrUpdateModal() {
         data.push(new SelectItem("Miss.", "Miss.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Rev.", "Rev.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
-        DropDown("col-sm-3  mt-2","Doctor","Title","",data,ParentRow);
+        DropDown("col-sm-3  mt-2", "Doctor", "Title *", "", data, ParentRow);
 
-        LableAndTextFeild("col-sm-9","Doctor","First Name","First Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Middle Name","Middle Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Last Name","Last Name","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Contact No.","Contact No.","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Phone No.","Phone No.","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Email","Email","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","N.I.C","N.I.C","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Registration Number","Registration Number","","",ParentRow);
-        LableAndTextFeild("col-sm-6","Doctor","Date Of Birth","Date Of Birth","","",ParentRow,"date");
+        LableAndTextFeild("col-sm-9", "Doctor", "First Name *", "First Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Middle Name", "Middle Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Last Name *", "Last Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Contact No. *", "Contact No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Phone No.", "Phone No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Email *", "Email", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "N.I.C *", "N.I.C", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Registration Number", "Registration Number", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "Doctor", "Date Of Birth *", "Date Of Birth", "", "", ParentRow, "date");
 
-        DropDown("col-sm-6  mt-2","Doctor","Specialization","",undefined,ParentRow);
-        DropDown("col-sm-6  mt-2","Doctor","Qualifications","",undefined,ParentRow);
+        DropDown("col-sm-6  mt-2", "Doctor", "Specialization *", "", undefined, ParentRow);
+        DropDown("col-sm-6  mt-2", "Doctor", "Qualifications *", "", undefined, ParentRow);
 
 
         ModalContentBody.appendChild(ParentRow);
@@ -2747,7 +2749,7 @@ function DoctorsAddOrUpdateModal() {
 
         BindView(Container, Modal);
 
-        $('#TxtDoctorDate_Of_Birth').prop('type','date');
+        $('#TxtDoctorDate_Of_Birth').prop('type', 'date');
         $('#ModalForBranchAddOrUpdate').modal('show');
     }
 }
@@ -2774,10 +2776,10 @@ function DoctorsLoginModal() {
 
         const ParentRow = new Div(undefined, "row");
 
-        LableAndTextFeild("col-sm-12","Doctor","User Name","User Name","","",ParentRow);
-        LableAndTextFeild("col-sm-12","Doctor","Password","Password","","",ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "User Name *", "User Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "Password *", "Password", "", "", ParentRow);
 
-        LableAndTextFeild("col-sm-12","Doctor","Confirm Password","Confirm Password","","",ParentRow);
+        LableAndTextFeild("col-sm-12", "Doctor", "Confirm Password *", "Confirm Password", "", "", ParentRow);
 
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
@@ -2798,8 +2800,8 @@ function DoctorsLoginModal() {
 
         BindView(Container, Modal);
 
-        $('#TxtDoctorUser_Name').prop('disabled',true);
-        $('#TxtDoctorPassword').prop('disabled',true);
+        $('#TxtDoctorUser_Name').prop('disabled', true);
+        $('#TxtDoctorPassword').prop('disabled', true);
 
         $('#TxtDoctorConfirm_Password').hide();
         $('#LblDoctorConfirm_Password').hide();
@@ -2816,7 +2818,7 @@ function Reports() {
         const Card = new Div(undefined, "card text-left");
         const CardBody = new Div(undefined, "card-body");
 
-        const Heading = new Heading4("Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        const Heading = new Heading4("Appointment Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         CardBody.appendChild(Heading);
 
         const Row = new Div(undefined, "row");
@@ -2843,13 +2845,12 @@ function ReportSearch() {
         let CardAddAppoinment = new Div(undefined, "card text-left");
         let CardBodyAddAppoinment = new Div(undefined, "card-body");
 
-        CardBodyAddAppoinment.appendChild(new Heading4("Prescription History", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]));
+        CardBodyAddAppoinment.appendChild(new Heading4("Appointment Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]));
 
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetails")]));
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsSession")]));
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointmentsDetailsPatient")]));
         CardBodyAddAppoinment.appendChild(new Heading3(undefined, [new Attribute(_AttributeClass, "card-title mb-3 text-center"), new Attribute(_AttributeId, "TxtAppointPaymentCheck")]));
-
 
 
         let DoctorSearchRow = new Div("ReportSearchRow", "row");
@@ -2861,7 +2862,7 @@ function ReportSearch() {
         let FormRow0Appoinment = new Div(undefined, "form-group row mt-0");
 
         let DivFormRowDoctor = new Div(undefined, "col-sm-3 mt-2 text-left");
-        let LabelAppoinment = new Label(undefined, "Select Branch", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let LabelAppoinment = new Label(undefined, "Select Branch *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
         let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorByBranch()")]);
         SelectBranch.appendChild(new SelectItem("Select Branch", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
@@ -2869,7 +2870,7 @@ function ReportSearch() {
 
 
         let DivFormRowDoctor1 = new Div(undefined, "col-sm-3 mt-2 text-left");
-        let LabelAppoinment1 = new Label(undefined, "Select Doctor", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
+        let LabelAppoinment1 = new Label(undefined, "Select Doctor *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
         let SelectDoctor = new Select("DrpDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
         SelectDoctor.appendChild(new SelectItem("Select Doctor", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor1.appendChild(LabelAppoinment1);
@@ -2878,8 +2879,8 @@ function ReportSearch() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
         FormRow0Appoinment.appendChild(DivFormRowDoctor1);
 
-        LableAndTextFeild("col-sm-3","Report","From Date","From Date","","",FormRow0Appoinment,"date");
-        LableAndTextFeild("col-sm-3","Report","To Date","To Date","","",FormRow0Appoinment,"date");
+        LableAndTextFeild("col-sm-3", "Report", "From Date *", "From Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "Report", "To Date *", "To Date", "", "", FormRow0Appoinment, "date");
 
         const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
         FormRow0Appoinment.appendChild(ColumnContactNo);
@@ -2903,8 +2904,8 @@ function ReportSearch() {
 
         BindView(Container, CardAddAppoinment);
 
-        $('#TxtReportFrom_Date').prop('type','date');
-        $('#TxtReportTo_Date').prop('type','date');
+        $('#TxtReportFrom_Date').prop('type', 'date');
+        $('#TxtReportTo_Date').prop('type', 'date');
     }
 }
 
@@ -2945,7 +2946,7 @@ function Misc() {
         const Card = new Div(undefined, "card text-left");
         const CardBody = new Div(undefined, "card-body");
 
-        const Heading = new Heading4("Misc", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        const Heading = new Heading4("Invoice Reports", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         CardBody.appendChild(Heading);
 
         const RowOne = new Div(undefined, "row");
@@ -2962,11 +2963,11 @@ function Misc() {
     }
 }
 
-function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,type){
-    const ColumnBranch = new Div(undefined, classCol+" mt-2");
-    const LabelBranch = new Label("Lbl"+id+lbl.replaceAll(" ","_").replaceAll(".",""), lbl,
+function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, ParentRow, type) {
+    const ColumnBranch = new Div(undefined, classCol + " mt-2");
+    const LabelBranch = new Label("Lbl" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""), lbl,
         [new Attribute(_AttributeClass, "col-form-label"),
-            new Attribute(_AttributeFor, "Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""))]
+            new Attribute(_AttributeFor, "Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""))]
     );
 
     var att = [];
@@ -2978,7 +2979,7 @@ function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,t
     if (type == "date") {
         att.push(new Attribute(_AttributeType, 'date'));
     }
-    const TextBranch = new Textbox("Txt"+id+lbl.replaceAll(" ","_").replaceAll(".",""),
+    const TextBranch = new Textbox("Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""),
         "form-control form-control-rounded",
         att
     );
@@ -2986,18 +2987,21 @@ function LableAndTextFeild(classCol,id,lbl,placeHolder,pattern,value,ParentRow,t
     ColumnBranch.appendChild(TextBranch);
     ParentRow.appendChild(ColumnBranch);
 }
-function DropDown(classCol,id,lbl,functionExec,customOptions,ParentRow){
+
+function DropDown(classCol, id, lbl, functionExec, customOptions, ParentRow) {
 
     let DivFormRowDoctor = new Div(undefined, classCol);
-    let LabelAppoinment = new Label(undefined, "Select "+lbl, [new Attribute(_AttributeClass, "col-form-label"),
-        new Attribute(_AttributeFor, "Drp"+lbl.replaceAll(" ","_").replaceAll(".",""))]);
-    let SelectBranch = new Select("Drp"+lbl.replaceAll(" ","_").replaceAll(".",""), [new Attribute(_AttributeClass,
+    let LabelAppoinment = new Label(undefined, "Select " + lbl, [new Attribute(_AttributeClass, "col-form-label"),
+        new Attribute(_AttributeFor, "Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""))]);
+    let SelectBranch = new Select("Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""), [new Attribute(_AttributeClass,
         "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, functionExec)]);
     SelectBranch.appendChild(
-        new SelectItem("Select "+lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
+        new SelectItem("Select " + lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
 
-    if(customOptions){
-        customOptions.forEach((currentElement) => {  SelectBranch.appendChild(currentElement); })
+    if (customOptions) {
+        customOptions.forEach((currentElement) => {
+            SelectBranch.appendChild(currentElement);
+        })
     }
     DivFormRowDoctor.appendChild(LabelAppoinment);
     DivFormRowDoctor.appendChild(SelectBranch);
