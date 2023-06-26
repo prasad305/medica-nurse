@@ -420,7 +420,8 @@ function FilterDoctorSessionData(Data) {
             "EndTime": EndTime,
             "Room": RoomNumber,
             Type: Type,
-            "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> <button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button>'
+            "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> ' +
+                '<button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Calendar-4"></i></span></button>'
         });
     }
     new DoctorSessionTable().Render('DivSessionTable', ArrayDoctorSessionData);

@@ -261,6 +261,8 @@ function SetAppointmentPatient(Object, PatientId) {
 function ViewAppointmentedPatientList() {
     if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
         new NewAppoinment().Render(Containers.MainContent);
+        CmdBtnColorRemove_Click();
+        $('#AppoinmentsCard').css('background-color', '#BDC3C7');
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
     } else {
