@@ -1144,6 +1144,18 @@ function NewAppoinment() {
 
         let DivFormRowSession = new Div(undefined, "col-sm-3 text-left");
 
+        const DateToday = new Date().toISOString().slice(0, 10);
+        let DivFormRowDate = new Div(undefined, "col-sm-3 text-left");
+        let LabelAppointmentDate = new Label(undefined, "Select Date *",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
+        );
+        let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday)]);
+
+        DivFormRowDate.appendChild(LabelAppointmentDate);
+        DivFormRowDate.appendChild(AppointmentDateSelect);
+        FormRow0Appoinment.appendChild(DivFormRowDate);
+
         let LabelAppoinmentSession = new Label(undefined, "Select Session *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpSessionDateDoctor")]);
 
@@ -1156,18 +1168,6 @@ function NewAppoinment() {
         DivFormRowSession.appendChild(LabelAppoinmentSession);
         DivFormRowSession.appendChild(SelectAppoinmentSession);
         FormRow0Appoinment.appendChild(DivFormRowSession);
-
-        const DateToday = new Date().toISOString().slice(0, 10);
-        let DivFormRowDate = new Div(undefined, "col-sm-3 text-left");
-        let LabelAppointmentDate = new Label(undefined, "Select Date *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
-        );
-        let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday)]);
-
-        DivFormRowDate.appendChild(LabelAppointmentDate);
-        DivFormRowDate.appendChild(AppointmentDateSelect);
-        FormRow0Appoinment.appendChild(DivFormRowDate);
 
         let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
         let ButtonPatientSearch = new Button("AppointmentsSearchButton", "Search", "btn btn-primary btn-rounded w-100 mt-auto",
@@ -1578,8 +1578,8 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
 }
 
 function AppointmentDetailsEditModal() {
-    this.Render = function (Container, AppointmentId) {
-        // console.log('AppointmentDetailsEditModal:', Container, AppointmentId);
+    this.Render = function (Container, AppointmentId, ViewType, AppointmentNumber) {
+        // console.log('AppointmentDetailsEditModal:', Container, AppointmentId, ViewType, AppointmentNumber);
 
         // console.log('AppointmentDetailsEditModal._ArrayAppointmentsForToday:', _ArrayAppointmentsForToday);
         const AppointmentMatched = _ArrayAppointmentsForToday.filter((Appointment) => Appointment.Id === AppointmentId)[0];
@@ -1595,7 +1595,11 @@ function AppointmentDetailsEditModal() {
         const ModalDialogContent = new Div(undefined, "modal-content");
 
         const ModalContentHeader = new Div(undefined, "modal-header");
-        ModalContentHeader.appendChild(new Heading4("Update Appointment", undefined));
+        if (ViewType === 1) {
+            ModalContentHeader.appendChild(new Heading4("Update Payment", undefined));
+        } else {
+            ModalContentHeader.appendChild(new Heading4("Update Appointment", undefined));
+        }
         ModalDialogContent.appendChild(ModalContentHeader);
 
         const ModalContentBody = new Div(undefined, "modal-body");
@@ -1663,21 +1667,32 @@ function AppointmentDetailsEditModal() {
 
 
         const ColumnDate = new Div(undefined, "col-sm-5 text-left mt-2");
-        const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
+        // const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDateLabel = new Label(undefined, "Date *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
         );
         const DateToday = new Date().toISOString().slice(0, 10);
-        const AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday),
-                new Attribute('min', DateToday),
-                new Attribute(_AttributeOnChange, 'GetDoctorsSessionsForAppointmentUpdate()')]
-        );
+        let AppointmentDate = '';
+        if (ViewType === 1) {
+            AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded Date-Picker",
+                [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday),
+                    new Attribute('min', DateToday),
+                    new Attribute('disabled', true)]
+            );
+        } else {
+            AppointmentDate = new Textbox("TxtAppointmentUpdateDate", "form-control form-control-rounded Date-Picker",
+                [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday),
+                    new Attribute('min', DateToday),
+                    new Attribute(_AttributeOnChange, 'GetDoctorsSessionsForAppointmentUpdate()')]
+            );
+        }
         ColumnDate.appendChild(AppointmentDateLabel);
         ColumnDate.appendChild(AppointmentDate);
         FormRowOne.appendChild(ColumnDate);
         FormRowOne.appendChild(ColumnDoctor);
-        FormRowOne.appendChild(ColumnDoctorEnable);//button
+        if (ViewType === 0) {
+            FormRowOne.appendChild(ColumnDoctorEnable);//button
+        }
 
         // const ColumnDateEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
         // const AppointmentDateEnable = new Button('BtnAppointmentDateEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
@@ -1687,6 +1702,28 @@ function AppointmentDetailsEditModal() {
         // FormRowOne.appendChild(ColumnDateEnable);
 
         //---- row 03
+
+        if (ViewType === 1) {
+            const ColumnPaymentType = new Div(undefined, "col-sm-5 text-left mt-2");
+            const PaymentTypeLabel = new Label(undefined, "Payment Type *",
+                [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPaymentType")]
+            );
+            const PaymentType = new Select("TxtPaymentType",
+                [new Attribute(_AttributeClass, "form-control form-control-rounded select")]
+            );
+            PaymentType.appendChild(new SelectItem("Cash", "5",
+                [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+            ));
+            PaymentType.appendChild(new SelectItem("Coupon", "6",
+                [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+            ));
+            ColumnPaymentType.appendChild(PaymentTypeLabel);
+            ColumnPaymentType.appendChild(PaymentType);
+            FormRowOne.appendChild(ColumnPaymentType);
+        } else {
+            const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
+            FormRowOne.appendChild(ColumnEmpty);
+        }
 
         const ColumnTime = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDoctorSessionLabel = new Label(undefined, "Session *",
@@ -1703,7 +1740,7 @@ function AppointmentDetailsEditModal() {
         ));
         ColumnTime.appendChild(AppointmentDoctorSessionLabel);
         ColumnTime.appendChild(AppointmentDoctorSession);
-        FormRowOne.appendChild(ColumnEmpty);
+        // FormRowOne.appendChild(ColumnEmpty);
         FormRowOne.appendChild(ColumnTime);
 
         // const ColumnTimeEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
@@ -1721,13 +1758,30 @@ function AppointmentDetailsEditModal() {
         ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
-        ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-primary',
-            [
-                new Attribute(_AttributeOnClick, 'AppointmentUpdate()'),
-                new Attribute('disabled', 'true')
-            ]
-        ));
+        if (ViewType === 1) {
+            ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+            ModalContentFooter.appendChild(new Button('BtnUpdatePayment', 'Save', 'btn btn-primary',
+                [
+                    new Attribute('data-dismiss', 'modal'),
+                    new Attribute(_AttributeOnClick, 'AppointmentPaymentTypeUpdate(' + AppointmentId + ',' + AppointmentNumber + ')')
+                ]
+            ));
+        } else {
+            ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+            ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-primary',
+                [
+                    new Attribute(_AttributeOnClick, 'AppointmentUpdate()'),
+                    new Attribute('disabled', 'true')
+                ]
+            ));
+        }
+        // ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        // ModalContentFooter.appendChild(new Button('BtnUpdateAppointment', 'Update', 'btn btn-primary',
+        //     [
+        //         new Attribute(_AttributeOnClick, 'AppointmentUpdate()'),
+        //         new Attribute('disabled', 'true')
+        //     ]
+        // ));
         ModalDialogContent.appendChild(ModalContentFooter);
 
         ModalDialog.appendChild(ModalDialogContent);

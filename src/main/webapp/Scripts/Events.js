@@ -694,6 +694,29 @@ function DoctorChannelingStatusUpdate_Success(Response) {
         return;
 }
 
+function AppointmentPaymentTypeUpdate(AppointmentId, AppointmentNumber) {
+    // console.log('AppointmentPaymentTypeUpdate.Appointment:', AppointmentId, AppointmentNumber);
+    const PaymentType = $('#ModalForAppointmentDetailsEdit #TxtPaymentType').val();
+    _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(
+            AppointmentId,
+            AppointmentNumber,
+            selectedRowSessionId,
+            selectedRowPatientId,
+            null,
+            parseInt(PaymentType),
+            _UserId)
+        , AppointmentPaymentTypeUpdate_Success);
+}
+
+function AppointmentPaymentTypeUpdate_Success(Response) {
+    if (Response.Status != 1000)
+        return ShowMessage(Response.message.split("-")[1].trim(), MessageTypes.Warning, "Warning!");
+    else {
+        CmdAppoinments_Click('AppoinmentsCard');
+        return ShowMessage("Payment Type Updated!", MessageTypes.Success, "Success!");
+    }
+}
+
 /*=================================
 			Pharmacy Events
  =================================*/

@@ -239,20 +239,20 @@ async function SaveSession_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let appointments = [];
         console.log(Response)
-        if(_UpdateSession){
-            try{
+        if (_UpdateSession) {
+            try {
                 //send notification to all patients
                 //get all appointments in the session
                 const response = await PostAsync({
                     serviceMethod: ServiceMethods.GetAppoinment,
-                    requestBody:new SessionId(Response.Data.Id)
+                    requestBody: new SessionId(Response.Data.Id)
                 });
                 console.log(response)
                 let doctorName = '';
-                let startingDateTime =Response.Data.TimeStart;
+                let startingDateTime = Response.Data.TimeStart;
                 let endingDateTime = Response.Data.TimeEnd;
 
-                if(response.Data.length > 0){
+                if (response.Data.length > 0) {
                     doctorName = response.Data[0].DoctorName;
                 }
                 await shareSessionUpdateWithPatients(response.Data, {
@@ -262,10 +262,10 @@ async function SaveSession_Success(Response) {
                     endingDateTime: endingDateTime
                 });
 
-            }catch (e) {
+            } catch (e) {
                 console.log(e)
             }
-        }else{
+        } else {
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
 
@@ -273,11 +273,17 @@ async function SaveSession_Success(Response) {
 
     }
 }
+
 /**
  * Share updated session details with patients
  * @param {Array} appointments
  * */
-async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  doctorName, startingDateTime,endingDateTime}){
+async function shareSessionUpdateWithPatients(appointments = [], {
+    messageTitle,
+    doctorName,
+    startingDateTime,
+    endingDateTime
+}) {
 
     //filter appointments that are not cancelled
     let appointmentsNotCancelled = appointments.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
@@ -287,23 +293,37 @@ async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  d
     const count = document.getElementById('count');
 
     let completed = 1;
-    function setCompletedCount (){
+
+    function setCompletedCount() {
         count.innerHTML = `Sending message ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
     }
-    function setCompletedStatus(){
+
+    function setCompletedStatus() {
         count.innerHTML = `All patients notified`;
     }
 
     for (let i = 0; i < appointmentsNotCancelled.length; i++) {
 
         const appointment = appointmentsNotCancelled[i];
-        const { Id,Mobile,Number} = appointment;
+        const {Id, Mobile, Number} = appointment;
         let messageToPatient = ''
-        if(endingDateTime){
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
-        }else{
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
+        if (endingDateTime) {
+            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            })}`
+        } else {
+            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            })}`
         }
 
         let status = await PostAsync({
@@ -319,7 +339,7 @@ async function shareSessionUpdateWithPatients(appointments=[], {messageTitle,  d
                 "ScheduleMediumType": [
                     {
                         "MediumId": 1,
-                        "Destination":  Mobile,
+                        "Destination": Mobile,
                         "Status": 0
                     }
                 ],
@@ -593,7 +613,14 @@ function SaveAppointment_Success(Response) {
  * @param {string} startingDateTime - Starting date and time of the appointment
  * @param {function} onSuccess - Callback function
  * */
-function shareAppointmentDetailsWithPatient ({messageTitle, mobileNumber, appointmentNumber, appointmentId, doctorName, startingDateTime}, onSuccess=null) {
+function shareAppointmentDetailsWithPatient({
+                                                messageTitle,
+                                                mobileNumber,
+                                                appointmentNumber,
+                                                appointmentId,
+                                                doctorName,
+                                                startingDateTime
+                                            }, onSuccess = null) {
     _Request.Post(ServiceMethods.SENDSMS, {
         "ScheduleMedium": [
             {
@@ -610,11 +637,14 @@ function shareAppointmentDetailsWithPatient ({messageTitle, mobileNumber, appoin
             }
         ],
         "NotifactionType": 1,
-        "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`,
+        "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        })}`,
         "Status": 0
     }, onSuccess);
 }
-
 
 
 function GetDoctorAppoinmentList() {
@@ -647,16 +677,46 @@ function FilterAppointedPatientData(Data) {
 
     for (let Count = 0; Count < DataLength; Count++) {
 
-        let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
+        // let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
 
-        switch (Data[Count].Status) {
-            case 2:
-                PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
-                break;
-            case 3:
-                PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
-                break;
+        let PaymentStatus = Data[Count].Status;
+        console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
 
+        // switch (Data[Count].Status) {
+        //     case 2:
+        //         PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
+        //         break;
+        //     case 3:
+        //         PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
+        //         break;
+        // }
+
+        // if (Count % 2 === 0 && PaymentStatus === 1) {
+        //     PaymentStatus = 7;
+        // }
+
+        let PaymentTypeIcon = '';
+        if (PaymentStatus === 1) {
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+
+        } else if (PaymentStatus === 5) {
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+
+        } else if (PaymentStatus === 6) {
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+        }
+
+        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn ml-1" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' +
+            '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span> ' +
+            '</button>';
+
+        let PaymentStatusColumn = '';
+
+        if (PaymentStatus === 7) {
+            PaymentStatusColumn = PaymentTypeEditButton;
+        } else {
+            // PaymentStatusColumn = PaymentTypeIcon + PaymentTypeEditButton;
+            PaymentStatusColumn = PaymentTypeIcon;
         }
 
         const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
@@ -691,9 +751,10 @@ function FilterAppointedPatientData(Data) {
                 "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
                 "Mobile": isNull(Data[Count].Mobile),
                 "M/F": Gender,
-                "Payment": PaymentStatus,
+                // "Payment": PaymentStatus,
+                "Payment": PaymentStatusColumn,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0)">' +
                     '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
                     '</button>' +
                     '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
@@ -760,12 +821,13 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId, SessionId, PatientId) {
+function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType) {
+    // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
     selectedRowPatientId = PatientId;
-    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId);
+    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
@@ -1622,10 +1684,9 @@ function DownloadReport() {
         let ttlBookingFee = 0;
         let ttlTotalDiscount = 0;
         var csv_data = [];
-        csv_data.push(['#','Doctor Name','Session Date & Time','Appointment No','Patient Name','Patient Mobile',
-            'Booking Type','Payment Status','Hospital Charge','Doctor Charge','Booking Charge','Other Charges','Discount Amount'])
-        for (var i = 0; i < res.Data.length; i++)
-        {
+        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile',
+            'Booking Type', 'Payment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
+        for (var i = 0; i < res.Data.length; i++) {
             let data = res.Data[i];
             console.log(data);
 
@@ -1641,7 +1702,7 @@ function DownloadReport() {
             ttlTotalDiscount += parseInt(TotalDiscount);
             var d = [i,
                 data.DoctorName,
-                data.TimeStart.replace("T"," ") + ' ' + data.TimeEnd.replace("T"," "),
+                data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "),
                 data.Number,
                 data.FirstName + " " + data.LastName,
                 data.Mobile,
@@ -1649,7 +1710,7 @@ function DownloadReport() {
                 'PAID',
                 hospital,
                 DoctorFee,
-                BookingFee, AllOtherFee,TotalDiscount];
+                BookingFee, AllOtherFee, TotalDiscount];
             console.log(d)
             csv_data.push(d);
 
