@@ -1150,7 +1150,8 @@ function NewAppoinment() {
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentSearchDate")]
         );
         let AppointmentDateSelect = new Textbox("TxtAppointmentSearchDate", "form-control form-control-rounded Date-Picker",
-            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday)]);
+            [new Attribute(_AttributeType, 'date'), new Attribute('value', DateToday),
+                new Attribute(_AttributeOnChange, "GetDoctorSessionDataForAppoinment('NewAppoinment')")]);
 
         DivFormRowDate.appendChild(LabelAppointmentDate);
         DivFormRowDate.appendChild(AppointmentDateSelect);

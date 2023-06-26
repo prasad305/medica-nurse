@@ -680,7 +680,7 @@ function FilterAppointedPatientData(Data) {
         // let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
 
         let PaymentStatus = Data[Count].Status;
-        console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
+        // console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
 
         // switch (Data[Count].Status) {
         //     case 2:
