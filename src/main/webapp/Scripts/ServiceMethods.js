@@ -1250,7 +1250,7 @@ function PrescriptionView(PrescriptionId) {
     // new PharmacyPrescriptionIframeModal().Render(Containers.Footer, PrescriptionId);
 
     // const IframeUrl = 'https://docnote.medica.lk/Prescription?Id=334322799953';
-    const IframeUrl = 'https://docnote.medica.lk/Prescription?Id=' + PrescriptionId;
+    const IframeUrl = 'https://www.medica.qa/Doctor/Prescription?Id=' + PrescriptionId;
     const Iframe = '<iframe src="' + IframeUrl + '" title="Prescription" height="700px" class="w-100 border-0"></iframe>';
     // $('#PrescriptionIframeWrapper').append(Iframe);
 
