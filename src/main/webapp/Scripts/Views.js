@@ -1611,7 +1611,7 @@ function AppointmentDetailsEditModal() {
         //---- row 01
 
         const FormRowOne = new Div(undefined, "form-group row");
-        const ColumnPatientName = new Div(undefined, "col-sm-5 text-left");
+        const ColumnPatientName = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left");
         const AppointmentPatientLabel = new Label("AppointmentPatientLabel", "Patient *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdatePatientName")]
         );
@@ -1629,7 +1629,7 @@ function AppointmentDetailsEditModal() {
         // RowOneColumnOne.appendChild(AppointmentPatientId);
         FormRowOne.appendChild(ColumnPatientName);
 
-        const ColumnAppointmentId = new Div(undefined, "col-sm-5 text-left");
+        const ColumnAppointmentId = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
         const AppointmentNoLabel = new Label("AppointmentNoLabel", "Appointment No *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateAppointmentNo")]
         );
@@ -1642,7 +1642,7 @@ function AppointmentDetailsEditModal() {
 
         //---- row 02
 
-        const ColumnDoctor = new Div(undefined, "col-sm-5 text-left mt-2");
+        const ColumnDoctor = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
         const AppointmentDoctorLabel = new Label(undefined, "Doctor *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctor")]
         );
@@ -1660,14 +1660,14 @@ function AppointmentDetailsEditModal() {
         ColumnDoctor.appendChild(AppointmentDoctorSelect);
 
 
-        const ColumnDoctorEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
-        const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded ml-auto mt-auto',
+        const ColumnDoctorEnable = new Div(undefined, "col-sm-12 col-md-12 col-lg-2 text-right mt-2 d-flex");
+        const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded mt-auto',
             [new Attribute(_AttributeOnClick, 'AppointmentDoctorChangeEnable()')]
         );
         ColumnDoctorEnable.appendChild(AppointmentDoctorEnable);
 
 
-        const ColumnDate = new Div(undefined, "col-sm-5 text-left mt-2");
+        const ColumnDate = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
         // const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
         const AppointmentDateLabel = new Label(undefined, "Date *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDate")]
@@ -1705,7 +1705,7 @@ function AppointmentDetailsEditModal() {
         //---- row 03
 
         if (ViewType === 1) {
-            const ColumnPaymentType = new Div(undefined, "col-sm-5 text-left mt-2");
+            const ColumnPaymentType = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
             const PaymentTypeLabel = new Label(undefined, "Payment Type *",
                 [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPaymentType")]
             );
@@ -1722,11 +1722,11 @@ function AppointmentDetailsEditModal() {
             ColumnPaymentType.appendChild(PaymentType);
             FormRowOne.appendChild(ColumnPaymentType);
         } else {
-            const ColumnEmpty = new Div(undefined, "col-sm-5 text-left mt-2");
+            const ColumnEmpty = new Div(undefined, "col-lg-5 d-none d-lg-block text-left mt-2");
             FormRowOne.appendChild(ColumnEmpty);
         }
 
-        const ColumnTime = new Div(undefined, "col-sm-5 text-left mt-2");
+        const ColumnTime = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
         const AppointmentDoctorSessionLabel = new Label(undefined, "Session *",
             [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
         );
