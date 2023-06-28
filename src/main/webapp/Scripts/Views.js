@@ -179,7 +179,7 @@ function SiteNavigation() {
         let DivLogo = new Div(undefined, "logo");
         let Logo = new Div("logo");
         DivLogo.appendChild(Logo);
-        let ImageLogo = new Imagebox("PatientAppDiv", "dist-assets/images/LogoNurse.png", undefined, "Medica Logo", [new Attribute(_AttributeClass, "PateintAppDiv"), new Attribute(_AttributeOnClick, "CmdBtnColorRemove_Click();")]);
+        let ImageLogo = new Imagebox("PatientAppDiv", "dist-assets/images/LogoNurse.png", undefined, "Medica Logo", [new Attribute(_AttributeClass, "PateintAppDiv"), new Attribute(_AttributeOnClick, "General_View();")]);
         Logo.appendChild(ImageLogo);
         DivMainHeader.appendChild(DivLogo);
 
@@ -204,19 +204,19 @@ function SiteNavigation() {
         let ImageProfile = new Imagebox("userDrpodown", "dist-assets/images/Nurse/hamburger.png", undefined, "Hamburger Image", [new Attribute(_AttributeDataToggle, "dropdown"), new Attribute(_AttributeAriaHaspopup, "true"), new Attribute(_AttributeAriaExpand, "false"), new Attribute(_AttributeOnClick, "CmdBtnColorRemove_Click();")]);
         DivUser.appendChild(ImageProfile);
         let DropDownProfileMenu = new Div(undefined, "dropdown-menu dropdown-menu-right", [new Attribute(_AttributeAreaLabledBy, "userDropdown")]);
-        let HyperlinkProfile = new Hyperlink(undefined, undefined, "Profile", "dropdown-item", [new Attribute(_AttributeOnClick, "CmdProfile_Click(this)")]);
+        let HyperlinkProfile = new Hyperlink("LblNurseName", undefined, "Profile", "dropdown-item", [new Attribute(_AttributeOnClick, "CmdProfile_Click(this)")]);
         let HyperlinkAbout = new Hyperlink(undefined, undefined, "About", "dropdown-item", [new Attribute(_AttributeOnClick, "CmdAboutUs_Click(this)")]);
         let HyperlinkSignOut = new Hyperlink(undefined, undefined, "Sign Out", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSignOut_Click(this)")]);
         DropDownProfileMenu.appendChild(HyperlinkProfile);
         DropDownProfileMenu.appendChild(HyperlinkAbout);
         DropDownProfileMenu.appendChild(HyperlinkSignOut);
-        let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch Id", "dropdown-item");
+        let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch", "dropdown-item");
         DropDownProfileMenu.appendChild(HyperlinkBranchId);
 
         let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
         DropDownProfileMenu.appendChild(HyperlinkSettings);
 
-        let HyperlinkGeneral = new Hyperlink("LblSettings", undefined, "General", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]);
+        let HyperlinkGeneral = new Hyperlink("LblHome", undefined, "Home", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]);
         DropDownProfileMenu.appendChild(HyperlinkGeneral);
 
         let DropDownProfileName = new Div(undefined, "dropdown");
@@ -1712,7 +1712,10 @@ function AppointmentDetailsEditModal() {
             const PaymentType = new Select("TxtPaymentType",
                 [new Attribute(_AttributeClass, "form-control form-control-rounded select")]
             );
-            PaymentType.appendChild(new SelectItem("Cash", "5",
+            PaymentType.appendChild(new SelectItem("Cash", "10",
+                [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+            ));
+            PaymentType.appendChild(new SelectItem("Card", "1",
                 [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
             ));
             PaymentType.appendChild(new SelectItem("Coupon", "6",
@@ -1792,6 +1795,76 @@ function AppointmentDetailsEditModal() {
 
         $('#TxtAppointmentUpdateDate').prop('type', 'date');
         $('#ModalForAppointmentDetailsEdit').modal('show');
+    }
+}
+
+function AppointmentChannelingStatusEditModal() {
+    this.Render = function (Container, AppointmentId) {
+        // console.log('AppointmentChannelingStatusEditModal.AppointmentId:', AppointmentId);
+
+        const AppointmentMatched = _ArrayAppointmentsForToday.filter((Appointment) => Appointment.Id === AppointmentId)[0];
+        // console.log('AppointmentDetailsEditModal.AppointmentMatched:', AppointmentMatched);
+
+        const Modal = new Div("ModalForAppointmentChannelingStatusEdit", "modal");
+        Modal.setAttribute('data-backdrop', 'static');
+        Modal.setAttribute('data-keyboard', 'false');
+
+        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
+        const ModalDialogContent = new Div(undefined, "modal-content");
+
+        const ModalContentHeader = new Div(undefined, "modal-header");
+        ModalContentHeader.appendChild(new Heading4("Update Channeling Status", undefined));
+        ModalDialogContent.appendChild(ModalContentHeader);
+
+        const ModalContentBody = new Div(undefined, "modal-body");
+
+        const SearchForm = new Form(undefined);
+
+        const FormRowOne = new Div(undefined, "form-group row");
+        const ColumnPaymentType = new Div(undefined, "col-sm-12 text-left mt-2");
+        const PaymentTypeLabel = new Label(undefined, "Channeling Status *",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPaymentType")]
+        );
+        const PaymentType = new Select("TxtPaymentType",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded select")]
+        );
+        PaymentType.appendChild(new SelectItem("Successful consultation", "1",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        PaymentType.appendChild(new SelectItem("Cancellation as `No Show`", "2",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with refund", "3",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with rescheduling", "4",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        ColumnPaymentType.appendChild(PaymentTypeLabel);
+        ColumnPaymentType.appendChild(PaymentType);
+        FormRowOne.appendChild(ColumnPaymentType);
+
+        SearchForm.appendChild(FormRowOne);
+
+        ModalContentBody.appendChild(SearchForm);
+        ModalDialogContent.appendChild(ModalContentBody);
+
+        const ModalContentFooter = new Div(undefined, "modal-footer");
+        ModalContentFooter.appendChild(new Button('BtnCloseModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
+        ModalContentFooter.appendChild(new Button('BtnUpdatePayment', 'Save', 'btn btn-primary',
+            [
+                new Attribute('data-dismiss', 'modal'),
+                new Attribute(_AttributeOnClick, 'AppointmentChannelingStatusUpdate(' + AppointmentId + ')')
+            ]
+        ));
+        ModalDialogContent.appendChild(ModalContentFooter);
+
+        ModalDialog.appendChild(ModalDialogContent);
+        Modal.appendChild(ModalDialog);
+
+        BindView(Container, Modal);
+
+        $('#ModalForAppointmentChannelingStatusEdit').modal('show');
     }
 }
 
@@ -2937,8 +3010,8 @@ function ReportSearch() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
         FormRow0Appoinment.appendChild(DivFormRowDoctor1);
 
-        LableAndTextFeild("col-sm-3", "Report", "From Date *", "From Date", "", "", FormRow0Appoinment, "date");
-        LableAndTextFeild("col-sm-3", "Report", "To Date *", "To Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "Report", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "Report", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
 
         const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
         FormRow0Appoinment.appendChild(ColumnContactNo);

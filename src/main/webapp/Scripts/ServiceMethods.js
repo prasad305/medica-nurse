@@ -679,6 +679,8 @@ function FilterAppointedPatientData(Data) {
     for (let Count = 0; Count < DataLength; Count++) {
 
         // let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
+        // let PaymentPaid = " <span style='background-color:green; color:white; padding:5px;'><i class='i-Yes'></i></span>";
+        // let PaymentUnpaid = " <span style='background-color:red; color:white; padding:5px;'><i class='i-Close'></i></span>";
 
         let PaymentStatus = Data[Count].Status;
         // console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
@@ -692,45 +694,53 @@ function FilterAppointedPatientData(Data) {
         //         break;
         // }
 
-        // if (Count % 2 === 0 && PaymentStatus === 1) {
-        //     PaymentStatus = 7;
+        // if (Count % 2 === 0) {
+        //     PaymentStatus = 5;
         // }
 
         let PaymentTypeIcon = '';
         if (PaymentStatus === 1) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 25px;"> ';
 
-        } else if (PaymentStatus === 5) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+        } else if (PaymentStatus === 10) {
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 25px;"> ';
 
         } else if (PaymentStatus === 6) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 30px;"> ';
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ';
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn ml-1" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' +
-            '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span> ' +
-            '</button>';
+        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' +
+        '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
+        '</button>'
 
+        let IsPaid = false;
         let PaymentStatusColumn = '';
-
-        if (PaymentStatus === 7) {
-            PaymentStatusColumn = PaymentTypeEditButton;
-        } else {
-            // PaymentStatusColumn = PaymentTypeIcon + PaymentTypeEditButton;
+        if (PaymentStatus === 1 || PaymentStatus === 6 || PaymentStatus === 10) {
+            IsPaid = true;
             PaymentStatusColumn = PaymentTypeIcon;
+        } else if (PaymentStatus === 9 || PaymentStatus === 5) {
+            PaymentStatusColumn = PaymentTypeIcon + PaymentTypeEditButton;
         }
+
+        let ChannelingStatusEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ')">' +
+        '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
+        '</button>';
 
         const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
 
-        if (ChannelingStatusOriginal.includes('unsuccessful')) {
-            ChannelingStatus = 'Unsuccessful';
-        } else if (ChannelingStatusOriginal.includes('successful')) {
-            ChannelingStatus = 'Successful';
-        } else if (ChannelingStatusOriginal.includes('pending')) {
-            ChannelingStatus = 'Pending';
-        } else if (ChannelingStatusOriginal.includes('cancelled')) {
-            ChannelingStatus = 'Cancelled';
+        if (IsPaid) {
+            ChannelingStatus = ChannelingStatusEditButton;
+        } else {
+            if (ChannelingStatusOriginal.includes('unsuccessful')) {
+                ChannelingStatus = 'Unsuccessful';
+            } else if (ChannelingStatusOriginal.includes('successful')) {
+                ChannelingStatus = 'Successful';
+            } else if (ChannelingStatusOriginal.includes('pending')) {
+                ChannelingStatus = 'Pending';
+            } else if (ChannelingStatusOriginal.includes('cancelled')) {
+                ChannelingStatus = 'Cancelled';
+            }
         }
 
         // console.log(ChannelingStatusOriginal, ChannelingStatus);
@@ -752,7 +762,6 @@ function FilterAppointedPatientData(Data) {
                 "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
                 "Mobile": isNull(Data[Count].Mobile),
                 "M/F": Gender,
-                // "Payment": PaymentStatus,
                 "Payment": PaymentStatusColumn,
                 "Status": ChannelingStatus,
                 "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0)">' +
@@ -843,6 +852,15 @@ function AppointmentsMatchingDropdownItemsSetSelected() {
     // console.log('AppointmentsMatchingDropdownItemsSetSelected._AppointmentSelected:', _AppointmentSelected);
     $("#TxtAppointmentUpdateDoctor option[value='" + _AppointmentSelected.DoctorId + "']").prop("selected", true);
     $("#TxtAppointmentUpdateDoctorSession option[value='" + _AppointmentSelected.SessionId + "']").prop("selected", true);
+}
+
+function AppointmentChannelingStatusEdit(AppointmentId) {
+    // console.log('AppointmentChannelingStatusEdit.AppointmentId', AppointmentId);
+    new AppointmentChannelingStatusEditModal().Render(Containers.Footer, AppointmentId);
+}
+
+function AppointmentChannelingStatusUpdate(AppointmentId) {
+    console.log('AppointmentChannelingStatusUpdate.AppointmentId', AppointmentId);
 }
 
 function GetPatientOriginalId(Id) {

@@ -530,7 +530,7 @@ function Appointments_Search() {
 }
 
 function SaveAppointment_Click() {
-    _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0, parseInt(document.getElementById('TxtAppoinmentNumber').value), _AppointmentSessionId, _PatientId, null, 2, _UserId), SaveAppointment_Success);
+    _Request.Post(ServiceMethods.SaveAppoinmnet, new SaveAppointment(0, parseInt(document.getElementById('TxtAppoinmentNumber').value), _AppointmentSessionId, _PatientId, null, 10, _UserId), SaveAppointment_Success);
 }
 
 function AddPatientAppointment_Click() {
