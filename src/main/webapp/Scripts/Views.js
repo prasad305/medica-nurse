@@ -1803,7 +1803,7 @@ function AppointmentChannelingStatusEditModal() {
         // console.log('AppointmentChannelingStatusEditModal.AppointmentId:', AppointmentId);
 
         const AppointmentMatched = _ArrayAppointmentsForToday.filter((Appointment) => Appointment.Id === AppointmentId)[0];
-        // console.log('AppointmentDetailsEditModal.AppointmentMatched:', AppointmentMatched);
+        // console.log('AppointmentDetailsEditModal.AppointmentMatched.ChannelingStatus:', AppointmentMatched.ChannelingStatus);
 
         const Modal = new Div("ModalForAppointmentChannelingStatusEdit", "modal");
         Modal.setAttribute('data-backdrop', 'static');
@@ -1865,6 +1865,7 @@ function AppointmentChannelingStatusEditModal() {
         BindView(Container, Modal);
 
         $('#ModalForAppointmentChannelingStatusEdit').modal('show');
+        $("#TxtChannelingStatus option[value='" + AppointmentMatched.ChannelingStatus + "']").prop("selected", true);
     }
 }
 

@@ -618,7 +618,7 @@ function GetDoctorAppoinmentList_Success(Response) {
         //GetAppointedPatients(Response.Data);
 
         if (Response.Data.length > 0) {
-            _ArrayAppointmentsForToday = Response.Data;
+            _ArrayAppointmentsForToday = [..._ArrayAppointmentsForToday, ...Response.Data];
         }
 
         //*******new
