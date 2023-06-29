@@ -155,12 +155,7 @@ function FilterPatientData(Data) {
             Mobile: Data.Mobile,
             Gender: Data.Gender,
             Dep: PatientType,
-            Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + Data.Id + ')">' +
-                '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                '</button>' +
-                '<button class="btn btn-primary btn-icon" type="button" onclick="SetAppointmentPatient(this,' + Data.Id + ')">' +
-                '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' +
-                '</button>'
+            Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + Data.Id + ')">' + '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-primary btn-icon" type="button" onclick="SetAppointmentPatient(this,' + Data.Id + ')">' + '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' + '</button>'
         });
 
     } else {
@@ -184,12 +179,7 @@ function FilterPatientData(Data) {
                 Mobile: isNull(Data[Count].Mobile),
                 Gender: isNull(Data[Count].Gender),
                 Dep: PatientType,
-                Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + isNull(Data[Count].Id) + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-primary btn-icon mx-2" type="button" onclick="SetAppointmentPatient(this,' + isNull(Data[Count].Id) + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' +
-                    '</button>'
+                Action: '<button class="btn btn-info btn-icon" type="button" onclick="LoadPatientData(' + isNull(Data[Count].Id) + ')">' + '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-primary btn-icon mx-2" type="button" onclick="SetAppointmentPatient(this,' + isNull(Data[Count].Id) + ')">' + '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' + '</button>'
                 // '<button class="btn btn-primary btn-icon" type="button" onclick="PatientMedicalBillModalDisplay(' + isNull(Data[Count].Id) + ')">' +
                 // '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
                 // '</button>'
@@ -244,8 +234,7 @@ async function SaveSession_Success(Response) {
                 //send notification to all patients
                 //get all appointments in the session
                 const response = await PostAsync({
-                    serviceMethod: ServiceMethods.GetAppoinment,
-                    requestBody: new SessionId(Response.Data.Id)
+                    serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(Response.Data.Id)
                 });
                 console.log(response)
                 let doctorName = '';
@@ -279,10 +268,7 @@ async function SaveSession_Success(Response) {
  * @param {Array} appointments
  * */
 async function shareSessionUpdateWithPatients(appointments = [], {
-    messageTitle,
-    doctorName,
-    startingDateTime,
-    endingDateTime
+    messageTitle, doctorName, startingDateTime, endingDateTime
 }) {
 
     //filter appointments that are not cancelled
@@ -310,42 +296,23 @@ async function shareSessionUpdateWithPatients(appointments = [], {
         let messageToPatient = ''
         if (endingDateTime) {
             messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
+                hour: 'numeric', minute: 'numeric', hour12: true
             })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
+                hour: 'numeric', minute: 'numeric', hour12: true
             })}`
         } else {
             messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
+                hour: 'numeric', minute: 'numeric', hour12: true
             })}`
         }
 
         let status = await PostAsync({
-            serviceMethod: ServiceMethods.SENDSMS,
-            requestBody: {
-                "ScheduleMedium": [
-                    {
-                        "MediumId": 1,
-                        "Destination": Mobile,
-                        "Status": 0
-                    }
-                ],
-                "ScheduleMediumType": [
-                    {
-                        "MediumId": 1,
-                        "Destination": Mobile,
-                        "Status": 0
-                    }
-                ],
-                "NotifactionType": 1,
-                "Message": messageToPatient,
-                "Status": 0
+            serviceMethod: ServiceMethods.SENDSMS, requestBody: {
+                "ScheduleMedium": [{
+                    "MediumId": 1, "Destination": Mobile, "Status": 0
+                }], "ScheduleMediumType": [{
+                    "MediumId": 1, "Destination": Mobile, "Status": 0
+                }], "NotifactionType": 1, "Message": messageToPatient, "Status": 0
             }
         })
         setCompletedCount()
@@ -420,8 +387,7 @@ function FilterDoctorSessionData(Data) {
             "EndTime": EndTime,
             "Room": RoomNumber,
             Type: Type,
-            "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> ' +
-                '<button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Calendar-4"></i></span></button>'
+            "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> ' + '<button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Calendar-4"></i></span></button>'
         });
     }
     new DoctorSessionTable().Render('DivSessionTable', ArrayDoctorSessionData);
@@ -570,8 +536,7 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
 }
 
 function GetNextAppoinmentNumber_Sucess(Response) {
-    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
+    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else document.getElementById('TxtAppoinmentNumber').value = Response.Data.Number;
 }
 
 function SaveAppointment_Success(Response) {
@@ -623,25 +588,15 @@ function shareAppointmentDetailsWithPatient({
                                                 startingDateTime
                                             }, onSuccess = null) {
     _Request.Post(ServiceMethods.SENDSMS, {
-        "ScheduleMedium": [
-            {
-                "MediumId": 1,
-                "Destination": mobileNumber,
-                "Status": 0
-            }
-        ],
-        "ScheduleMediumType": [
-            {
-                "MediumId": 1,
-                "Destination": mobileNumber,
-                "Status": 0
-            }
-        ],
+        "ScheduleMedium": [{
+            "MediumId": 1, "Destination": mobileNumber, "Status": 0
+        }],
+        "ScheduleMediumType": [{
+            "MediumId": 1, "Destination": mobileNumber, "Status": 0
+        }],
         "NotifactionType": 1,
         "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
+            hour: 'numeric', minute: 'numeric', hour12: true
         })}`,
         "Status": 0
     }, onSuccess);
@@ -709,9 +664,7 @@ function FilterAppointedPatientData(Data) {
             PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ';
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' +
-        '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
-        '</button>'
+        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>'
 
         let IsPaid = false;
         let PaymentStatusColumn = '';
@@ -722,24 +675,34 @@ function FilterAppointedPatientData(Data) {
             PaymentStatusColumn = PaymentTypeIcon + PaymentTypeEditButton;
         }
 
-        let ChannelingStatusEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ')">' +
-        '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
-        '</button>';
+        let ChannelingStatusEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>';
 
         const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
 
         if (IsPaid) {
-            ChannelingStatus = ChannelingStatusEditButton;
-        } else {
-            if (ChannelingStatusOriginal.includes('unsuccessful')) {
-                ChannelingStatus = 'Unsuccessful';
+            if (ChannelingStatusOriginal.includes('refund')) {
+                ChannelingStatus = 'Ref ' + ChannelingStatusEditButton;
+            } else if (ChannelingStatusOriginal.includes('rescheduling')) {
+                ChannelingStatus = 'Res ' + ChannelingStatusEditButton;
             } else if (ChannelingStatusOriginal.includes('successful')) {
+                ChannelingStatus = 'Suc ' + ChannelingStatusEditButton;
+            } else if (ChannelingStatusOriginal.includes('pending')) {
+                ChannelingStatus = 'Pen ' + ChannelingStatusEditButton;
+            } else if (ChannelingStatusOriginal.includes('show')) {
+                ChannelingStatus = 'Nos ' + ChannelingStatusEditButton;
+            }
+        } else {
+            if (ChannelingStatusOriginal.includes('successful')) {
                 ChannelingStatus = 'Successful';
             } else if (ChannelingStatusOriginal.includes('pending')) {
                 ChannelingStatus = 'Pending';
-            } else if (ChannelingStatusOriginal.includes('cancelled')) {
-                ChannelingStatus = 'Cancelled';
+            } else if (ChannelingStatusOriginal.includes('show')) {
+                ChannelingStatus = 'No Show';
+            } else if (ChannelingStatusOriginal.includes('refund')) {
+                ChannelingStatus = 'Refunded';
+            } else if (ChannelingStatusOriginal.includes('rescheduling')) {
+                ChannelingStatus = 'Rescheduled';
             }
         }
 
@@ -755,25 +718,16 @@ function FilterAppointedPatientData(Data) {
             Gender = 'M';
         }
 
-        _ArrayAppointedPatientData.push(
-            {
-                "A#": isNull(Data[Count].Number),
-                "Doctor": isNull(Data[Count].DoctorName),
-                "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
-                "Mobile": isNull(Data[Count].Mobile),
-                "M/F": Gender,
-                "Payment": PaymentStatusColumn,
-                "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0)">' +
-                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' +
-                    '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' +
-                    '</button>'
-            });
+        _ArrayAppointedPatientData.push({
+            "A#": isNull(Data[Count].Number),
+            "Doctor": isNull(Data[Count].DoctorName),
+            "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
+            "Mobile": isNull(Data[Count].Mobile),
+            "M/F": Gender,
+            "Payment": PaymentStatusColumn,
+            "Status": ChannelingStatus,
+            "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0)">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
+        });
 
     }
 }
@@ -789,9 +743,7 @@ function GetAllPatientAppointmentsList(SearchType) {
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
     const DoctorId = $('#DrpAppoinmentDoctor option:selected').val();
     if (SearchType === 'sessions') {
-        _Request.Post(ServiceMethods.GetAppoinment,
-            new AppointmentListAllSessions(undefined, _UserId, 999999, _SessionId, AppointmentDate, DoctorId),
-            GetAllPatientAppointmentsForTodayList_Success);
+        _Request.Post(ServiceMethods.GetAppoinment, new AppointmentListAllSessions(undefined, _UserId, 999999, _SessionId, AppointmentDate, DoctorId), GetAllPatientAppointmentsForTodayList_Success);
     } else if (SearchType === 'search') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     } else if (SearchType === 'all') {
@@ -859,8 +811,21 @@ function AppointmentChannelingStatusEdit(AppointmentId) {
     new AppointmentChannelingStatusEditModal().Render(Containers.Footer, AppointmentId);
 }
 
-function AppointmentChannelingStatusUpdate(AppointmentId) {
-    console.log('AppointmentChannelingStatusUpdate.AppointmentId', AppointmentId);
+function AppointmentChannelingStatusUpdate(AppointmentId, AppointmentNumber, SessionId, PatientId) {
+    // console.log('AppointmentChannelingStatusUpdate:', AppointmentId, AppointmentNumber, SessionId, PatientId);
+    _Request.Post(ServiceMethods.ChanalingStatusSave, new ChannelingStatus(AppointmentId, SessionId, PatientId, "NA", $('#TxtChannelingStatus').val(), 0), AppointmentChannelingStatusUpdate_success);
+}
+
+function AppointmentChannelingStatusUpdate_success(Response) {
+    if (Response.Status === 1000) {
+        $('#ModalForAppointmentChannelingStatusEdit').modal('hide');
+        // AllBranchesOfTheInstituteGet();
+        // _AddressId = 0;
+        CmdAppoinments_Click('AppoinmentsCard');
+        return ShowMessage("Channeling Status Updated!", MessageTypes.Success, "Success!");
+    } else {
+        return ShowMessage(Response.Message.split('-')[1].trim(), MessageTypes.Warning, "Warning!");
+    }
 }
 
 function GetPatientOriginalId(Id) {
@@ -889,8 +854,7 @@ function MedicalBillDisplay(AppointmentId, appId) {
     selectedAppointmentId = AppointmentId;
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === AppointmentId)[0];
 
-    var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId
-        , undefined, undefined, selectedAppId, undefined, AppointmentId);
+    var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId, undefined, undefined, selectedAppId, undefined, AppointmentId);
 
     _Request.Post(ServiceMethods.BillGet, allData, function (res) {
         // console.log(res);
@@ -1049,11 +1013,7 @@ function medicalBillSave(PatientId, appId) {
 
     let date = new Date();
     let month = parseInt(date.getMonth()) + 1;
-    const DateTime = date.getFullYear() + '-' +
-        ("0" + month).slice(-2) + '-' +
-        ("0" + date.getDate()).slice(-2) + ' ' +
-        ("0" + date.getHours()).slice(-2) + ':' +
-        ("0" + date.getMinutes()).slice(-2);
+    const DateTime = date.getFullYear() + '-' + ("0" + month).slice(-2) + '-' + ("0" + date.getDate()).slice(-2) + ' ' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2);
 
     const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
 
@@ -1075,9 +1035,7 @@ function medicalBillSave(PatientId, appId) {
         'BillTime': DateTime.split(' ')[1]
     };
     const JsonObjectToSave = {
-        'Patient': Patient,
-        'Bill': MedicalBill,
-        'UserId': _UserId,
+        'Patient': Patient, 'Bill': MedicalBill, 'UserId': _UserId,
     }
 
     SaveBillData(JsonObjectToSave);
@@ -1209,15 +1167,8 @@ function GetPrescriptionList() {
 
     _ArrayPrescriptionSearchResultsData = [];
 
-    _Request.Post(ServiceMethods.GetPrescriptionRecord,
-        new GetPrescriptionRecord(
-            $('#TxtPrescriptionsSearchDate').val() + " 00:00:00",
-            // '2023-04-16',
-            $('#TxtPrescriptionsSearchDate').val() + " 23:59:59",
-            parseInt($('#TxtPrescriptionsSearchDoctor').val()),
-            null
-        ),
-        GetPrescriptionList_Success);
+    _Request.Post(ServiceMethods.GetPrescriptionRecord, new GetPrescriptionRecord($('#TxtPrescriptionsSearchDate').val() + " 00:00:00", // '2023-04-16',
+        $('#TxtPrescriptionsSearchDate').val() + " 23:59:59", parseInt($('#TxtPrescriptionsSearchDoctor').val()), null), GetPrescriptionList_Success);
 }
 
 function GetPrescriptionList_Success(Response) {
@@ -1429,15 +1380,7 @@ function ClinicMedicalBillsSearchResultsTableDisplay(Data) {
                 "Gender": Data[Count].Gender,
                 "Payment": PaymentStatus,
                 "Status": ChannelingStatus,
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicPrescriptionDisplay(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillDisplay(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' +
-                    '</button>' +
-                    '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicReferenceLetterDisplay(' + Data[Count].Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Letter-Open"></i></span>' +
-                    '</button>'
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicPrescriptionDisplay(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon custom-btn mx-2" type="button" onclick="ClinicMedicalBillDisplay(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i class="i-Billing"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="ClinicReferenceLetterDisplay(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i class="i-Letter-Open"></i></span>' + '</button>'
             });
 
         }
@@ -1571,9 +1514,7 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
                 "Contact No": isEmpty(Branch.Postcode.split('|')[1]),
                 "Address": Branch.AddressLine1,
                 "Email": Branch.Email,
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' +
-                    '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                    '</button>'
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' + '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' + '</button>'
             });
         }
     }
@@ -1628,23 +1569,17 @@ function BranchAddOrUpdate(BranchId) {
     const InstituteId = _NurseBranch.InstituteId;
 
     //validation
-    if (Name === "")
-        return ShowMessage('Invalid Branch Name!', MessageTypes.Warning, "Warning!");
+    if (Name === "") return ShowMessage('Invalid Branch Name!', MessageTypes.Warning, "Warning!");
 
-    if (Email === "")
-        return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
+    if (Email === "") return ShowMessage('Invalid Email!', MessageTypes.Warning, "Warning!");
 
-    if (Address1 === "")
-        return ShowMessage('Invalid Address!', MessageTypes.Warning, "Warning!");
+    if (Address1 === "") return ShowMessage('Invalid Address!', MessageTypes.Warning, "Warning!");
 
-    if (City === "")
-        return ShowMessage('Invalid City!', MessageTypes.Warning, "Warning!");
+    if (City === "") return ShowMessage('Invalid City!', MessageTypes.Warning, "Warning!");
 
-    if (ContactNo === "")
-        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+    if (ContactNo === "") return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
 
-    if (ValidateMobile(ContactNo) === false && ContactNo !== "")
-        return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
+    if (ValidateMobile(ContactNo) === false && ContactNo !== "") return ShowMessage(Messages.InvalidMobileNumber, MessageTypes.Warning, "Warning!");
 
     const AddressPayLoad = new Address(_AddressId, Address1, Address2, Suburb, City, PostCode, 1, 2);
 
@@ -1703,8 +1638,7 @@ function DownloadReport() {
         let ttlBookingFee = 0;
         let ttlTotalDiscount = 0;
         var csv_data = [];
-        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile',
-            'Booking Type', 'Payment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
+        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile', 'Booking Type', 'Payment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
         for (var i = 0; i < res.Data.length; i++) {
             let data = res.Data[i];
             console.log(data);
@@ -1719,35 +1653,13 @@ function DownloadReport() {
             ttlDoctor += parseInt(DoctorFee);
             ttlBookingFee += parseInt(BookingFee);
             ttlTotalDiscount += parseInt(TotalDiscount);
-            var d = [i,
-                data.DoctorName,
-                data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "),
-                data.Number,
-                data.FirstName + " " + data.LastName,
-                data.Mobile,
-                data.Type,
-                'PAID',
-                hospital,
-                DoctorFee,
-                BookingFee, AllOtherFee, TotalDiscount];
+            var d = [i, data.DoctorName, data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "), data.Number, data.FirstName + " " + data.LastName, data.Mobile, data.Type, 'PAID', hospital, DoctorFee, BookingFee, AllOtherFee, TotalDiscount];
             console.log(d)
             csv_data.push(d);
 
         }
         // =SUM(I2:I4)
-        var d = ["",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            '',
-            ttlHospital,
-            ttlDoctor,
-            ttlBookingFee,
-            ttlOther,
-            ttlTotalDiscount];
+        var d = ["", "", "", "", "", "", "", '', ttlHospital, ttlDoctor, ttlBookingFee, ttlOther, ttlTotalDiscount];
         csv_data.push(d)
 
         // console.log(csv_data);
@@ -1793,17 +1705,16 @@ function downloadCSVFile(csv_data) {
 function createExcel(data) {
 
 
-    var workbook = XLSX.utils.book_new(),
-        worksheet = XLSX.utils.aoa_to_sheet(data);
+    var workbook = XLSX.utils.book_new(), worksheet = XLSX.utils.aoa_to_sheet(data);
     workbook.SheetNames.push("First");
     workbook.Sheets["First"] = worksheet;
 
     XLSX.writeFile(workbook, "demo.xlsx");
 
-    var xlsblob = new Blob(
-        [new Uint8Array(XLSX.write(workbook, {bookType: "xlsx", type: "array"}))],
-        {type: "application/octet-stream"}
-    );
+    var xlsblob = new Blob([new Uint8Array(XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array"
+    }))], {type: "application/octet-stream"});
 
     // Create to temporary link to initiate
     // download process

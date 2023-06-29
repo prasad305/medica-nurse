@@ -98,6 +98,15 @@ function SaveAppointment(Id, Number, SessionId, PatientId, Description, Status, 
     this.UserId = UserId;
 }
 
+function ChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id) {
+    this.AppointmentId = AppointmentId;
+    this.SessionId = SessionId;
+    this.PatientId = PatientId;
+    this.DoctorStatus = DoctorStatus;
+    this.ChanalingStatus = ChannelingStatus;
+    this.Id = Id;
+}
+
 function AppointmentList(Id, UserId, Number, SessionId) {
     this.Id = Id;
     this.UserId = UserId;

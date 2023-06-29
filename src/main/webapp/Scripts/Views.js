@@ -1823,21 +1823,21 @@ function AppointmentChannelingStatusEditModal() {
         const FormRowOne = new Div(undefined, "form-group row");
         const ColumnPaymentType = new Div(undefined, "col-sm-12 text-left mt-2");
         const PaymentTypeLabel = new Label(undefined, "Channeling Status *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtPaymentType")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtChannelingStatus")]
         );
-        const PaymentType = new Select("TxtPaymentType",
+        const PaymentType = new Select("TxtChannelingStatus",
             [new Attribute(_AttributeClass, "form-control form-control-rounded select")]
         );
-        PaymentType.appendChild(new SelectItem("Successful consultation", "1",
+        PaymentType.appendChild(new SelectItem("Successful consultation", "Successful Consultation",
             [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
         ));
-        PaymentType.appendChild(new SelectItem("Cancellation as `No Show`", "2",
+        PaymentType.appendChild(new SelectItem("Cancellation as `No Show`", "Cancellation as `No Show`",
             [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
         ));
-        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with refund", "3",
+        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with refund", "Unsuccessful consultation with Refund",
             [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
         ));
-        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with rescheduling", "4",
+        PaymentType.appendChild(new SelectItem("Unsuccessful consultation with rescheduling", "Unsuccessful consultation with Rescheduling",
             [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
         ));
         ColumnPaymentType.appendChild(PaymentTypeLabel);
