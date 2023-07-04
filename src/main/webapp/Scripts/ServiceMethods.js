@@ -356,6 +356,8 @@ function GetDoctorSessionData_Success(Response) {
 }
 
 function FilterDoctorSessionData(Data) {
+    $('#LoaderWrapper').css('display', 'none');
+
     let DataLength = Data.length;
     let Count = 0;
     let Type;
@@ -1200,9 +1202,8 @@ function GetPrescriptionList() {
 }
 
 function GetPrescriptionList_Success(Response) {
-    if ($('#PrescriptionsSearchButton').prop('disabled', true)) {
-        $('#PrescriptionsSearchButton').prop('disabled', false);
-    }
+    $('#PrescriptionsSearchButton').prop('disabled', false);
+    $('#LoaderWrapper').css('display', 'none');
 
     //reset flag
     _IsAdminUserIdRequired = false;
@@ -1305,6 +1306,7 @@ function GetDoctorSessionDataForPharmacy_Success(Response) {
 
 function Prescriptions_Search() {
     $('#PrescriptionsSearchButton').prop('disabled', true);
+    $('#LoaderWrapper').css('display', '');
     GetPrescriptionList();
 }
 

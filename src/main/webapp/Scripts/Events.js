@@ -422,6 +422,8 @@ function CmdSessionSearch_Click() {
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
 
+    $('#LoaderWrapper').css('display', '');
+
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
 }
 
@@ -1498,6 +1500,8 @@ function Report_Search() {
     // let FromDate = moment(document.getElementById('TxtReportFrom_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 00:00:00";
     // let ToDate = moment(document.getElementById('TxtReportTo_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 23:59:59";
 
+    $('#LoaderWrapper').css('display', '');
+
     makeCustomHeader(_UserIdAdmin);
     _Request.Post("Appointment/Report", new AppointmentReport(FromDate, ToDate, doctor, branch, _UserIdAdmin), function (Response) {
         makeCustomHeader(_UserId);
@@ -1516,6 +1520,8 @@ function Report_Search() {
                 });
             }
         }
+
+        $('#LoaderWrapper').css('display', 'none');
 
         new ReportSearchResultsTable().Render('ReportSearchResults', ResultsData);
         CreateDataTable('TableReportSearchResults');
