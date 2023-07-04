@@ -169,15 +169,10 @@ function LoadSessionViceAppointments(Object, SessionId) {
 async function cancelAllAppointments() {
 
     //filter out appointments that are not cancelled already
-    let appointmentsNotCancelled = _ArrayAppointmentsForToday.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
-    console.log(_ArrayAppointmentsForToday);
-    console.log(_SessionId);
+    let appointmentsNotCancelled = _ArrayAppointmentsLoaded.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
     ShowMessage(`<i id='count'> Cancelling appointments 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
-
     const count = document.getElementById('count');
-
     let completed = 1;
-
     function setCompletedCount() {
         count.innerHTML = `Cancelling appointments ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
@@ -261,8 +256,8 @@ function SetAppointmentPatient(Object, PatientId) {
 function ViewAppointmentedPatientList() {
     if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
         new NewAppoinment().Render(Containers.MainContent);
-        CmdBtnColorRemove_Click();
-        $('#AppoinmentsCard').css('background-color', '#BDC3C7');
+        // CmdBtnColorRemove_Click();
+        // $('#AppoinmentsCard').css('background-color', '#BDC3C7');
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
     } else {
@@ -381,6 +376,7 @@ function CmdSession_Click(CardElement) {
         $('#' + CardElement.id).attr('disabled', true);
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
+        _CardClicked = 'Session';
         new Session().Render(Containers.MainContent);
         SetDoctorData('DrpSessionDoctor');
     }
@@ -726,6 +722,7 @@ function CmdPrescription_Click(CardElement) {
         $('#' + CardElement.id).attr('disabled', true);
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
+        _CardClicked =  CmdCardClicked;
         new Pharmacy().Render(Containers.MainContent);
         GetPrescriptionList();
         SetDoctorData('TxtPrescriptionsSearchDoctor');

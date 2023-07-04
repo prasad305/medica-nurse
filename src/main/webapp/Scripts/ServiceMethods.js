@@ -616,6 +616,7 @@ function GetDoctorAppoinmentList_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         LoopCount = 0;
         _AppointmentDetails = Response.Data;
+        _ArrayAppointmentsLoaded = Response.Data;
         //GetAppointedPatients(Response.Data);
 
         if (Response.Data.length > 0) {
@@ -656,16 +657,16 @@ function FilterAppointedPatientData(Data) {
 
         let PaymentTypeIcon = '';
         if (PaymentStatus === 1) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 25px;"> ';
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span>';
 
         } else if (PaymentStatus === 10) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 25px;"> ';
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span>';
 
         } else if (PaymentStatus === 6) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ';
+            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span> ';
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>'
+        let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + 'Unpaid' + '</button>'
 
         let IsPaid = false;
         let PaymentStatusColumn = '';
@@ -676,7 +677,9 @@ function FilterAppointedPatientData(Data) {
             PaymentStatusColumn = PaymentTypeIcon + PaymentTypeEditButton;
         }
 
-        let ChannelingStatusEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>';
+        let ChannelingStatusEditButton = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+            ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' + '<span class="ul-btn__icon">' +
+            '<i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>';
 
         const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
@@ -685,15 +688,25 @@ function FilterAppointedPatientData(Data) {
         if (IsPaid) {
             isDisable = '';
             if (ChannelingStatusOriginal.includes('refund')) {
-                ChannelingStatus = 'Ref ' + ChannelingStatusEditButton;
+                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                    'Refund' + '</button>';
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
-                ChannelingStatus = 'Res ' + ChannelingStatusEditButton;
+                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                    'Rescheduling' + '</button>';
             } else if (ChannelingStatusOriginal.includes('successful')) {
-                ChannelingStatus = 'Suc ' + ChannelingStatusEditButton;
+                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                    'Successful' + '</button>';
             } else if (ChannelingStatusOriginal.includes('pending')) {
-                ChannelingStatus = 'Pen ' + ChannelingStatusEditButton;
+                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                    'Pending' + '</button>';
             } else if (ChannelingStatusOriginal.includes('show')) {
-                ChannelingStatus = 'Nos ' + ChannelingStatusEditButton;
+                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
+                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
+                    'No Show' + '</button>';
             } else if(ChannelingStatusOriginal.includes('cancelled')){
                 isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';

@@ -496,8 +496,8 @@ function PatientTable() {
         let CardBodyPrescriptions = new Div(undefined, "card-body");
 
         let HeadingPrescriptions = new Heading4("Patient Data", undefined);
-        // let ImagePrescriptions = new Imagebox(undefined, "images/add-icon.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
-        // HeadingPrescriptions.appendChild(ImagePrescriptions);
+        let ImagePrescriptions = new Imagebox(undefined, "dist-assets/images/Nurse/Patientn.png", undefined, "Add Icon Image", [new Attribute(_AttributeClass, "TopIcons pres-img"), new Attribute(_AttributeOnClick, "AddPatient_Click()")]);
+        HeadingPrescriptions.appendChild(ImagePrescriptions);
         CardBodyPrescriptions.appendChild(HeadingPrescriptions);
 
         let DivTablePrescriptions = new Div(undefined, "table-responsive");

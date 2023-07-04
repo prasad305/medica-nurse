@@ -78,6 +78,7 @@ var _ArrayPrescriptionSearchResultsData = [];
 
 let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
+let _ArrayAppointmentsLoaded = [];
 let _AppointmentSelected = {};
 
 var _NurseNIC;
