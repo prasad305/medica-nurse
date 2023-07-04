@@ -173,6 +173,7 @@ async function cancelAllAppointments() {
     ShowMessage(`<i id='count'> Cancelling appointments 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
     const count = document.getElementById('count');
     let completed = 1;
+
     function setCompletedCount() {
         count.innerHTML = `Cancelling appointments ${completed} of ${appointmentsNotCancelled.length}`;
         completed++;
@@ -501,6 +502,7 @@ function Appointments_Search() {
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
 
     $('#AppointmentsSearchButton').prop('disabled', true);
+    $('#LoaderWrapper').css('display', '');
 
     if (document.getElementById('DrpAppoinmentDoctor').value.trim() !== "" &&
         document.getElementById('DrpSessionDateDoctor').value === "0") {
@@ -508,18 +510,19 @@ function Appointments_Search() {
         GetAllPatientAppointmentsList('sessions');
 
     } else if (document.getElementById('DrpSessionDateDoctor').value === "0" &&
-               document.getElementById('DrpAppoinmentDoctor').value === "0") {
+        document.getElementById('DrpAppoinmentDoctor').value === "0") {
 
         GetAllPatientAppointmentsList('search');
 
     } else if (document.getElementById('DrpSessionDateDoctor').value != " " &&
-               document.getElementById('DrpAppoinmentDoctor').value != " " &&
-                (AppointmentDate !== "" && AppointmentDate != NaN)) {
+        document.getElementById('DrpAppoinmentDoctor').value != " " &&
+        (AppointmentDate !== "" && AppointmentDate != NaN)) {
 
         GetDoctorAppoinmentList();
 
     } else {
         $('#AppointmentsSearchButton').prop('disabled', false);
+        $('#LoaderWrapper').css('display', 'none');
         return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
     }
 }
@@ -652,7 +655,7 @@ function AppointmentUpdate() {
                     parseInt(Res.Data.Number),
                     selectedRowSessionId,
                     selectedRowPatientId, null,
-                selectedRowStatus, _UserId)
+                    selectedRowStatus, _UserId)
                 , SaveAppointment_Success_Update);
         });
     }
@@ -722,7 +725,7 @@ function CmdPrescription_Click(CardElement) {
         $('#' + CardElement.id).attr('disabled', true);
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
-        _CardClicked =  CmdCardClicked;
+        _CardClicked = CmdCardClicked;
         new Pharmacy().Render(Containers.MainContent);
         GetPrescriptionList();
         SetDoctorData('TxtPrescriptionsSearchDoctor');
@@ -1159,6 +1162,7 @@ function GetDoctorByBranch() {
 }
 
 function LoadAllDoctorsForBranch(Branch) {
+    $('#LoaderWrapper').css('display', '');
     let Payload = new GetDoctorsByInstituteBranchId(Branch);
     _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, SuccessLoadDoctors);
 }
@@ -1180,7 +1184,7 @@ function SuccessLoadDoctors(Response) {
             _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, LoadDoctorToTable);
         });
     }
-
+    $('#LoaderWrapper').css('display', 'none');
 }
 
 

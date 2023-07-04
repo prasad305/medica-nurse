@@ -202,7 +202,8 @@ const Containers =
         ButtonBar: "DivButtonBar",
         MainContent: "DivContentMain",
         AdContent: "DivContentAd",
-        Footer: "Divfooter"
+        Footer: "Divfooter",
+        LoaderHolder: "DivLoaderHolder"
     };
 
 /*========================

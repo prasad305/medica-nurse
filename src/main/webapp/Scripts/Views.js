@@ -34,15 +34,15 @@ function LayoutCommon() {
     };
 
     this.RenderLoader = function () {
-        let DivContentLoader = new Div(this.IdLoader, "row zindex-10 w-100 align-items-center");
-        let DivLoadingIconLoader = new Div("DivLoadingIconLoader", "mx-auto justify-content-center");
-        DivLoadingIconLoader.appendChild(new Imagebox("imageLoader", "dist-assets/images/Spinner-1s-204px.gif", undefined, undefined, [new Attribute(_AttributeClass, "c-default w-50")]));
-        DivContentLoader.appendChild(DivLoadingIconLoader);
-        document.getElementById(_Body).appendChild(DivContentLoader);
+        // let DivContentLoader = new Div(this.IdLoader, "row zindex-10 w-100 align-items-center");
+        // let DivLoadingIconLoader = new Div("DivLoadingIconLoader", "mx-auto justify-content-center");
+        // DivLoadingIconLoader.appendChild(new Imagebox("imageLoader", "dist-assets/images/Spinner-1s-204px.gif", undefined, undefined, [new Attribute(_AttributeClass, "c-default w-50")]));
+        // DivContentLoader.appendChild(DivLoadingIconLoader);
+        // document.getElementById(_Body).appendChild(DivContentLoader);
     };
 
     this.DerenderLoader = function () {
-        document.getElementById(_Body).removeChild(document.getElementById(this.IdLoader));
+        // document.getElementById(_Body).removeChild(document.getElementById(this.IdLoader));
     };
 }
 
@@ -76,6 +76,9 @@ function LayoutMain() {
         let DivFooter = new Div(Containers.Footer, "footer");
         DivMain.appendChild(DivFooter);
 
+        let DivLoader = new Div(Containers.LoaderHolder, "loaderHolder");
+        DivMain.appendChild(DivLoader);
+
         document.body.innerHTML = "";
 
         document.body.appendChild(DivMain);
@@ -84,6 +87,7 @@ function LayoutMain() {
         new SiteNavigation().Render(Containers.Header);
         new SiteButtonBar().Render(Containers.ButtonBar);
         new Footer().Render(Containers.Footer);
+        new Loader().Render(Containers.LoaderHolder);
     };
 }
 
@@ -515,7 +519,7 @@ function NavEditPatient(type) {
     this.Render = function (Container) {
         let CardEditPatient = new Div(undefined, "card text-left");
         let CardBodyEditPatient = new Div(undefined, "card-body");
-        let HeadingEditPatient = new Heading4(type+" Patient", [new Attribute(_AttributeClass, "card-title mb-3")]);
+        let HeadingEditPatient = new Heading4(type + " Patient", [new Attribute(_AttributeClass, "card-title mb-3")]);
         CardBodyEditPatient.appendChild(HeadingEditPatient);
 
         let NavEditPatient = new Nav();
@@ -2271,6 +2275,19 @@ function Footer() {
     }
 }
 
+function Loader() {
+    this.Render = function (Container) {
+        let Row = new Div(undefined, "row");
+        let Column = new Div(undefined, "col-12");
+        let LoaderWrapper = new Div("LoaderWrapper", "loading", [new Attribute("style", "display: none;")]);
+        let Loader = new Div(undefined, "spinner-bubble spinner-bubble-primary m-7");
+        LoaderWrapper.appendChild(Loader);
+        Column.appendChild(LoaderWrapper);
+        Row.appendChild(Column);
+        BindView(Container, Row);
+    }
+}
+
 /*=================================
          Admin UIs
  =================================*/
@@ -2305,6 +2322,9 @@ function AdminLayoutMain() {
         let DivFooter = new Div(Containers.Footer, "footer");
         DivMain.appendChild(DivFooter);
 
+        let DivLoader = new Div(Containers.LoaderHolder, "loaderHolder");
+        DivMain.appendChild(DivLoader);
+
         document.body.innerHTML = "";
 
         document.body.appendChild(DivMain);
@@ -2314,6 +2334,7 @@ function AdminLayoutMain() {
         // new SiteButtonBar().Render(Containers.ButtonBar);
         new AdminSiteButtonBar().Render(Containers.ButtonBar);
         new Footer().Render(Containers.Footer);
+        new Loader().Render(Containers.LoaderHolder);
     };
 }
 

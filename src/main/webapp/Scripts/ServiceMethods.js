@@ -610,9 +610,9 @@ function GetDoctorAppoinmentList() {
 }
 
 function GetDoctorAppoinmentList_Success(Response) {
-    if ($('#AppointmentsSearchButton').prop('disabled', true)) {
-        $('#AppointmentsSearchButton').prop('disabled', false);
-    }
+    $('#AppointmentsSearchButton').prop('disabled', false);
+    $('#LoaderWrapper').css('display', 'none');
+
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         LoopCount = 0;
         _AppointmentDetails = Response.Data;
@@ -707,7 +707,7 @@ function FilterAppointedPatientData(Data) {
                 ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
                     ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
                     'No Show' + '</button>';
-            } else if(ChannelingStatusOriginal.includes('cancelled')){
+            } else if (ChannelingStatusOriginal.includes('cancelled')) {
                 isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
@@ -723,7 +723,7 @@ function FilterAppointedPatientData(Data) {
                 ChannelingStatus = 'Refunded';
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
                 ChannelingStatus = 'Rescheduled';
-            } else if(ChannelingStatusOriginal.includes('cancelled')){
+            } else if (ChannelingStatusOriginal.includes('cancelled')) {
                 isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
@@ -749,7 +749,7 @@ function FilterAppointedPatientData(Data) {
             "M/F": Gender,
             "Payment": PaymentStatusColumn,
             "Status": ChannelingStatus,
-            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
+            "Action": '<button ' + isDisable + ' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
         });
 
     }
@@ -776,6 +776,7 @@ function GetAllPatientAppointmentsList(SearchType) {
 
 function GetAllPatientAppointmentsForTodayList_Success(Response) {
     $('#AppointmentsSearchButton').prop('disabled', false);
+    $('#LoaderWrapper').css('display', 'none');
 
     if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
@@ -808,7 +809,7 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType,Status) {
+function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType, Status) {
     // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
