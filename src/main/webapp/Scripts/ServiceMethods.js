@@ -6,6 +6,7 @@
 let DataLength;
 let LoopCount = 0;
 let selectedRowSessionId = 0;
+let selectedRowStatus = 2;
 let selectedRowAppointmentId = 0;
 let selectedRowPatientId = 0;
 let DoctorContactIdArr = [0, 0];
@@ -664,7 +665,7 @@ function FilterAppointedPatientData(Data) {
             PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ';
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1)">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>'
+        let PaymentTypeEditButton = '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>'
 
         let IsPaid = false;
         let PaymentStatusColumn = '';
@@ -680,7 +681,9 @@ function FilterAppointedPatientData(Data) {
         const ChannelingStatusOriginal = Data[Count].ChannelingStatus != null ? Data[Count].ChannelingStatus.toLowerCase() : '-';
         let ChannelingStatus = '-';
 
+        let isDisable = '';
         if (IsPaid) {
+            isDisable = '';
             if (ChannelingStatusOriginal.includes('refund')) {
                 ChannelingStatus = 'Ref ' + ChannelingStatusEditButton;
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
@@ -692,9 +695,11 @@ function FilterAppointedPatientData(Data) {
             } else if (ChannelingStatusOriginal.includes('show')) {
                 ChannelingStatus = 'Nos ' + ChannelingStatusEditButton;
             } else if(ChannelingStatusOriginal.includes('cancelled')){
+                isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
         } else {
+            isDisable = '';
             if (ChannelingStatusOriginal.includes('successful')) {
                 ChannelingStatus = 'Successful';
             } else if (ChannelingStatusOriginal.includes('pending')) {
@@ -706,6 +711,7 @@ function FilterAppointedPatientData(Data) {
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
                 ChannelingStatus = 'Rescheduled';
             } else if(ChannelingStatusOriginal.includes('cancelled')){
+                isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
         }
@@ -730,7 +736,7 @@ function FilterAppointedPatientData(Data) {
             "M/F": Gender,
             "Payment": PaymentStatusColumn,
             "Status": ChannelingStatus,
-            "Action": '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0)">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
+            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
         });
 
     }
@@ -789,12 +795,13 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType) {
+function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType,Status) {
     // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
     selectedRowPatientId = PatientId;
+    selectedRowStatus = Status;
     new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {

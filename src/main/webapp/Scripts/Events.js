@@ -656,7 +656,7 @@ function AppointmentUpdate() {
                     parseInt(Res.Data.Number),
                     selectedRowSessionId,
                     selectedRowPatientId, null,
-                    2, _UserId)
+                selectedRowStatus, _UserId)
                 , SaveAppointment_Success_Update);
         });
     }
