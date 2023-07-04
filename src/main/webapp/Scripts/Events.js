@@ -504,27 +504,26 @@ function Appointments_Search() {
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
 
-    // console.log('Appointments_Search.AppointmentDate:', _AppointmentSessionId, AppointmentDate);
+    $('#AppointmentsSearchButton').prop('disabled', true);
 
-    if (document.getElementById('DrpAppoinmentDoctor').value.trim() !== "" && document.getElementById('DrpSessionDateDoctor').value === "0") {
-        $('#AppointmentsSearchButton').prop('disabled', true);
+    if (document.getElementById('DrpAppoinmentDoctor').value.trim() !== "" &&
+        document.getElementById('DrpSessionDateDoctor').value === "0") {
+
         GetAllPatientAppointmentsList('sessions');
 
-    } else if (document.getElementById('DrpSessionDateDoctor').value === "0" && document.getElementById('DrpAppoinmentDoctor').value === "0") {
-        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-        // GetDoctorAppoinmentList();
-        $('#AppointmentsSearchButton').prop('disabled', true);
+    } else if (document.getElementById('DrpSessionDateDoctor').value === "0" &&
+               document.getElementById('DrpAppoinmentDoctor').value === "0") {
+
         GetAllPatientAppointmentsList('search');
-        // document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
 
     } else if (document.getElementById('DrpSessionDateDoctor').value != " " &&
-        document.getElementById('DrpAppoinmentDoctor').value != " " && (AppointmentDate !== "" && AppointmentDate != NaN)) {
-        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-        $('#AppointmentsSearchButton').prop('disabled', true);
+               document.getElementById('DrpAppoinmentDoctor').value != " " &&
+                (AppointmentDate !== "" && AppointmentDate != NaN)) {
+
         GetDoctorAppoinmentList();
-        // document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
 
     } else {
+        $('#AppointmentsSearchButton').prop('disabled', false);
         return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
     }
 }
@@ -668,8 +667,7 @@ function AppointmentUpdate() {
 
 function SaveAppointment_Success_Update(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
-        CmdAppoinments_Click();
-        console.log(Response)
+        CmdAppoinments_Click('AppoinmentsCard');
         // send sms to patient
         let appointmentNumber = Response.Data.Number;
         let appointmentId = Response.Data.Id;
@@ -1227,7 +1225,7 @@ function doctorTblData(Response) {
                     '</button>' +
                     // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
                     // '<i class="nav-icon i-Close-Window"></i></button>' +
-                    '<button class="btn btn-primary" style="margin-left: 1rem" type="button" id="6" data-toggle="modal" ' +
+                    '<button class="btn btn-primary" style="margin-left: 0.5rem" type="button" id="6" data-toggle="modal" ' +
                     'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
             });
         }

@@ -2843,20 +2843,20 @@ function DoctorsAddOrUpdateModal() {
         data.push(new SelectItem("Miss.", "Miss.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Rev.", "Rev.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
-        DropDown("col-sm-3  mt-2", "Doctor", "Title *", "", data, ParentRow);
+        DropDown("col-sm-3  mt-2", "DrpTitle", "Title *", "", data, ParentRow);
 
-        LableAndTextFeild("col-sm-9", "Doctor", "First Name *", "First Name", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Middle Name", "Middle Name", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Last Name *", "Last Name", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Contact No. *", "Contact No.", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Phone No.", "Phone No.", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Email *", "Email", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "N.I.C *", "N.I.C", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Registration Number", "Registration Number", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "Doctor", "Date Of Birth *", "Date Of Birth", "", "", ParentRow, "date");
+        LableAndTextFeild("col-sm-9", "DoctorFirst_Name", "First Name *", "First Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorMiddle_Name", "Middle Name", "Middle Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorLast_Name", "Last Name *", "Last Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorContact_No", "Contact No. *", "Contact No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorPhone_No", "Phone No.", "Phone No.", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorEmail", "Email *", "Email", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorNIC", "N.I.C *", "N.I.C", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorRegistration_Number", "Registration Number", "Registration Number", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorDate_Of_Birth", "Date Of Birth *", "Date Of Birth", "", "", ParentRow, "date");
 
-        DropDown("col-sm-6  mt-2", "Doctor", "Specialization *", "", undefined, ParentRow);
-        DropDown("col-sm-6  mt-2", "Doctor", "Qualifications *", "", undefined, ParentRow);
+        DropDown("col-sm-6  mt-2", "DrpSpecialization", "Specialization *", "", undefined, ParentRow);
+        DropDown("col-sm-6  mt-2", "DrpQualifications", "Qualifications *", "", undefined, ParentRow);
 
 
         ModalContentBody.appendChild(ParentRow);
@@ -2908,10 +2908,10 @@ function DoctorsLoginModal() {
 
         const ParentRow = new Div(undefined, "row");
 
-        LableAndTextFeild("col-sm-12", "Doctor", "User Name *", "User Name", "", "", ParentRow);
-        LableAndTextFeild("col-sm-12", "Doctor", "Password *", "Password", "", "", ParentRow);
+        LableAndTextFeild("col-sm-12", "DoctorUser_Name", "User Name *", "User Name", "", "", ParentRow);
+        LableAndTextFeild("col-sm-12", "DoctorPassword", "Password *", "Password", "", "", ParentRow);
 
-        LableAndTextFeild("col-sm-12", "Doctor", "Confirm Password *", "Confirm Password", "", "", ParentRow);
+        LableAndTextFeild("col-sm-12", "DoctorConfirm_Password", "Confirm Password *", "Confirm Password", "", "", ParentRow);
 
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
@@ -3011,8 +3011,8 @@ function ReportSearch() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
         FormRow0Appoinment.appendChild(DivFormRowDoctor1);
 
-        LableAndTextFeild("col-sm-3", "Report", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
-        LableAndTextFeild("col-sm-3", "Report", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "ReportFrom_Date", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3", "ReportTo_Date", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
 
         const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
         FormRow0Appoinment.appendChild(ColumnContactNo);
@@ -3099,7 +3099,7 @@ function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, Paren
     const ColumnBranch = new Div(undefined, classCol + " mt-2");
     const LabelBranch = new Label("Lbl" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""), lbl,
         [new Attribute(_AttributeClass, "col-form-label"),
-            new Attribute(_AttributeFor, "Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""))]
+            new Attribute(_AttributeFor, "Txt" + id)]
     );
 
     var att = [];
@@ -3111,7 +3111,7 @@ function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, Paren
     if (type == "date") {
         att.push(new Attribute(_AttributeType, 'date'));
     }
-    const TextBranch = new Textbox("Txt" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""),
+    const TextBranch = new Textbox("Txt" + id,
         "form-control form-control-rounded",
         att
     );
@@ -3124,8 +3124,8 @@ function DropDown(classCol, id, lbl, functionExec, customOptions, ParentRow) {
 
     let DivFormRowDoctor = new Div(undefined, classCol);
     let LabelAppoinment = new Label(undefined, "Select " + lbl, [new Attribute(_AttributeClass, "col-form-label"),
-        new Attribute(_AttributeFor, "Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""))]);
-    let SelectBranch = new Select("Drp" + lbl.replaceAll(" ", "_").replaceAll(".", ""), [new Attribute(_AttributeClass,
+        new Attribute(_AttributeFor, id)]);
+    let SelectBranch = new Select(id, [new Attribute(_AttributeClass,
         "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, functionExec)]);
     SelectBranch.appendChild(
         new SelectItem("Select " + lbl, "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));

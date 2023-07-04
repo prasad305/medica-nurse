@@ -691,6 +691,8 @@ function FilterAppointedPatientData(Data) {
                 ChannelingStatus = 'Pen ' + ChannelingStatusEditButton;
             } else if (ChannelingStatusOriginal.includes('show')) {
                 ChannelingStatus = 'Nos ' + ChannelingStatusEditButton;
+            } else if(ChannelingStatusOriginal.includes('cancelled')){
+                ChannelingStatus = 'Cancelled';
             }
         } else {
             if (ChannelingStatusOriginal.includes('successful')) {
@@ -703,6 +705,8 @@ function FilterAppointedPatientData(Data) {
                 ChannelingStatus = 'Refunded';
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
                 ChannelingStatus = 'Rescheduled';
+            } else if(ChannelingStatusOriginal.includes('cancelled')){
+                ChannelingStatus = 'Cancelled';
             }
         }
 
@@ -743,7 +747,7 @@ function GetAllPatientAppointmentsList(SearchType) {
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
     const DoctorId = $('#DrpAppoinmentDoctor option:selected').val();
     if (SearchType === 'sessions') {
-        _Request.Post(ServiceMethods.GetAppoinment, new AppointmentListAllSessions(undefined, _UserId, 999999, _SessionId, AppointmentDate, DoctorId), GetAllPatientAppointmentsForTodayList_Success);
+        _Request.Post(ServiceMethods.GetAppoinment, new AppointmentListAllSessions(undefined, _UserId, 999999, _SessionId, AppointmentDate, DoctorId), GetDoctorAppoinmentList_Success);
     } else if (SearchType === 'search') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     } else if (SearchType === 'all') {
@@ -752,6 +756,8 @@ function GetAllPatientAppointmentsList(SearchType) {
 }
 
 function GetAllPatientAppointmentsForTodayList_Success(Response) {
+    $('#AppointmentsSearchButton').prop('disabled', false);
+
     if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     } else {
@@ -822,6 +828,7 @@ function AppointmentChannelingStatusUpdate_success(Response) {
         // AllBranchesOfTheInstituteGet();
         // _AddressId = 0;
         CmdAppoinments_Click('AppoinmentsCard');
+        Appointments_Search();
         return ShowMessage("Channeling Status Updated!", MessageTypes.Success, "Success!");
     } else {
         return ShowMessage(Response.Message.split('-')[1].trim(), MessageTypes.Warning, "Warning!");
@@ -1704,12 +1711,13 @@ function downloadCSVFile(csv_data) {
 
 function createExcel(data) {
 
+    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     var workbook = XLSX.utils.book_new(), worksheet = XLSX.utils.aoa_to_sheet(data);
     workbook.SheetNames.push("First");
     workbook.Sheets["First"] = worksheet;
 
-    XLSX.writeFile(workbook, "demo.xlsx");
+    XLSX.writeFile(workbook, "ReportList-" + TodaysDate + ".xlsx");
 
     var xlsblob = new Blob([new Uint8Array(XLSX.write(workbook, {
         bookType: "xlsx",
@@ -1720,7 +1728,6 @@ function createExcel(data) {
     // download process
     var temp_link = document.createElement('a');
 
-    const TodaysDate = new Date().toISOString().slice(0, 10);
 
     // Download csv file
     temp_link.download = "ReportList-" + TodaysDate + ".xlsx";
@@ -1732,7 +1739,7 @@ function createExcel(data) {
 
     // Automatically click the link to
     // trigger download
-    temp_link.click();
+    // temp_link.click();
     document.body.removeChild(temp_link);
 
 }
