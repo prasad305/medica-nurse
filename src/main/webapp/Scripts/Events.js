@@ -269,7 +269,7 @@ function ViewAppointmentedPatientList() {
 
 function AddPatient_Click() {
     _Id = 0;
-    new NavEditPatient().Render(Containers.MainContent);
+    new NavEditPatient('New').Render(Containers.MainContent);
     document.getElementById('nav-primary-tab').click();
 
     if (_PatientNIC != undefined && _PatientNIC != null && _PatientNIC != "") {
@@ -351,7 +351,7 @@ function SetPatientDataByNIC() {
 }
 
 function EditPatient_Click() {
-    new NavEditPatient().Render(Containers.MainContent);
+    new NavEditPatient('Edit').Render(Containers.MainContent);
     document.getElementById('nav-primary-tab').click();
     document.querySelectorAll('.Add-Patient-Div').forEach(function (Element) {
         Element.style.display = 'none';

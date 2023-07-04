@@ -511,11 +511,11 @@ function PatientTable() {
     }
 }
 
-function NavEditPatient() {
+function NavEditPatient(type) {
     this.Render = function (Container) {
         let CardEditPatient = new Div(undefined, "card text-left");
         let CardBodyEditPatient = new Div(undefined, "card-body");
-        let HeadingEditPatient = new Heading4("Edit Patient", [new Attribute(_AttributeClass, "card-title mb-3")]);
+        let HeadingEditPatient = new Heading4(type+" Patient", [new Attribute(_AttributeClass, "card-title mb-3")]);
         CardBodyEditPatient.appendChild(HeadingEditPatient);
 
         let NavEditPatient = new Nav();
