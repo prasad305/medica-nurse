@@ -59,7 +59,9 @@ function SaveDetails_Success(Response) {
         }
 
         _PatientDetails = Response.Data;
-        FilterPatientData(Response.Data);
+        var dataAll = [];
+        dataAll.push(Response.Data);
+        FilterPatientData(dataAll);
 
         return ShowMessage(Messages.UserSaveSuccess, MessageTypes.Success, "Success!");
     }
