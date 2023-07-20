@@ -265,6 +265,32 @@ input[type=number] {
     color : #1759a7 !important;
 }
 
+.SwitchMenuButton{
+    background-color: #fff;
+    color: #fff;
+    border-color: #818383;
+    width: 0px;
+    height: 12px;
+    border-radius: 50px;
+    margin-left: 5px;
+}
+
+.SwitchMenuButton-Active{
+    background-color: #818383;
+}
+
+.ColorGrey{
+    color : #bfbfbf !important;
+}
+.FooterText{
+    position: absolute;
+    bottom:20px;
+}
+.ui-timepicker-viewport{
+    overflow-y: scroll !important;
+    padding-right: 2px !important;
+}
+
 .j-c {
     justify-content: center;
 }

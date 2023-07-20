@@ -25,6 +25,11 @@ function LayoutCommon() {
         DivContent.appendChild(DivRow);
 
         let DivLayout = new Div(undefined, "auth-layout-wrap BgImage");
+
+        let Footer = new Div(undefined, "w-100 d-flex justify-content-center");
+        Footer.appendChild(new Heading6("MEDICA Solution by mobiOs Private Limited", [new Attribute(_AttributeClass, "FooterText ColorBlue")]));
+        DivLayout.appendChild(Footer);
+
         DivLayout.appendChild(DivContent);
 
         document.body.appendChild(DivLayout);
@@ -56,6 +61,12 @@ function LayoutMain() {
 
         let DivMainContent = Div(undefined, "main-content");
         DivMainContent.appendChild(new Div(Containers.ButtonBar));
+
+        let DivSwitchMenu = new Div(undefined, "d-flex justify-content-center align-items-center mb-3");
+        DivSwitchMenu.appendChild( new Button(undefined, "", "SwitchMenuButton SwitchMenuButton-Active", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]));
+        DivSwitchMenu.appendChild(new Button(undefined, "", "SwitchMenuButton", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]));
+
+        DivMainContent.appendChild(DivSwitchMenu);
 
         let DivRowMainContent = new Div(undefined, "row");
         DivRowMainContent.appendChild(new Div(undefined, "col-lg-2"));
@@ -104,29 +115,37 @@ function Login() {
         DivContent.appendChild(new Heading4("Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ColorBlue")]));
 
         let RowUsername = new Div(undefined, "form-group"); //p-4 child
-        RowUsername.appendChild(new Label(undefined, "Username / Mobile No", undefined, [new Attribute(_AttributeFor, "TxtUsername")]));
+        RowUsername.appendChild(new Label(undefined, "Username / Mobile No", undefined, [new Attribute(_AttributeFor, "TxtUsername"),new Attribute(_AttributeClass, "ColorBlue")]));
         RowUsername.appendChild(new Textbox("TxtUsername", "form-control form-control-rounded UserLogin", [new Attribute(_AttributePattern, "[0-9]{10}"), new Attribute(_AttributePlaceHolder, "Username")]));
         DivContent.appendChild(RowUsername);
 
         let RowPassword = new Div(undefined, "form-group");
-        RowPassword.appendChild(new Label(undefined, "Password", undefined, [new Attribute(_AttributeFor, "TxtPassword")]));
+        RowPassword.appendChild(new Label(undefined, "Password", undefined, [new Attribute(_AttributeFor, "TxtPassword") , new Attribute(_AttributeClass, "ColorBlue")]));
         RowPassword.appendChild(new Passwordbox("TxtPassword", "form-control form-control-rounded UserLogin", [new Attribute(_AttributePlaceHolder, "Password")]));
         DivContent.appendChild(RowPassword);
 
         DivContent.appendChild(new Button("CmdLogin", "Login", "btn btn-rounded btn-primary btn-block mt-2", [new Attribute(_AttributeOnClick, "CmdLogin_Click(this)")]));
 
-        let DivRemember = new Div(undefined, "mt-3 text-center");
+        let DivRememberAndForgot = new Div(undefined, "row px-2 mt-3 justify-content-between");
+
+        let DivRemember = new Div(undefined, "ml-2 text-center");
         DivRemember.appendChild(new Checkbox("ChkRemember", false));
         DivRemember.appendChild(new Label(undefined, "&nbsp;Remember Me ", undefined, [new Attribute(_AttributeFor, "ChkRemember"),new Attribute(_AttributeClass, "ColorBlue")]));
-        DivContent.appendChild(DivRemember);
+        // DivContent.appendChild(DivRemember);
+        DivRememberAndForgot.appendChild(DivRemember);
 
         let DivForgotPassword = new Div(undefined, "text-center");
-        DivForgotPassword.appendChild(new Hyperlink("LnkRecover", _ClickVoid, "Forgot Password?", "text-muted", [new Attribute(_AttributeOnClick, "LnkRecover_Click(this)")]));
-        DivContent.appendChild(DivForgotPassword);
+        DivForgotPassword.appendChild(new Hyperlink("LnkRecover", _ClickVoid, "Forgot Password?", "text-muted ColorGrey", [new Attribute(_AttributeOnClick, "LnkRecover_Click(this)")]));
+        // DivContent.appendChild(DivForgotPassword);
+        DivRememberAndForgot.appendChild(DivForgotPassword);
+        DivContent.appendChild(DivRememberAndForgot);
 
-        let DivDoctor = new Div(undefined, " mt-2 text-center mr-4");
-        DivDoctor.appendChild(new Hyperlink("LnkDoctor", _ClickVoid, "I am a doctor", "text-muted", [new Attribute(_AttributeOnClick, "LnkVirtualconsultation_Click()")]));
-        DivContent.appendChild(DivDoctor);
+        DivContent.appendChild(new Button("CmdIAmDoctor", "I am a doctor", "btn btn-warning btn-rounded w-100", [new Attribute(_AttributeOnClick, "LnkVirtualconsultation_Click()")]));
+
+
+        // let DivDoctor = new Div(undefined, " mt-2 text-center mr-4");
+        // DivDoctor.appendChild(new Hyperlink("LnkDoctor", _ClickVoid, "I am a doctor", "text-muted", [new Attribute(_AttributeOnClick, "LnkVirtualconsultation_Click()")]));
+        // DivContent.appendChild(DivDoctor);
 
         //let DivSignInDescription = new Div(undefined, "text-center mt-3");
         //DivSignInDescription.appendChild(new Label(undefined, "DoctorOnline Consulation by MEDICA", undefined), [new Attribute(_AttributeFor, "LnkDoctorOnline_Click")]);
@@ -213,11 +232,11 @@ function SiteNavigation() {
         let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch", "dropdown-item");
         DropDownProfileMenu.appendChild(HyperlinkBranchId);
 
-        let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
-        DropDownProfileMenu.appendChild(HyperlinkSettings);
+        // let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
+        // DropDownProfileMenu.appendChild(HyperlinkSettings);
 
-        let HyperlinkGeneral = new Hyperlink("LblHome", undefined, "Home", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]);
-        DropDownProfileMenu.appendChild(HyperlinkGeneral);
+        // let HyperlinkGeneral = new Hyperlink("LblHome", undefined, "Home", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]);
+        // DropDownProfileMenu.appendChild(HyperlinkGeneral);
 
         let DropDownProfileName = new Div(undefined, "dropdown");
         let ProfileName = new Heading6(undefined, [new Attribute(_AttributeClass, "card-title m-unset"), new Attribute(_AttributeId, "ProfileName")]);
@@ -345,7 +364,7 @@ function SiteButtonBar() {
         DivRowMainButtonBar.appendChild(RowCellSiteDoc);
 
         DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
-        /////////////////////////////////////////
+        ///////////////////////////////////////////
 
         BindView(Container, DivRowMainButtonBar);
     }
@@ -1084,6 +1103,9 @@ function Appoinments() {
         CardAppoinments.appendChild(CardBodyAppoinments);
 
         BindView(Container, CardAppoinments);
+
+
+
     }
 }
 
@@ -2286,6 +2308,12 @@ function AdminLayoutMain() {
         let DivMainContent = Div(undefined, "main-content");
         DivMainContent.appendChild(new Div(Containers.ButtonBar));
 
+        let DivSwitchMenu = new Div(undefined, "d-flex justify-content-center align-items-center mb-3");
+        DivSwitchMenu.appendChild( new Button(undefined, "", "SwitchMenuButton ", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]));
+        DivSwitchMenu.appendChild(new Button(undefined, "", "SwitchMenuButton SwitchMenuButton-Active", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]));
+
+        DivMainContent.appendChild(DivSwitchMenu);
+
         let DivRowMainContent = new Div(undefined, "row");
         DivRowMainContent.appendChild(new Div(undefined, "col-lg-2"));
         let DivSubRowMain = new Div(Containers.MainContent, "col-lg-8 col-12 pd-lr-5");
@@ -2442,6 +2470,8 @@ function AdminSiteButtonBar() {
         DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
 
         /////////////////////////////////////////
+
+
 
         BindView(Container, DivRowMainButtonBar);
     }

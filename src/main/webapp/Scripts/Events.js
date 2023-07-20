@@ -150,20 +150,24 @@ function TxtPatientNIC() {
 }
 
 function LoadSessionViceAppointments(Object, SessionId) {
-    _AppointmentSessionId = SessionId;
+    StoredSessionId = SessionId;
+    console.log(StoredSessionId);
+    new PatientSearch().Render(Containers.MainContent);
+    // let patientCard = document.getElementById("PatientCard");
+    // CmdPatientSearch_Click(patientCard);
 
-    var CurrentRow = $(Object).closest("tr");
-    let SelectDate = CurrentRow.find("td:eq(0)").text();
-    let StartTime = CurrentRow.find("td:eq(1)").text();
-    let EndTime = CurrentRow.find("td:eq(2)").text();
-    let RoomNumber = CurrentRow.find("td:eq(3)").text();
-    let Type = CurrentRow.find("td:eq(4)").text();
+    // var CurrentRow = $(Object).closest("tr");
+    // let SelectDate = CurrentRow.find("td:eq(0)").text();
+    // let StartTime = CurrentRow.find("td:eq(1)").text();
+    // let EndTime = CurrentRow.find("td:eq(2)").text();
+    // let RoomNumber = CurrentRow.find("td:eq(3)").text();
+    // let Type = CurrentRow.find("td:eq(4)").text();
+    //
+    // let SessionDetails = "Room No " + RoomNumber + " / " + SelectDate + "/" + StartTime + "-" + EndTime + "/" + Type;
+    //
+    // _SessionDetails = SessionDetails;
 
-    let SessionDetails = "Room No " + RoomNumber + " / " + SelectDate + "/" + StartTime + "-" + EndTime + "/" + Type;
-
-    _SessionDetails = SessionDetails;
-
-    ViewAppointmentedPatientList();
+    // ViewAppointmentedPatientList();
 }
 
 async function cancelAllAppointments() {
@@ -264,6 +268,8 @@ function ViewAppointmentedPatientList() {
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');
         SetDoctorData('DrpAppoinmentDoctor');
+        //load data if already selected
+
     }
 }
 
@@ -465,11 +471,18 @@ function GetDoctorSessionDataForAppoinment(CardType) {
         var GetTodayDate = GetCurrentDate.getFullYear() + '-' + (GetCurrentDate.getMonth() + 1).toString().padStart(2, "0") + '-' + GetCurrentDate.getDate().toString().padStart(2, "0");
         // console.log('GetDoctorSessionDataForAppoinment:', document.getElementById('DrpAppoinmentDoctor').value, GetTodayDate);
         _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(AppointmentDoctorId, GetTodayDate, null), GetDoctorSessionDataForAppoinment_Success);
-    } else {
+    }
+    else {
         const AppointmentSearchDate = $('#TxtAppointmentSearchDate').val();
         // console.log('GetDoctorSessionDataForAppoinment:', document.getElementById('DrpAppoinmentDoctor').value, AppointmentSearchDate);
         _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null), GetDoctorSessionDataForAppoinment_Success);
     }
+}
+
+function GetDoctorAllSessionDataByDoctor(doctorId) {
+    // console.log('GetDoctorSessionDataForAppoinment.CardType:', CardType);
+    // _Request.Post(ServiceMethods.SessionGetByDate, new Doctor(document.getElementById('DrpAppoinmentDoctor').value, null), GetDoctorSessionDataForAppoinment_Success);
+    _Request.Post(ServiceMethods.SessionsGet, new GetSessions(doctorId, '', null), GetDoctorSessionDataForAppoinment_Success);
 }
 
 function GetDoctorsSessionsForAppointmentUpdate() {

@@ -335,6 +335,11 @@ function GetSessionDoctorId_Success(Response) {
         for (Count = 0; Count < DataLength; Count++) {
             _Request.Get(ServiceMethods.DoctorGet + Response.Data[Count].DoctorId, undefined, GetDoctorData_Success);
         }
+        if (_DoctorId !== "" && _DoctorId !== undefined) {
+            console.log(_DoctorId);
+            document.getElementById('DrpAppoinmentDoctor').value = _DoctorId;
+            GetDoctorAllSessionDataByDoctor(_DoctorId);
+        }
     }
 }
 
@@ -472,6 +477,10 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
                 $('#DrpSessionDateDoctor').append('<option value="' + Response.Data[Count].Id + '">  Room No ' + Response.Data[Count].RoomNumber + " / " + SessionDate + " / " + StartTime + "-" + EndTime + " / " + Type + '</option>');
             }
         }
+    }
+    //if session is set load it
+    if(StoredSessionId !== undefined && StoredSessionId !== ""){
+        document.getElementById('DrpSessionDateDoctor').value = StoredSessionId;
     }
 }
 
