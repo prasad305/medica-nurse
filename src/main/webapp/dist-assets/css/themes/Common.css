@@ -261,6 +261,10 @@ input[type=number] {
     margin: 20px 0 13px 0 !important;
 }
 
+.ColorBlue{
+    color : #1759a7 !important;
+}
+
 .j-c {
     justify-content: center;
 }

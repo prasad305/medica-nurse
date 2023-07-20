@@ -101,7 +101,7 @@ function Login() {
         DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/LogoNurse.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default mr-5  medicanurse")]));
         DivRow.appendChild(new Imagebox(undefined, "dist-assets/images/docnote.png", undefined, undefined, [new Attribute(_AttributeClass, "c-default ml-2 docnote")]));
         DivContent.appendChild(DivRow);
-        DivContent.appendChild(new Heading4("Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ")]));
+        DivContent.appendChild(new Heading4("Sign In", [new Attribute(_AttributeClass, "mb-3 text-18 LoginTitle ColorBlue")]));
 
         let RowUsername = new Div(undefined, "form-group"); //p-4 child
         RowUsername.appendChild(new Label(undefined, "Username / Mobile No", undefined, [new Attribute(_AttributeFor, "TxtUsername")]));
@@ -117,7 +117,7 @@ function Login() {
 
         let DivRemember = new Div(undefined, "mt-3 text-center");
         DivRemember.appendChild(new Checkbox("ChkRemember", false));
-        DivRemember.appendChild(new Label(undefined, "&nbsp;Remember Me ", undefined, [new Attribute(_AttributeFor, "ChkRemember")]));
+        DivRemember.appendChild(new Label(undefined, "&nbsp;Remember Me ", undefined, [new Attribute(_AttributeFor, "ChkRemember"),new Attribute(_AttributeClass, "ColorBlue")]));
         DivContent.appendChild(DivRemember);
 
         let DivForgotPassword = new Div(undefined, "text-center");
@@ -133,7 +133,7 @@ function Login() {
         //DivContent.appendChild(DivSignInDescription);
 
         let DivSignInDescription = new Div(undefined, "text-center mt-3");
-        DivSignInDescription.appendChild(new Hyperlink("LnkRecover1", _ClickVoid, "MEDICA Reception", "text-muted", [new Attribute(_AttributeOnClick, "LnkDocNote_Click()")]));
+        DivSignInDescription.appendChild(new Hyperlink("LnkRecover1", _ClickVoid, "MEDICA Reception", "text-muted ColorBlue", [new Attribute(_AttributeOnClick, "LnkDocNote_Click()")]));
         DivContent.appendChild(DivSignInDescription);
 
         BindView(Container, DivContent);
