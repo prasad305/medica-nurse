@@ -963,6 +963,7 @@ function AddNewSession() {
         let FormAddSession = new Form(undefined);
 
         let DivFormGroupRowRoom = new Div(undefined, "form-group row");
+
         let DivFormGroupRowRoomNumber = new Div(undefined, "col-lg-2 col-2");
         DivFormGroupRowRoomNumber.appendChild(new Label(undefined, "Room No *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionRoomNumber")]));
         DivFormGroupRowRoomNumber.appendChild(new Textbox("TxtSessionRoomNumber", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
@@ -1002,6 +1003,24 @@ function AddNewSession() {
         DivFormGroupRowEnd.appendChild(new Textbox("TxtSessionEnd", "form-control form-control-rounded Time-Picker z-1", [new Attribute(_AttributeType, "text")]));
         DivFormGroupRowStart.appendChild(DivFormGroupRowEnd);
         FormAddSession.appendChild(DivFormGroupRowStart);
+
+
+        let DivAppointmentBlock = new Div(undefined, "form-group row");
+
+        let DivMaxAppointmentNumber = new Div(undefined, "col-lg-6 col-6");
+        DivMaxAppointmentNumber.appendChild(new Label(undefined, "Max. No of appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionMaxNumberOfAppointments")]));
+        DivMaxAppointmentNumber.appendChild(new Textbox("TxtSessionMaxNumberOfAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
+        DivAppointmentBlock.appendChild(DivMaxAppointmentNumber);
+
+        let DivBlockAppointmentTill = new Div(undefined, "col-lg-6 col-6");
+        DivBlockAppointmentTill.appendChild(new Label(undefined, "No of reserved appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionNumberOfReservedAppointments")]));
+        DivBlockAppointmentTill.appendChild(new Textbox("TxtSessionNumberOfReservedAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
+        DivAppointmentBlock.appendChild(DivBlockAppointmentTill);
+
+
+
+        FormAddSession.appendChild(DivAppointmentBlock);
+
 
         let FormGroupRowSaveSession = new Div(undefined, "modal-footer row mt-4");
         FormGroupRowSaveSession.appendChild(new Button("BtnSaveSession", "Save", "btn btn-rounded btn-info  mt-2", [new Attribute(_AttributeOnClick, "CmdSaveSession_Click()")]));
