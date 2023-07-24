@@ -319,6 +319,7 @@ function ShowMessage(Message, Type, Title) {
     }
 }
 
+
 function ShowImagePopup(Url) {
     swal(
         {

@@ -268,8 +268,6 @@ function ViewAppointmentedPatientList() {
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');
         SetDoctorData('DrpAppoinmentDoctor');
-        //load data if already selected
-
     }
 }
 
@@ -390,6 +388,7 @@ function CmdSession_Click(CardElement) {
 }
 
 function CmdAddSession_Click() {
+    _UpdateSession = false;
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
     else {
@@ -409,11 +408,18 @@ function CmdSaveSession_Click() {
     let EndTime = document.getElementById('TxtSessionEnd').value;
     let BranchId = document.getElementById('DrpSessionInstituteBranchId').value;
     let SessionType = document.getElementById('DrpSessionType').value;
+    let MaxNoOfAppointments = document.getElementById('TxtSessionMaxNumberOfAppointments').value;
+    let appointmentLimit = null;
+
+    if(MaxNoOfAppointments !== ""){
+        appointmentLimit = parseInt(MaxNoOfAppointments);
+    }
+
 
     if (RoomNumber === "" || SessionDate === "" || StartTime === "" || EndTime === "" || BranchId === 0 || SessionType === 0)
         return ShowMessage(Messages.SearchFieldValidate, MessageTypes.Warning, "Warning!");
 
-    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, null, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId), SaveSession_Success);
+    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId), SaveSession_Success);
 }
 
 function CmdSessionSearch_Click() {
@@ -465,6 +471,7 @@ function CmdAppoinments_Click(CardElement) {
 function GetDoctorSessionDataForAppoinment(CardType) {
     // console.log('GetDoctorSessionDataForAppoinment.CardType:', CardType);
     // _Request.Post(ServiceMethods.SessionGetByDate, new Doctor(document.getElementById('DrpAppoinmentDoctor').value, null), GetDoctorSessionDataForAppoinment_Success);
+
     const AppointmentDoctorId = document.getElementById('DrpAppoinmentDoctor').value;
     if (CardType === 'Appoinments') {
         var GetCurrentDate = new Date();
@@ -480,8 +487,7 @@ function GetDoctorSessionDataForAppoinment(CardType) {
 }
 
 function GetDoctorAllSessionDataByDoctor(doctorId) {
-    // console.log('GetDoctorSessionDataForAppoinment.CardType:', CardType);
-    // _Request.Post(ServiceMethods.SessionGetByDate, new Doctor(document.getElementById('DrpAppoinmentDoctor').value, null), GetDoctorSessionDataForAppoinment_Success);
+
     _Request.Post(ServiceMethods.SessionsGet, new GetSessions(doctorId, '', null), GetDoctorSessionDataForAppoinment_Success);
 }
 

@@ -949,7 +949,7 @@ function AddNewSession() {
         let CardAddSession = new Div(undefined, "card text-left");
         let CardBodyAddSession = new Div(undefined, "card-body");
 
-        let HeadingAddSession = new Heading4("Add New Session", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
+        let HeadingAddSession = new Heading4(_UpdateSession ?"Update Session" :"Add New Session", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
         CardBodyAddSession.appendChild(HeadingAddSession);
 
         let RowSubAddSession = new Div(undefined, "row");
@@ -1004,7 +1004,6 @@ function AddNewSession() {
         DivFormGroupRowStart.appendChild(DivFormGroupRowEnd);
         FormAddSession.appendChild(DivFormGroupRowStart);
 
-
         let DivAppointmentBlock = new Div(undefined, "form-group row");
 
         let DivMaxAppointmentNumber = new Div(undefined, "col-lg-6 col-6");
@@ -1012,15 +1011,15 @@ function AddNewSession() {
         DivMaxAppointmentNumber.appendChild(new Textbox("TxtSessionMaxNumberOfAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
         DivAppointmentBlock.appendChild(DivMaxAppointmentNumber);
 
-        let DivBlockAppointmentTill = new Div(undefined, "col-lg-6 col-6");
-        DivBlockAppointmentTill.appendChild(new Label(undefined, "No of reserved appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionNumberOfReservedAppointments")]));
-        DivBlockAppointmentTill.appendChild(new Textbox("TxtSessionNumberOfReservedAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
-        DivAppointmentBlock.appendChild(DivBlockAppointmentTill);
-
-
+        if (!_UpdateSession){
+            //update is impossible with current APIs
+            let DivBlockAppointmentTill = new Div(undefined, "col-lg-6 col-6");
+            DivBlockAppointmentTill.appendChild(new Label(undefined, "No of reserved appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionNumberOfReservedAppointments")]));
+            DivBlockAppointmentTill.appendChild(new Textbox("TxtSessionNumberOfReservedAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
+            DivAppointmentBlock.appendChild(DivBlockAppointmentTill);
+        }
 
         FormAddSession.appendChild(DivAppointmentBlock);
-
 
         let FormGroupRowSaveSession = new Div(undefined, "modal-footer row mt-4");
         FormGroupRowSaveSession.appendChild(new Button("BtnSaveSession", "Save", "btn btn-rounded btn-info  mt-2", [new Attribute(_AttributeOnClick, "CmdSaveSession_Click()")]));

@@ -229,7 +229,11 @@ function PatientMedicalBillModalDisplay(PatientId) {
  =================================*/
 
 async function SaveSession_Success(Response) {
-    if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+    if (Response.Status !== 1000) {
+        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    }
+    else {
+        let sessionId = Response.Data.Id
         let appointments = [];
         console.log(Response)
         if (_UpdateSession) {
@@ -237,7 +241,7 @@ async function SaveSession_Success(Response) {
                 //send notification to all patients
                 //get all appointments in the session
                 const response = await PostAsync({
-                    serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(Response.Data.Id)
+                    serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(sessionId)
                 });
                 console.log(response)
                 let doctorName = '';
@@ -258,6 +262,8 @@ async function SaveSession_Success(Response) {
                 console.log(e)
             }
         } else {
+            //feat/block appointments - 7/22/2023
+            await SetReservedAppointmentCount(sessionId);
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
 
@@ -321,6 +327,30 @@ async function shareSessionUpdateWithPatients(appointments = [], {
         setCompletedCount()
     }
     setCompletedStatus();
+}
+
+async function SetReservedAppointmentCount(sessionId) {
+    let numberOfReservedAppointments = document.getElementById('TxtSessionNumberOfReservedAppointments').value;
+    if(numberOfReservedAppointments !== "" && numberOfReservedAppointments !== "0"){
+        try{
+            numberOfReservedAppointments = parseInt(numberOfReservedAppointments);
+            let blockedAppointments = await PostAsync({
+                serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
+                    "SessionId": sessionId,
+                    "PatientId": 635918339075,
+                    "Id": 0,
+                    "Description": null,
+                    "Status":10,
+                    "Number": numberOfReservedAppointments,
+                    "UserId": _UserId,
+                }
+            })
+
+        }catch (e) {
+
+        }
+    }
+
 }
 
 function GetSessionDoctorId() {
@@ -403,11 +433,11 @@ function FilterDoctorSessionData(Data) {
 }
 
 function LoadSessionData(Id) {
+    _UpdateSession = true;
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
     DatePicker();
     TimePicker();
-    _UpdateSession = true;
 
     _Request.Get(ServiceMethods.SessionGet + Id, undefined, LoadSessionData_Success);
 }
@@ -420,6 +450,7 @@ function LoadSessionData_Success(Response) {
         document.getElementById('TxtSessionStart').value = Response.Data.TimeStart.split("T")[1];
         document.getElementById('TxtSessionEnd').value = Response.Data.TimeEnd.split("T")[1];
         document.getElementById('DrpSessionInstituteBranchId').value = Response.Data.InstituteBranchId;
+        document.getElementById('TxtSessionMaxNumberOfAppointments').value = Response.Data.AppointmentLimit;
     }
 }
 
