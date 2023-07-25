@@ -698,14 +698,16 @@ function FilterAppointedPatientData(Data) {
         // }
 
         let PaymentTypeIcon = '';
+        let PaidButton = '<span class="btn" style="background-color:Green; color:white; cursor: default; padding:2px; text-left">Paid</span>';
+
         if (PaymentStatus === 1) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span>';
+            PaymentTypeIcon = `<img src="dist-assets/images/Nurse/card.png" alt="Payment Status Image" style="max-height: 25px;"> ${PaidButton}`;
 
         } else if (PaymentStatus === 10) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span>';
+            PaymentTypeIcon = `<img src="dist-assets/images/Nurse/cash.png" alt="Payment Status Image" style="max-height: 25px;"> ${PaidButton}`;
 
         } else if (PaymentStatus === 6) {
-            PaymentTypeIcon = '<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> <span class="btn" style="background-color:Green; color:white; padding:2px; text-left">Paid</span> ';
+            PaymentTypeIcon = `<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ${PaidButton}`;
         }
 
         let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + 'Unpaid' + '</button>'

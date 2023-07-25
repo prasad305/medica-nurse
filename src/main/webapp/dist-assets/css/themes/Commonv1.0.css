@@ -265,6 +265,11 @@ input[type=number] {
     color : #1759a7 !important;
 }
 
+td,th {
+    font-size: 12px;
+}
+
+
 .SwitchMenuButton{
     background-color: #fff;
     color: #fff;
