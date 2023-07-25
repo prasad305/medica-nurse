@@ -414,6 +414,8 @@ function FilterDoctorSessionData(Data) {
         const EndTime = new Date(TimeFormat.DateFormat + TimeEnd + 'Z').toLocaleTimeString(Language.SelectLanguage, {
             timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
         });
+        let MaxAppointments = Data[Count].AppointmentLimit ?? "-";
+        let AppointmentReserved = Data[Count].AppointmentReserved ?? "-";
 
         if (Data[Count].Type === 1) Type = "Virtual"; else if (Data[Count].Type === 2) Type = "Physical"; else Type = "Both";
 
@@ -423,6 +425,8 @@ function FilterDoctorSessionData(Data) {
             "Date": SelectDate,
             "StartTime": StartTime,
             "EndTime": EndTime,
+            "Max.App": MaxAppointments,
+            "Reserved": AppointmentReserved,
             "Room": RoomNumber,
             Type: Type,
             "Action": '<button class="btn btn-info btn-icon" type="button" onclick= "LoadSessionData(' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Pen-2"></i></span></button> ' + '<button class="btn btn-warning btn-icon" type="button" onclick= "LoadSessionViceAppointments(this,' + Data[Count].Id + ')"><span class="ul-btn__icon"><i class="i-Calendar-4"></i></span></button>'
@@ -430,6 +434,8 @@ function FilterDoctorSessionData(Data) {
     }
     new DoctorSessionTable().Render('DivSessionTable', ArrayDoctorSessionData);
     CreateDataTable('TableSession');
+
+
 }
 
 function LoadSessionData(Id) {
@@ -451,6 +457,7 @@ function LoadSessionData_Success(Response) {
         document.getElementById('TxtSessionEnd').value = Response.Data.TimeEnd.split("T")[1];
         document.getElementById('DrpSessionInstituteBranchId').value = Response.Data.InstituteBranchId;
         document.getElementById('TxtSessionMaxNumberOfAppointments').value = Response.Data.AppointmentLimit;
+        document.getElementById('TxtSessionNumberOfReservedAppointments').value = Response.Data.AppointmentReserved;
     }
 }
 
@@ -1585,7 +1592,7 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
                 "Contact No": isEmpty(Branch.Postcode.split('|')[1]),
                 "Address": Branch.AddressLine1,
                 "Email": Branch.Email,
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' + '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' + '</button>'
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="BranchAddOrUpdateModalView(' + Branch.Id + ')">' + '<span class="ul-btn__icon"><i class="i-Newspaper-2"></i></span>' + '</button>'
             });
         }
     }

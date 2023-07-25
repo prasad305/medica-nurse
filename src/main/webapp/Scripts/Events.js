@@ -409,17 +409,17 @@ function CmdSaveSession_Click() {
     let BranchId = document.getElementById('DrpSessionInstituteBranchId').value;
     let SessionType = document.getElementById('DrpSessionType').value;
     let MaxNoOfAppointments = document.getElementById('TxtSessionMaxNumberOfAppointments').value;
+    let AppointmentReserved = document.getElementById('TxtSessionNumberOfReservedAppointments').value;
     let appointmentLimit = null;
 
     if(MaxNoOfAppointments !== ""){
         appointmentLimit = parseInt(MaxNoOfAppointments);
     }
 
-
     if (RoomNumber === "" || SessionDate === "" || StartTime === "" || EndTime === "" || BranchId === 0 || SessionType === 0)
         return ShowMessage(Messages.SearchFieldValidate, MessageTypes.Warning, "Warning!");
 
-    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId), SaveSession_Success);
+    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId,AppointmentReserved), SaveSession_Success);
 }
 
 function CmdSessionSearch_Click() {
@@ -444,6 +444,10 @@ function CmdCancelSession_Click() {
     // _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
     new Session().Render(Containers.MainContent);
     SetDoctorData('DrpSessionDoctor');
+    if(_DoctorId !== "" && _DoctorId !== undefined){
+        document.getElementById('DrpSessionDoctor').value = _DoctorId;
+        CmdSessionSearch_Click();
+    }
 }
 
 

@@ -931,7 +931,7 @@ function Session() {
 
 function DoctorSessionTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["Date", "StartTime", "EndTime", "Room", "Type", "Action"];
+        let Headers = ["Date", "StartTime", "EndTime", "Max.App","Reserved","Room", "Type", "Action"];
 
         let DivMain = new Div(undefined, "card-body");
 
@@ -941,6 +941,13 @@ function DoctorSessionTable() {
         DivMain.appendChild(DivTablePrescriptions);
 
         BindView(Container, DivMain);
+
+       Object.values(document.getElementById('TableSession').rows).forEach(function (row, index) {
+           row.cells[3].classList.add('text-center');
+           row.cells[4].classList.add('text-center');
+           row.cells[5].classList.add('text-center');
+        });
+
     }
 }
 
@@ -1008,16 +1015,25 @@ function AddNewSession() {
 
         let DivMaxAppointmentNumber = new Div(undefined, "col-lg-6 col-6");
         DivMaxAppointmentNumber.appendChild(new Label(undefined, "Max. No of appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionMaxNumberOfAppointments")]));
-        DivMaxAppointmentNumber.appendChild(new Textbox("TxtSessionMaxNumberOfAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
+        if (_UpdateSession) {
+            DivMaxAppointmentNumber.appendChild(new Textbox("TxtSessionMaxNumberOfAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3"), new Attribute('disabled', 'true')]));
+        }else{
+            DivMaxAppointmentNumber.appendChild(new Textbox("TxtSessionMaxNumberOfAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
+        }
         DivAppointmentBlock.appendChild(DivMaxAppointmentNumber);
 
-        if (!_UpdateSession){
-            //update is impossible with current APIs
-            let DivBlockAppointmentTill = new Div(undefined, "col-lg-6 col-6");
-            DivBlockAppointmentTill.appendChild(new Label(undefined, "No of reserved appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionNumberOfReservedAppointments")]));
+
+        //update is impossible with current APIs
+        let DivBlockAppointmentTill = new Div(undefined, "col-lg-6 col-6");
+        DivBlockAppointmentTill.appendChild(new Label(undefined, "No of reserved appointments", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtSessionNumberOfReservedAppointments")]));
+        if (_UpdateSession){
+            DivBlockAppointmentTill.appendChild(new Textbox("TxtSessionNumberOfReservedAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3"), new Attribute('disabled', 'true')]));
+        }else{
             DivBlockAppointmentTill.appendChild(new Textbox("TxtSessionNumberOfReservedAppointments", "form-control form-control-rounded", [new Attribute(_AttributeOnInput, "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"), new Attribute(_AttributeMaxLength, "3")]));
-            DivAppointmentBlock.appendChild(DivBlockAppointmentTill);
+
         }
+
+            DivAppointmentBlock.appendChild(DivBlockAppointmentTill);
 
         FormAddSession.appendChild(DivAppointmentBlock);
 
@@ -2536,7 +2552,7 @@ function BranchesSearchResultsTable() {
         const ColumnAddNewBranch = new Div(undefined, "col-md-6");
         const ButtonAddNewBranch = new Button(undefined, "Add A New Branch", "btn btn-primary btn-rounded float-right",
             [new Attribute(_AttributeOnClick, "BranchAddOrUpdateModalView('0')")]);
-        ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
+        // ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
         ParentRow.appendChild(ColumnAddNewBranch);
 
         const ColumnTable = new Div(undefined, "col-md-12 mt-2");
@@ -2591,13 +2607,14 @@ function BranchAddOrUpdateModal() {
 
         const ColumnBranch = new Div(undefined, "col-sm-6 mt-2");
         const LabelBranch = new Label(undefined, "Branch *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateBranchName")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateBranchName"), new Attribute("disabled", true),]
         );
         const TextBranch = new Textbox("TxtBranchUpdateBranchName", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePattern, "[0-9]{20}"),
                 new Attribute(_AttributePlaceHolder, "Branch Name"),
-                new Attribute("value", '')
+                new Attribute("value", ''),
+                new Attribute("disabled", true),
             ]
         );
         ColumnBranch.appendChild(LabelBranch);
@@ -2606,13 +2623,14 @@ function BranchAddOrUpdateModal() {
 
         const ColumnEmail = new Div(undefined, "col-sm-6 mt-2");
         const LabelEmail = new Label(undefined, "Email *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateEmail")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateEmail"), new Attribute("disabled", true),]
         );
         const TextEmail = new Textbox("TxtBranchUpdateEmail", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'Email'),
                 new Attribute(_AttributeType, 'email'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true),
             ]
         );
         ColumnEmail.appendChild(LabelEmail);
@@ -2621,13 +2639,14 @@ function BranchAddOrUpdateModal() {
 
         const ColumnWebsite = new Div(undefined, "col-sm-6 mt-2");
         const LabelWebsite = new Label(undefined, "Website",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateWebsite")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateWebsite"), new Attribute("disabled", true),]
         );
         const TextWebsite = new Textbox("TxtBranchUpdateWebsite", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'Website'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true),
             ]
         );
         ColumnWebsite.appendChild(LabelWebsite);
@@ -2636,13 +2655,15 @@ function BranchAddOrUpdateModal() {
 
         const ColumnAddressLine1 = new Div(undefined, "col-sm-6 mt-2");
         const LabelAddressLine1 = new Label(undefined, "Address Line 1 *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine1")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine1"),
+                new Attribute("disabled", true),]
         );
         const TextAddressLine1 = new Textbox("TxtBranchUpdateAddressLine1", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'Address Line 1'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true),
             ]
         );
         ColumnAddressLine1.appendChild(LabelAddressLine1);
@@ -2651,13 +2672,15 @@ function BranchAddOrUpdateModal() {
 
         const ColumnAddressLine2 = new Div(undefined, "col-sm-6 mt-2");
         const LabelAddressLine2 = new Label(undefined, "Address Line 2",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine2")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateAddressLine2"),
+                new Attribute("disabled", true)]
         );
         const TextAddressLine2 = new Textbox("TxtBranchUpdateAddressLine2", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'Address Line 2'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true)
             ]
         );
         ColumnAddressLine2.appendChild(LabelAddressLine2);
@@ -2666,14 +2689,16 @@ function BranchAddOrUpdateModal() {
 
         const ColumnPostCode = new Div(undefined, "col-sm-6 mt-2");
         const LabelPostCode = new Label(undefined, "Post Code",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdatePostCode")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdatePostCode"),
+                new Attribute("disabled", true)]
         );
         const TextPostCode = new Textbox("TxtBranchUpdatePostCode", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePattern, "[0-9]{10}"),
                 new Attribute(_AttributePlaceHolder, 'Post Code'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true)
             ]
         );
         ColumnPostCode.appendChild(LabelPostCode);
@@ -2682,13 +2707,14 @@ function BranchAddOrUpdateModal() {
 
         const ColumnSuburb = new Div(undefined, "col-sm-6 mt-2");
         const LabelSuburb = new Label(undefined, "Suburb",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateSuburb")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateSuburb"), new Attribute("disabled", true)]
         );
         const TextSuburb = new Textbox("TxtBranchUpdateSuburb", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'Suburb'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true)
             ]
         );
         ColumnSuburb.appendChild(LabelSuburb);
@@ -2697,13 +2723,15 @@ function BranchAddOrUpdateModal() {
 
         const ColumnCity = new Div(undefined, "col-sm-6 mt-2");
         const LabelCity = new Label(undefined, "City *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateCity")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateCity"),
+                new Attribute("disabled", true)]
         );
         const TextCity = new Textbox("TxtBranchUpdateCity", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePlaceHolder, 'City'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true)
             ]
         );
         ColumnCity.appendChild(LabelCity);
@@ -2712,14 +2740,16 @@ function BranchAddOrUpdateModal() {
 
         const ColumnContactNo = new Div(undefined, "col-sm-6 mt-2");
         const LabelContactNo = new Label(undefined, "Contact No *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateContactNo")]
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateContactNo"),
+                new Attribute("disabled", true)]
         );
         const TextContactNo = new Textbox("TxtBranchUpdateContactNo", "form-control form-control-rounded",
             [
                 new Attribute(_AttributePattern, "[0-9]{10}"),
                 new Attribute(_AttributePlaceHolder, 'Contact No'),
                 new Attribute(_AttributeType, 'text'),
-                new Attribute('value', '')
+                new Attribute('value', ''),
+                new Attribute("disabled", true)
             ]
         );
         ColumnContactNo.appendChild(LabelContactNo);
@@ -2730,16 +2760,18 @@ function BranchAddOrUpdateModal() {
         ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
-        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        if (ProcessType === 'AddNew') {
-            ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
-                [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate("0")')]
-            ));
-        } else {
-            ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
-                [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate(' + BranchId + ')')]
-            ));
-        }
+        ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')
+           ]));
+
+        // if (ProcessType === 'AddNew') {
+        //     ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
+        //         [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate("0")')]
+        //     ));
+        // } else {
+        //     ModalContentFooter.appendChild(new Button('BtnBranchUpdate', 'Update', 'btn btn-primary',
+        //         [new Attribute(_AttributeOnClick, 'BranchAddOrUpdate(' + BranchId + ')')]
+        //     ));
+        // }
 
         ModalDialogContent.appendChild(ModalContentFooter);
 
@@ -2900,7 +2932,7 @@ function DoctorsAddOrUpdateModal() {
         LableAndTextFeild("col-sm-6", "DoctorPhone_No", "Phone No.", "Phone No.", "", "", ParentRow);
         LableAndTextFeild("col-sm-6", "DoctorEmail", "Email *", "Email", "", "", ParentRow);
         LableAndTextFeild("col-sm-6", "DoctorNIC", "N.I.C *", "N.I.C", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "DoctorRegistration_Number", "Registration Number", "Registration Number", "", "", ParentRow);
+        LableAndTextFeild("col-sm-6", "DoctorRegistration_Number", "Registration Number", "Registration Number", "", "", ParentRow, '',ProcessType === 'AddNew' ? false : true);
         LableAndTextFeild("col-sm-6", "DoctorDate_Of_Birth", "Date Of Birth *", "Date Of Birth", "", "", ParentRow, "date");
 
         DropDown("col-sm-6  mt-2", "DrpSpecialization", "Specialization *", "", undefined, ParentRow);
@@ -3143,7 +3175,7 @@ function Misc() {
     }
 }
 
-function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, ParentRow, type) {
+function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, ParentRow, type, isDisabled= false) {
     const ColumnBranch = new Div(undefined, classCol + " mt-2");
     const LabelBranch = new Label("Lbl" + id + lbl.replaceAll(" ", "_").replaceAll(".", ""), lbl,
         [new Attribute(_AttributeClass, "col-form-label"),
@@ -3154,6 +3186,9 @@ function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, Paren
     att.push(new Attribute(_AttributePattern, pattern));
     att.push(new Attribute(_AttributePlaceHolder, placeHolder));
     att.push(new Attribute("value", value));
+    if(isDisabled){
+        att.push(new Attribute("disabled", 'true'));
+    }
 
     console.log(type);
     if (type == "date") {
