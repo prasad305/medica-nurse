@@ -962,13 +962,13 @@ function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Doctor charges',
         feeType: FeeTypes.DoctorFee,
-        feeAmount: '500.00',
+        feeAmount: '500',
         disabled: true
     }));
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Service charges',
         feeType: FeeTypes.HospitalFee,
-        feeAmount: '250.00',
+        feeAmount: '250',
         disabled: true
     }));
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
@@ -1023,13 +1023,13 @@ function medicalBillTableAllRowsRemove() {
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Doctor charges',
         feeType: FeeTypes.ConsultationFee,
-        feeAmount: '500.00',
+        feeAmount: '500',
         disabled: true
     }));
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Service charges',
         feeType: FeeTypes.ServiceFee,
-        feeAmount: '250.00',
+        feeAmount: '250',
         disabled: true
     }));
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);

@@ -1510,6 +1510,9 @@ function Report_Search() {
     let doctor = $('#DrpDoctor').val();
     let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
     let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
+    if($('#DrpReportAppointmentStatus').val() === ""){
+        $('#DrpReportAppointmentStatus').val("All Appointments");
+    }
 
 
 
@@ -1523,7 +1526,7 @@ function Report_Search() {
         Response = Response.Data;
         //filter data
         let filtering = $('#DrpReportAppointmentStatus').val();
-        if(filtering !== "" && filtering !== "All Appointments"){
+        if(filtering !== "All Appointments"){
             console.log(filtering)
             Response = Response.filter(appointment=>appointment.ChannelingStatus === filtering);
         }
