@@ -65,7 +65,7 @@ var _AppointmentPatientId;
 var _AppointmentDoctorName;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
-var _UpdateSession=false;
+var _UpdateSession = false;
 
 var _ArrayDrugData = [];
 var _DoctorSessionData = [];
@@ -138,8 +138,8 @@ const ServiceMethods =
         AddressPost: "Address/POST",
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
-        BillSave:"Bill/Post",
-        BillGet:"Bill/Get",
+        BillSave: "Bill/Post",
+        BillGet: "Bill/Get",
         SENDSMS: "/Schedule/Save",
     };
 
@@ -206,6 +206,20 @@ const Containers =
         Footer: "Divfooter"
     };
 
+const FeeTypes = createEnum({
+    HospitalFee:"Hospital Fee",
+    ConsultationFee:"Consultation Fee",
+    ServiceFee:"Service Fee",
+    DoctorFee:"Doctor Fee",
+    BookingFee:"Booking Fee",
+    OtherFee:"Other Fee"
+});
+
+function createEnum(obj) {
+    return Object.freeze(obj);
+}
+
+
 /*========================
      Request Handler
 =========================*/
@@ -215,8 +229,6 @@ var GlobalFail = function (Response) {
     else
         alert("Global Fail : " + JSON.stringify(Response));
 };
-
-
 
 
 var ShowLoader = function () {
@@ -260,9 +272,9 @@ function InitRequestHandler() {
 		Methods
 ===========================*/
 
-function makeCustomHeader(userId){
+function makeCustomHeader(userId) {
     let Headers = [];
-        Headers.push(new HttpHeader("UserId", userId));
+    Headers.push(new HttpHeader("UserId", userId));
     _Request = GetRequest(_ServiceURL, Headers);
 }
 
@@ -374,6 +386,37 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
     '</td> ' +
     '<td class="ButtonHolderColumn d-flex justify-content-end"> ' +
-    _MedicalBillTableButtonAddRow +
+    _MedicalBillTableButtonAddRow + _MedicalBillTableButtonDelete +
     '</td> ' +
     '</tr> ';
+
+const _MedicaBillTableRowBuilder = ({
+                                        itemName,
+                                        feeType = FeeTypes.OtherFee,
+                                        feeAmount,
+                                        disabled = false,
+                                        actionButtons = []
+                                    }) => {
+    return `<tr class="TblRow">
+                <td>1</td>
+                <td> 
+                    <input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text" value="${itemName ? itemName : null}" ${disabled?'disabled':''}> 
+                </td> 
+                <td> 
+                    <select class="form-control" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
+                        <option value="" >Select A Fee Type</option> 
+                        ${
+                            Object.keys(FeeTypes).map(key => {
+                                return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
+                            }).join('')
+                        }
+                    </select>
+                </td> 
+                <td> 
+                    <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()" value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
+                </td> 
+                <td class="ButtonHolderColumn d-flex justify-content-end gap-1"> 
+                    ${actionButtons.map(button => button).join('')}
+                </td> 
+            </tr> `
+}

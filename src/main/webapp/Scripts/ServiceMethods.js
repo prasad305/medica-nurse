@@ -928,6 +928,7 @@ function UploadFile(PatientId) {
 
 function MedicalBillDisplay(AppointmentId, appId) {
     // console.log(appId)
+
     selectedAppId = appId;
     selectedAppointmentId = AppointmentId;
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === AppointmentId)[0];
@@ -937,21 +938,37 @@ function MedicalBillDisplay(AppointmentId, appId) {
     _Request.Post(ServiceMethods.BillGet, allData, function (res) {
         // console.log(res);
 
-        if (res.Data?.Id) {
+        if (res.Data) {
             billId = res.Data.Id;
             //pass data to ui
             medicalBillTableSavedResponseAppend(res);
         } else {
             billId = 0;
+            medicalBillTableTotalSumGet();
         }
     });
 
     new MedicalBill(PatientMatched, appId).Render(Containers.Footer);
+
 }
 
 function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
+    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
+        itemName: 'Doctor charges',
+        feeType: FeeTypes.ConsultationFee,
+        feeAmount: '500.00',
+        disabled: true
+    }));
+    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
+        itemName: 'Service charges',
+        feeType: FeeTypes.ServiceFee,
+        feeAmount: '250.00',
+        disabled: true
+    }));
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    medicalBillTableRowCountReset();
+    medicalBillTableButtonsReset();
 }
 
 function medicalBillTableRowAdd() {
@@ -997,6 +1014,18 @@ function medicalBillInputsAreAllValid() {
 
 function medicalBillTableAllRowsRemove() {
     $("#TblPatientInvoiceBody").html('');
+    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
+        itemName: 'Doctor charges',
+        feeType: FeeTypes.ConsultationFee,
+        feeAmount: '500.00',
+        disabled: true
+    }));
+    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
+        itemName: 'Service charges',
+        feeType: FeeTypes.ServiceFee,
+        feeAmount: '250.00',
+        disabled: true
+    }));
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
@@ -1029,6 +1058,7 @@ function medicalBillTableTotalSumGet() {
     } else {
         Total = Sum - Discount;
     }
+    console.log("total",Total);
     $('#TxtTotal').text(Total);
     $('#TxtDiscount').attr('max', (Sum));
 }
@@ -1049,13 +1079,18 @@ function medicalBillTableButtonsReset() {
         $(Columns[0]).html(_MedicalBillTableButtonAddRow);
     } else {
         let Column = '';
-        for (let i = 0; i < Columns.length; i++) {
+        for (let i = 2; i < Columns.length; i++) {
             Column = Columns[i];
             if (i === Columns.length - 1) {
                 $(Column).html(_MedicalBillTableButtonAddRow + _MedicalBillTableButtonDelete);
             } else {
                 $(Column).html(_MedicalBillTableButtonDelete);
             }
+        }
+        if(Columns.length === 2){
+            $(Columns[1]).html(_MedicalBillTableButtonAddRow);
+        }else{
+            $(Columns[1]).html('');
         }
     }
 }
@@ -1142,26 +1177,39 @@ function medicalBillPrint() {
 
 function medicalBillTableSavedResponseAppend(Response) {
     // console.log('medicalBillTableSaveResponseAppend.Response:', Response);
-    $("#TblPatientInvoiceBody").html('');
-    for (let i = 0; i < Response.Data.BillData.length; i++) {
-        $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
+    if(Response.Data) {
+        $("#TblPatientInvoiceBody").html('');
+        for (let i = 0; i < Response.Data.BillData.length; i++) {
+            let billItem = Response.Data.BillData[i];
+            let isDisabled = billItem.FeeType === FeeTypes.ConsultationFee || billItem.FeeType === FeeTypes.ServiceFee;
+            let isLastRow = i === Response.Data.BillData.length - 1;
+            $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
+                itemName: billItem.ItemName,
+                feeType: billItem.FeeType,
+                feeAmount: billItem.Amount,
+                disabled: isDisabled,
+                actionButtons: [
+                    isLastRow ? _MedicalBillTableButtonAddRow : '',
+                    isDisabled ? '' : _MedicalBillTableButtonDelete]
+            }));
+        }
+        medicalBillTableRowCountReset();
+        medicalBillTableTotalSumGet();
+        medicalBillTableButtonsReset();
+        $("#TxtDiscount").val(Response.Data.Discount);
+        $("#TxtTotal").text(Response.Data.Total);
     }
-    medicalBillTableRowCountReset();
-    medicalBillTableTotalSumGet();
-    medicalBillTableButtonsReset();
-    $("#TxtDiscount").val(Response.Data.Discount);
-    $("#TxtTotal").text(Response.Data.Total);
 
-    const TableRows = $('#TblPatientInvoiceBody .TblRow');
-    let TableRow = '';
-    let ItemToAppend = '';
-    for (let j = 0; j < Response.Data.BillData.length; j++) {
-        TableRow = TableRows[j];
-        ItemToAppend = Response.Data.BillData[j];
-        $(TableRow).find('#TxtItem').val(ItemToAppend.ItemName);
-        $(TableRow).find('#TxtFeeType option[value="' + ItemToAppend.FeeType + '"]').attr('selected', true);
-        $(TableRow).find('#TxtFeeAmount').val(ItemToAppend.Amount);
-    }
+    // const TableRows = $('#TblPatientInvoiceBody .TblRow');
+    // let TableRow = '';
+    // let ItemToAppend = '';
+    // for (let j = 0; j < Response.Data.BillData.length; j++) {
+    //     TableRow = TableRows[j];
+    //     ItemToAppend = Response.Data.BillData[j];
+    //     $(TableRow).find('#TxtItem').val(ItemToAppend.ItemName);
+    //     $(TableRow).find('#TxtFeeType option[value="' + ItemToAppend.FeeType + '"]').attr('selected', true);
+    //     $(TableRow).find('#TxtFeeAmount').val(ItemToAppend.Amount);
+    // }
 }
 
 function AddVitals(PatientId) {

@@ -229,7 +229,7 @@ function SiteNavigation() {
         DropDownProfileMenu.appendChild(HyperlinkProfile);
         DropDownProfileMenu.appendChild(HyperlinkAbout);
         DropDownProfileMenu.appendChild(HyperlinkSignOut);
-        let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch", "dropdown-item");
+        let HyperlinkBranchId = new Hyperlink("LblInstituteBranch", undefined, "Branch", "dropdown-item d-none" );
         DropDownProfileMenu.appendChild(HyperlinkBranchId);
 
         // let HyperlinkSettings = new Hyperlink("LblSettings", undefined, "Settings", "dropdown-item", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]);
@@ -2942,6 +2942,8 @@ function DoctorsAddOrUpdateModal() {
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
 
+
+        n
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
         if (ProcessType === 'AddNew') {
