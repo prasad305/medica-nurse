@@ -982,9 +982,6 @@ function MessageAlert() {
 
 function CmdProfile_Click() {
     new Profile().Render(Containers.MainContent);
-    let FullName = _NurseFirstName + " " + _NurseLastName;
-    document.getElementById('UserFullName').innerHTML = FullName;
-    document.getElementById('UserNIC').innerHTML = _NurseNIC;
 }
 
 function CmdAboutUs_Click() {
@@ -1148,6 +1145,7 @@ function DoctorBranch_Search() {
         return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
     }
     LoadAllDoctorsForBranch(id);
+
 }
 
 function GetDoctorByBranch() {
@@ -1183,7 +1181,7 @@ function GetDoctorByBranch() {
 
 function LoadAllDoctorsForBranch(Branch) {
     let Payload = new GetDoctorsByInstituteBranchId(Branch);
-    _Request.Post(ServiceMethods.GetInstituteBranchDoctor, Payload, SuccessLoadDoctors);
+    _Request.Post(ServiceMethods.GetInstituteBranchDoctor, {InstituteBranchId:Branch}, SuccessLoadDoctors);
 }
 
 let ttlDoctors = 0;
@@ -1227,10 +1225,9 @@ function doctorDrpData(Res) {
             Res[Count].Title + ' ' + Res[Count].FirstName + ' ' + Res[Count].LastName + '</option>');
     }
 }
-
 function doctorTblData(Response) {
     //reset flag
-    const ArrayDoctorSearchResultsData = [];
+    ArrayDoctorSearchResultsData.length = 0;
     if (Response.length > 0) {
         let Doctor = {};
         for (let Count = 0; Count < Response.length; Count++) {
@@ -1514,6 +1511,8 @@ function Report_Search() {
     let FromDate = $('#TxtReportFrom_Date').val() + " 00:00:00";
     let ToDate = $('#TxtReportTo_Date').val() + " 23:59:59";
 
+
+
     // let FromDate = moment(document.getElementById('TxtReportFrom_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 00:00:00";
     // let ToDate = moment(document.getElementById('TxtReportTo_Date').value, "MM/DD/YYYY").format("YYYY-MM-DD")+" 23:59:59";
 
@@ -1522,6 +1521,12 @@ function Report_Search() {
         makeCustomHeader(_UserId);
         const ResultsData = [];
         Response = Response.Data;
+        //filter data
+        let filtering = $('#DrpReportAppointmentStatus').val();
+        if(filtering !== "" && filtering !== "All Appointments"){
+            console.log(filtering)
+            Response = Response.filter(appointment=>appointment.ChannelingStatus === filtering);
+        }
         if (Response.length > 0) {
             let Data = {};
             for (let Count = 0; Count < Response.length; Count++) {
@@ -1531,7 +1536,8 @@ function Report_Search() {
                     "Date & Time": formatDateAndTime(new Date(Data.DateCreated)),
                     "Appointment No": Data.Number,
                     "Patient Name": Data.FirstName + " " + Data.LastName,
-                    "Patient Mobile": Data.Mobile
+                    "Patient Mobile": Data.Mobile,
+                    "Appointment Status": Data.ChannelingStatus,
                 });
             }
         }

@@ -68,15 +68,15 @@ function SaveDetails_Success(Response) {
 }
 
 function NurseGet() {
-    _Request.Get(ServiceMethods.GetNurse, null, NurseGet_Success);
+    if(_NurseId === null || _NurseId === undefined || _NurseId === '') return;
+    _Request.Get(`${ServiceMethods.GetNurse}/${_NurseId}`, null, NurseGet_Success);
 }
 
 function NurseGet_Success(Response) {
-    _NurseFirstName = Response.Data[0].FirstName;
-    _NurseLastName = Response.Data[0].LastName;
-    _NurseNIC = Response.Data[0].NIC;
-
-    _NurseLoggedIn = Response.Data[0];
+    _NurseFirstName = Response.Data?.FirstName;
+    _NurseLastName = Response.Data?.LastName;
+    _NurseNIC = Response.Data?.NIC;
+    _NurseLoggedIn = Response.Data;
     // console.log('NurseGet_Success._NurseLoggedIn:', _NurseLoggedIn);
 }
 
@@ -362,6 +362,10 @@ function GetSessionDoctorId_Success(Response) {
     if (Response.Data === 0 || Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let Count;
         let DataLength = Response.Data.length;
+        if(DataLength !== 0){
+            _NurseId = Response.Data[0].NurseId;
+            NurseGet();
+        }
         for (Count = 0; Count < DataLength; Count++) {
             _Request.Get(ServiceMethods.DoctorGet + Response.Data[Count].DoctorId, undefined, GetDoctorData_Success);
         }
@@ -374,6 +378,7 @@ function GetSessionDoctorId_Success(Response) {
 }
 
 function GetDoctorData_Success(Response) {
+
     _DoctorSessionData.push(Response.Data);
 }
 
@@ -956,13 +961,13 @@ function medicalBillTableFirstRowReplace() {
     $("#TblPatientInvoiceBody").html('');
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Doctor charges',
-        feeType: FeeTypes.ConsultationFee,
+        feeType: FeeTypes.DoctorFee,
         feeAmount: '500.00',
         disabled: true
     }));
     $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
         itemName: 'Service charges',
-        feeType: FeeTypes.ServiceFee,
+        feeType: FeeTypes.HospitalFee,
         feeAmount: '250.00',
         disabled: true
     }));
@@ -975,6 +980,7 @@ function medicalBillTableRowAdd() {
     if (medicalBillInputsAreAllValid()) {
         $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
         medicalBillTableRowCountReset();
+        medicalBillTableTotalSumGet();
         medicalBillTableButtonsReset();
     } else {
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
@@ -1028,10 +1034,10 @@ function medicalBillTableAllRowsRemove() {
     }));
     $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
     medicalBillTableRowCountReset();
+    $('#TxtDiscount').val('');
     medicalBillTableTotalSumGet();
     medicalBillTableButtonsReset();
-    $('#TxtDiscount').val('');
-    $('#TxtTotal').text(0);
+    // $('#TxtTotal').text(0);
 }
 
 function medicalBillTableRowDelete(TableRowElement) {
@@ -1181,7 +1187,7 @@ function medicalBillTableSavedResponseAppend(Response) {
         $("#TblPatientInvoiceBody").html('');
         for (let i = 0; i < Response.Data.BillData.length; i++) {
             let billItem = Response.Data.BillData[i];
-            let isDisabled = billItem.FeeType === FeeTypes.ConsultationFee || billItem.FeeType === FeeTypes.ServiceFee;
+            let isDisabled = billItem.ItemName === 'Doctor charges' || billItem.ItemName === 'Service charges';
             let isLastRow = i === Response.Data.BillData.length - 1;
             $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
                 itemName: billItem.ItemName,
@@ -1746,6 +1752,28 @@ function EditPassword() {
     $('#TxtDoctorPassword').prop('disabled', false);
 }
 
+function  SearchDoctor(){
+    _DoctorSearchKeyword = $('#TxtDoctor_Search').val();
+    _DoctorSearchBy = $('#Doctor_SearchBy').val();
+    let filteredDoctors = []
+    if(_DoctorSearchKeyword !== "" && _DoctorSearchKeyword !== undefined){
+        filteredDoctors = ArrayDoctorSearchResultsData.filter(doctor=>doctor[_DoctorSearchBy].toString().toLowerCase().includes(_DoctorSearchKeyword.toLowerCase()))
+        setDoctorsTable(filteredDoctors);
+    }else{
+        setDoctorsTable(ArrayDoctorSearchResultsData);
+    }
+}
+
+function setDoctorsTable(Data){
+    let Headers = ["Doctor Name", "Email", "NIC", "Registration Number", "Action"];
+    const tableContainer = document.getElementById("DoctorsTableContainer");
+    tableContainer.innerHTML = '';
+    tableContainer.appendChild(new TableView("TableDoctorsSearchResults", "table table-striped", Headers, Data, undefined));
+    if(Data.length === 0){
+        $('#TableDoctorsSearchResults').append('<tr><td colspan="5" class="text-center">No Data Found</td></tr>')
+    }
+}
+
 
 //report
 
@@ -1764,10 +1792,14 @@ function DownloadReport() {
         let ttlBookingFee = 0;
         let ttlTotalDiscount = 0;
         var csv_data = [];
-        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile', 'Booking Type', 'Payment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
-        for (var i = 0; i < res.Data.length; i++) {
-            let data = res.Data[i];
-            console.log(data);
+        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile', 'Booking Type', 'Payment Status','Appointment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
+        let filteredData = res.Data;
+        let filtering = $('#DrpReportAppointmentStatus').val();
+        if(filtering !== "" && filtering !== "All Appointments"){
+            filteredData = filteredData.filter(appointment=>appointment.ChannelingStatus === filtering);
+        }
+        for (var i = 0; i < filteredData.length; i++) {
+            let data = filteredData[i];
 
             let hospital = data.HospitalFee == null ? 0 : data.HospitalFee;
             let DoctorFee = data.DoctorFee == null ? 0 : data.DoctorFee;
@@ -1779,13 +1811,14 @@ function DownloadReport() {
             ttlDoctor += parseInt(DoctorFee);
             ttlBookingFee += parseInt(BookingFee);
             ttlTotalDiscount += parseInt(TotalDiscount);
-            var d = [i, data.DoctorName, data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "), data.Number, data.FirstName + " " + data.LastName, data.Mobile, data.Type, 'PAID', hospital, DoctorFee, BookingFee, AllOtherFee, TotalDiscount];
+            let bookingType = data.Type === 'offline' ? "Reception" : data.Type;
+            var d = [i, data.DoctorName, data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "), data.Number, data.FirstName + " " + data.LastName, data.Mobile, bookingType, 'PAID',data.ChannelingStatus, hospital, DoctorFee, BookingFee, AllOtherFee, TotalDiscount];
             console.log(d)
             csv_data.push(d);
 
         }
         // =SUM(I2:I4)
-        var d = ["", "", "", "", "", "", "", '', ttlHospital, ttlDoctor, ttlBookingFee, ttlOther, ttlTotalDiscount];
+        var d = ["", "", "", "", "", "", "", '',"", ttlHospital, ttlDoctor, ttlBookingFee, ttlOther, ttlTotalDiscount];
         csv_data.push(d)
 
         // console.log(csv_data);

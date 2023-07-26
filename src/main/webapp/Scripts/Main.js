@@ -46,6 +46,10 @@ var _PatientName;
 var _LayoutCommon;
 var _PatientMobile;
 var _RequestUpload;
+let _DoctorSearchKeyword = '';
+let _DoctorSearchBy = 'Doctor Name';
+const ArrayDoctorSearchResultsData = [];
+
 
 var _PaymentCheck = "LKR2000";
 
@@ -82,6 +86,7 @@ let _ArrayAppointmentsForToday = [];
 let _ArrayAppointmentsLoaded = [];
 let _AppointmentSelected = {};
 
+var _NurseId;
 var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
@@ -205,11 +210,11 @@ const Containers =
         AdContent: "DivContentAd",
         Footer: "Divfooter"
     };
+// ConsultationFee:"Doctor Fee",
+// ServiceFee:"Hospital Fee",
 
 const FeeTypes = createEnum({
     HospitalFee:"Hospital Fee",
-    ConsultationFee:"Consultation Fee",
-    ServiceFee:"Service Fee",
     DoctorFee:"Doctor Fee",
     BookingFee:"Booking Fee",
     OtherFee:"Other Fee"
@@ -383,7 +388,7 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '</select> ' +
     '</td> ' +
     '<td> ' +
-    '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
+    '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" > ' +
     '</td> ' +
     '<td class="ButtonHolderColumn d-flex justify-content-end"> ' +
     _MedicalBillTableButtonAddRow + _MedicalBillTableButtonDelete +
@@ -413,7 +418,7 @@ const _MedicaBillTableRowBuilder = ({
                     </select>
                 </td> 
                 <td> 
-                    <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()" value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
+                    <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number"  value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
                 </td> 
                 <td class="ButtonHolderColumn d-flex justify-content-end gap-1"> 
                     ${actionButtons.map(button => button).join('')}

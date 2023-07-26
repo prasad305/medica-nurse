@@ -375,20 +375,36 @@ function Profile() {
         let CardProfile = new Div(undefined, "card");
         let CardBodyEditProfile = new Div(undefined, "card-body");
         let UserProfile = new Div(undefined, "user-profile mb-4");
-        let WidgetProfileCard = new Div(undefined, "ul-widget-card__user-info");
-        let UserFullName = new Paragraph(undefined, [new Attribute(_AttributeClass, "m-0 text-24"), new Attribute(_AttributeId, "UserFullName")]);
-        let UserAge = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserNIC")]);
-        let UserGender = new Paragraph(undefined, [new Attribute(_AttributeClass, "text-muted m-0"), new Attribute(_AttributeId, "UserGender")]);
-        WidgetProfileCard.appendChild(UserFullName);
-        WidgetProfileCard.appendChild(UserAge);
-        WidgetProfileCard.appendChild(UserGender);
-        UserProfile.appendChild(WidgetProfileCard);
+        UserProfile.innerHTML = ` 
+              <h1>User Profile</h1>
+                  <div class="row mt-3">
+                    <div class="col-3 fs-3"><h3>Name</h3></div>
+                    <div class="col"><h4>: ${_NurseLoggedIn?.Title} ${_NurseLoggedIn?.FirstName}  ${_NurseLoggedIn?.LastName}</h4></div>
+                  </div>
+                  
+                  <div class="row mt-3">
+                    <div class="col-3 fs-3"><h3>NIC</h3></div>
+                    <div class="col"><h4>:  ${_NurseLoggedIn?.NIC}</h4></div>
+                  </div>
+                  
+                   <div class="row mt-3">
+                    <div class="col-3 fs-3"><h3>Email</h3></div>
+                    <div class="col"><h4>:  ${_NurseLoggedIn?.Email}</h4></div>
+                  </div>
+                  
+                  <div class="row mt-3">
+                    <div class="col-3 fs-3"><h3>Branch Name</h3></div>
+                    <div class="col"><h4>:  ${_NurseBranch?.Name}</h4></div>
+                  </div>
+                  
+                  <div class="row mt-3">
+                    <div class="col-3 fs-3"><h3>Branch Address</h3></div>
+                    <div class="col"><h4>:  ${_NurseBranch?.AddressLine1} ${_NurseBranch?.AddressLine2}</h4></div>
+                  </div>
+              </div>`
+
         CardBodyEditProfile.appendChild(UserProfile);
         CardProfile.appendChild(CardBodyEditProfile);
-
-        let DivProfile = new Div("DependentDetails", undefined);
-
-        CardBodyEditProfile.appendChild(DivProfile);
 
         BindView(Container, CardProfile);
     }
@@ -2316,7 +2332,7 @@ function Footer() {
 
         let RowColSub1Footer = new Div(undefined, "col-md-12 col-12 mt-4 mb-4 col-footer text center");
         let WidgetFooter1 = new Div(undefined, "ul-widget7__pic");
-        WidgetFooter1.appendChild(new Heading6("DocNote By MEDICA"));
+        WidgetFooter1.appendChild(new Heading6("MEDICA Solution by mobiOs Private Limited"));
         RowColSub1Footer.appendChild(WidgetFooter1);
         RowFooter.appendChild(RowColSub1Footer);
 
@@ -2381,7 +2397,7 @@ function AdminLayoutMain() {
 
 function AdminSiteButtonBar() {
     this.Render = function (Container) {
-        let DivRowMainButtonBar = Div(undefined, "row");
+        let DivRowMainButtonBar = Div(undefined, "row justify-content-center");
         DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
         let RowCelRowCellSite = Div(undefined, "col-lg-2 col-3 pd-lr-5");
 
@@ -2393,7 +2409,7 @@ function AdminSiteButtonBar() {
 
         let DivWidgetRowPrescription = new Div(undefined, "ul-widget__row-v2 p-relative");
         let DivWidgetImagePrescription = new Div(undefined, "ul-widget6__pic");
-        let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Patientn.png", undefined, "Prescription Image");
+        let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Branch.png", undefined, "Prescription Image");
 
         let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2");
         let HeadingPrescription = new Heading4("Branches", [new Attribute(_AttributeClass, "heading mt-3")]);
@@ -2423,7 +2439,7 @@ function AdminSiteButtonBar() {
 
         let DivWidgetRowReport = new Div(undefined, "ul-widget__row-v2 p-relative");
         let DivWidgetImageReport = new Div(undefined, "ul-widget6__pic");
-        let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Appointment.png", undefined, "Report Image");
+        let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Doctors.png", undefined, "Report Image");
 
         let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2");
         let HeadingReport = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
@@ -2453,7 +2469,7 @@ function AdminSiteButtonBar() {
 
         let DivWidgetRowHistory = new Div(undefined, "ul-widget__row-v2 p-relative");
         let DivWidgetImageHistory = new Div(undefined, "ul-widget6__pic");
-        let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Schedule.png", undefined, "History Image");
+        let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Reports.png", undefined, "History Image");
 
         let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2");
         let HeadingHistory = new Heading4("Apt. Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
@@ -2499,7 +2515,7 @@ function AdminSiteButtonBar() {
         SpanAllergies.appendChild(DivAllergies);
 
         RowCellSiteDoc.appendChild(SpanAllergies);
-        DivRowMainButtonBar.appendChild(RowCellSiteDoc);
+        // DivRowMainButtonBar.appendChild(RowCellSiteDoc);
 
         DivRowMainButtonBar.appendChild(new Div(undefined, "col-lg-2 pd-lr-5"));
 
@@ -2874,14 +2890,51 @@ function DoctorsSearchResultsTable() {
         ColumnTableTitle.appendChild(Heading);
         ParentRow.appendChild(ColumnTableTitle);
 
-        const ColumnAddNewBranch = new Div(undefined, "col-md-12");
+        const ColumnDoctorPageActions = new Div(undefined, "col-md-12 d-flex justify-content-end gap-2");
+        TextField({
+            classList:"col-3 mr-1",
+            elementId:"Doctor_Search",
+            parentRow:ColumnDoctorPageActions,
+            type:"text",
+            value: _DoctorSearchKeyword,
+            onKeyUp:'SearchDoctor()',
+            placeholder:"Search Doctor",
+        });
+        SelectOption(
+            {
+                classList:"col-3 mr-1",
+                parentRow:ColumnDoctorPageActions,
+                elementId:"Doctor_SearchBy",
+                onChangeFunc:'SearchDoctor()',
+                selectedValue:_DoctorSearchBy,
+                options:[
+                    {
+                    value:"Doctor Name",
+                    label:"Doctor Name"
+                    },
+                    {
+                        value:"Email",
+                        label:"Doctor Email"
+                    },
+                    {
+                        value:"Registration Number",
+                        label:"Registration Number"
+                    },
+                    {
+                        value:"NIC",
+                        label:"Doctor NIC"
+                    }
+                ],
+                placeholder:"Search By",
+            }
+        );
         const ButtonAddNewBranch = new Button(undefined, "Add A New Doctors", "btn btn-primary btn-rounded float-right",
             [new Attribute(_AttributeOnClick, "DoctorAddOrUpdateModalView()")]);
-        ColumnAddNewBranch.appendChild(ButtonAddNewBranch);
-        ParentRow.appendChild(ColumnAddNewBranch);
+        ColumnDoctorPageActions.appendChild(ButtonAddNewBranch);
+        ParentRow.appendChild(ColumnDoctorPageActions);
 
         const ColumnTable = new Div(undefined, "col-md-12 mt-2");
-        let DivTableBranchesSearchResults = new Div(undefined, "table-responsive");
+        let DivTableBranchesSearchResults = new Div('DoctorsTableContainer', "table-responsive");
         DivTableBranchesSearchResults.appendChild(new TableView("TableDoctorsSearchResults", "table table-striped", Headers, Data, undefined));
         ColumnTable.appendChild(DivTableBranchesSearchResults);
         ParentRow.appendChild(ColumnTable);
@@ -2937,13 +2990,14 @@ function DoctorsAddOrUpdateModal() {
 
         DropDown("col-sm-6  mt-2", "DrpSpecialization", "Specialization *", "", undefined, ParentRow);
         DropDown("col-sm-6  mt-2", "DrpQualifications", "Qualifications *", "", undefined, ParentRow);
-
-
         ModalContentBody.appendChild(ParentRow);
+
+        const DoctorFeeRow = new Div(undefined, "row");
+        LableAndTextFeild("col-sm-6", "DoctorFee", "Doctor Fee *", "Doctor Fee", "", "", DoctorFeeRow);
+        ModalContentBody.appendChild(DoctorFeeRow);
+
         ModalDialogContent.appendChild(ModalContentBody);
 
-
-        n
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
         if (ProcessType === 'AddNew') {
@@ -3096,17 +3150,24 @@ function ReportSearch() {
         LableAndTextFeild("col-sm-3", "ReportFrom_Date", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
         LableAndTextFeild("col-sm-3", "ReportTo_Date", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
 
-        const ColumnContactNo = new Div(undefined, "col-sm-9 mt-2");
-        FormRow0Appoinment.appendChild(ColumnContactNo);
 
-        let DivFormRowSearch = new Div(undefined, "col-sm-3 mt-2 d-flex");
+        let DoctorSearchActionRow = new Div("ReportSearchRow", "row align-items-end justify-items-end mb-3");
+
+        let data = [];
+        data.push(new SelectItem("All Appointments", "All Appointments", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class"),new Attribute('id', "All_Appointments")]))
+        data.push(new SelectItem( "Successful Consultation","Successful Consultation", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem( "Refund","Unsuccessful consultation with Refund", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Pending","pending", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem( "No Show","Cancellation as “No Show", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem( "Rescheduled","Unsuccessful consultation with Rescheduling", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+
+        DropDown("col-sm-3  mt-2 form-group", "DrpReportAppointmentStatus", "Appointment Status", "", data, DoctorSearchActionRow);
+
         let ButtonPatientSearch = new Button("DoctorBranchSearchButton", "Search",
-            "btn btn-primary btn-rounded w-100 mt-auto",
+            "btn btn-primary btn-rounded  col-2 form-group",
             [new Attribute(_AttributeOnClick, "Report_Search()")]);
-
-        DivFormRowSearch.appendChild(ButtonPatientSearch);
-        FormRow0Appoinment.appendChild(DivFormRowSearch);
-
+        DoctorSearchActionRow.appendChild(ButtonPatientSearch);
+        CardBodyAddAppoinment.appendChild(DoctorSearchActionRow);
         FormAppoinments.appendChild(FormRow0Appoinment);
         SearchColumnOne.appendChild(FormAppoinments);
 
@@ -3126,7 +3187,7 @@ function ReportSearch() {
 function ReportSearchResultsTable() {
     this.Render = function (Container, Data) {
 
-        let Headers = ["No", "Date & Time", "Appointment No", "Patient Name", "Patient Mobile"];
+        let Headers = ["No", "Date & Time", "Appointment No", "Patient Name", "Patient Mobile" , "Appointment Status"];
         let ParentRow = new Div(undefined, "row");
 
         let ColumnTableTitle = new Div(undefined, "col-md-12");
@@ -3205,6 +3266,43 @@ function LableAndTextFeild(classCol, id, lbl, placeHolder, pattern, value, Paren
     ParentRow.appendChild(ColumnBranch);
 }
 
+function TextField({
+    elementId,
+    classList,
+    placeholder,
+    pattern,
+    value,
+    parentRow,
+    type,
+    onKeyUp,
+    disabled = false,
+                   }){
+    const attributes = [];
+    if(pattern){
+        attributes.push(new Attribute(_AttributePattern, pattern));
+    }
+    if(placeholder){
+        attributes.push(new Attribute(_AttributePlaceHolder, placeholder));
+    }
+    if(value){
+        attributes.push(new Attribute("value", value));
+    }
+    if(disabled){
+        attributes.push(new Attribute("disabled", 'true'));
+    }
+    if (type) {
+        attributes.push(new Attribute(_AttributeType, type));
+    }
+    if(onKeyUp){
+        attributes.push(new Attribute('onkeyup', onKeyUp));
+    }
+    const textField = new Textbox("Txt" + elementId,
+        `form-control form-control-rounded ${classList}`,
+        attributes
+    );
+    parentRow.appendChild(textField);
+}
+
 function DropDown(classCol, id, lbl, functionExec, customOptions, ParentRow) {
 
     let DivFormRowDoctor = new Div(undefined, classCol);
@@ -3223,6 +3321,39 @@ function DropDown(classCol, id, lbl, functionExec, customOptions, ParentRow) {
     DivFormRowDoctor.appendChild(LabelAppoinment);
     DivFormRowDoctor.appendChild(SelectBranch);
     ParentRow.appendChild(DivFormRowDoctor);
+
+}
+
+function SelectOption({
+          elementId,
+          classList,
+          placeholder,
+          parentRow,
+          selectedValue,
+          onChangeFunc = ()=>{},
+          options=[],
+          disabled = false
+                      }){
+
+    const attributes = [];
+    if(placeholder){
+        attributes.push(new Attribute(_AttributePlaceHolder, placeholder));
+    }
+    if(disabled){
+        attributes.push(new Attribute("disabled", 'true'));
+    }
+
+    let SelectBranch = new Select(elementId, [new Attribute(_AttributeClass,
+        `form-control form-control-rounded select ${classList}`), new Attribute(_AttributeOnChange, onChangeFunc), ...attributes]);
+    options.forEach((currentElement) => {
+        let isSelected = false;
+        if(selectedValue){
+            isSelected = currentElement.value === selectedValue;
+        }
+        let selectOption = new SelectItem( currentElement.label,currentElement.value, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class"), ...(isSelected ? [new Attribute("selected", "true")] : []) ]);
+        SelectBranch.appendChild(selectOption);
+    });
+    parentRow.appendChild(SelectBranch);
 
 }
 
