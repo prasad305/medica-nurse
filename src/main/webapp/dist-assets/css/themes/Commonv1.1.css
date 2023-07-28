@@ -274,8 +274,8 @@ td,th {
     background-color: #fff;
     color: #fff;
     border-color: #818383;
-    width: 0px;
-    height: 12px;
+    width: 15px !important;
+    height: 15px !important;
     border-radius: 50px;
     margin-left: 5px;
 }

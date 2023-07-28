@@ -20,7 +20,7 @@
     <link href="dist-assets/css/plugins/sweetalert2.min.css" rel="stylesheet"/>
     <link href="dist-assets/css/themes/chosen.min.css" rel="stylesheet"/>
     <link href="dist-assets/css/plugins/nuslider.min.css" rel="stylesheet"/>
-    <link href="dist-assets/css/themes/Commonv1.0.css" rel="stylesheet"/>
+    <link href="dist-assets/css/themes/Commonv1.1.css" rel="stylesheet"/>
     <link href="dist-assets/css/themes/WelcomePage.css" rel="stylesheet"/>
     <link href="dist-assets/plugins/Loader.css" rel="stylesheet"/>
     <link href="dist-assets/css/themes/ChangeColor.css" rel="stylesheet"/>
