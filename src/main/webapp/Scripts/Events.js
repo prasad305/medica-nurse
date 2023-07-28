@@ -209,17 +209,21 @@ async function cancelAllAppointments() {
 
             console.log(appointmentsNotCancelled[i])
 
-            let result = await PostAsync({
-                serviceMethod: ServiceMethods.ChanalingStatusSave,
-                requestBody: {
-                    "AppointmentId": id,
-                    "SessionId": sessionId,
-                    "PatientId": patientId,
-                    "DoctorStatus": "Cancel Appointment",
-                    "ChanalingStatus": "cancelled",
-                    "Id": 0
-                }
-            })
+            try{
+                let result = await PostAsync({
+                    serviceMethod: ServiceMethods.ChanalingStatusSave,
+                    requestBody: {
+                        "AppointmentId": id,
+                        "SessionId": sessionId,
+                        "PatientId": patientId,
+                        "DoctorStatus": "Cancel Appointment",
+                        "ChanalingStatus": "cancelled",
+                        "Id": 0
+                    }
+                })
+            }catch(e){
+            }
+
 
             // notify patients
             let status = await PostAsync({
