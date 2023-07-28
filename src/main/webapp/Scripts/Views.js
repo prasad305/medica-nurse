@@ -1242,7 +1242,7 @@ function NewAppoinment() {
         DivFormRowSession.appendChild(SelectAppoinmentSession);
         FormRow0Appoinment.appendChild(DivFormRowSession);
 
-        let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex");
+        let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex mt-2");
         let ButtonPatientSearch = new Button("AppointmentsSearchButton", "Search", "btn btn-primary btn-rounded w-100 mt-auto",
             [new Attribute(_AttributeOnClick, "Appointments_Search()")]);
 
@@ -2411,7 +2411,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImagePrescription = new Div(undefined, "ul-widget6__pic");
         let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Branch.png", undefined, "Prescription Image");
 
-        let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2");
+        let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2 d-none d-sm-block");
         let HeadingPrescription = new Heading4("Branches", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImagePrescription.appendChild(ImagePrescription);
@@ -2441,7 +2441,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImageReport = new Div(undefined, "ul-widget6__pic");
         let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Doctors.png", undefined, "Report Image");
 
-        let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2");
+        let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2 d-none d-sm-block");
         let HeadingReport = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageReport.appendChild(ImageReport);
@@ -2471,7 +2471,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImageHistory = new Div(undefined, "ul-widget6__pic");
         let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Reports.png", undefined, "History Image");
 
-        let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2");
+        let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2 d-none d-sm-block");
         let HeadingHistory = new Heading4("Apt. Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageHistory.appendChild(ImageHistory);

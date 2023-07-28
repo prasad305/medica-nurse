@@ -18,6 +18,13 @@ function Welcome_Load() {
 function CmdFullScreen_Click() {
     var elem = document.documentElement;
 
+    if(_IsFullScreen){
+        //exit full screen
+        document.exitFullscreen();
+        _IsFullScreen = false;
+        return;
+    }
+
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.msRequestFullscreen) {
@@ -27,6 +34,7 @@ function CmdFullScreen_Click() {
     } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
     }
+    _IsFullScreen = true;
 }
 
 function LnkRecover_Click() {
@@ -91,6 +99,9 @@ function CmdPatientSearch_Click(CardElement) {
         _CardClicked = 'PatientSearch';
         // console.log('_CardClicked:', _CardClicked);
         _AppointmentSessionId = undefined;
+        _DoctorId = undefined;
+        _SessionId = undefined;
+
         new PatientSearch().Render(Containers.MainContent);
     }
 
@@ -382,6 +393,7 @@ function CmdSession_Click(CardElement) {
         CmdCardClicked = CardElement.id;
         _CardClicked = 'Session';
         new Session().Render(Containers.MainContent);
+        _AppointmentSessionId = undefined;
         SetDoctorData('DrpSessionDoctor');
     }
 
