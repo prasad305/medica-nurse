@@ -2411,7 +2411,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImagePrescription = new Div(undefined, "ul-widget6__pic");
         let ImagePrescription = new Imagebox(undefined, "dist-assets/images/Nurse/Branch.png", undefined, "Prescription Image");
 
-        let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2 d-none d-sm-block");
+        let DivWidgetContentPrescription = new Div("BranchesHeading", "ul-widget__content-v2 d-none d-md-block");
         let HeadingPrescription = new Heading4("Branches", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImagePrescription.appendChild(ImagePrescription);
@@ -2441,7 +2441,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImageReport = new Div(undefined, "ul-widget6__pic");
         let ImageReport = new Imagebox(undefined, "dist-assets/images/Nurse/Doctors.png", undefined, "Report Image");
 
-        let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2 d-none d-sm-block");
+        let DivWidgetContentReport = new Div("DoctorsHeading", "ul-widget__content-v2 d-none d-md-block");
         let HeadingReport = new Heading4("Doctors", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageReport.appendChild(ImageReport);
@@ -2471,7 +2471,7 @@ function AdminSiteButtonBar() {
         let DivWidgetImageHistory = new Div(undefined, "ul-widget6__pic");
         let ImageHistory = new Imagebox(undefined, "dist-assets/images/Nurse/Reports.png", undefined, "History Image");
 
-        let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2 d-none d-sm-block");
+        let DivWidgetContentHistory = new Div("ReportsHeading", "ul-widget__content-v2 d-none d-md-block");
         let HeadingHistory = new Heading4("Apt. Reports", [new Attribute(_AttributeClass, "heading mt-3")]);
 
         DivWidgetImageHistory.appendChild(ImageHistory);
