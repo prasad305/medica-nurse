@@ -780,101 +780,6 @@ function AddPatient() {
     }
 }
 
-function PatientMedicalBillModal(Patient) {
-    this.Render = function (Container) {
-
-        const MedicalBillModal = new Div("PatientMedicalBillModal", "modal");
-        MedicalBillModal.setAttribute('data-backdrop', 'static');
-        MedicalBillModal.setAttribute('data-keyboard', 'false');
-
-        const ModalDialog = new Div(undefined, "modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable");
-        const ModalDialogContent = new Div(undefined, "modal-content");
-
-        const ModalContentHeader = new Div(undefined, "modal-header");
-        ModalContentHeader.appendChild(new Heading4("Medical Bill", undefined));
-        ModalDialogContent.appendChild(ModalContentHeader);
-
-        const ModalContentBody = new Div(undefined, "modal-body");
-
-        const ModalContentBodyRowOne = new Div(undefined, "row");
-
-        const PatientDataToDisplay = [
-            ['Patient:', 'LabelPatientName'],
-            ['Age:', 'LabelPatientAge'],
-            ['Tel. No:', 'LabelPatientTelephoneNo'],
-            ['Date:', 'LabelMedicalBillDate']
-        ];
-
-        const PatientsAge = parseInt(new Date().getFullYear().toString()) - parseInt(Patient.DateOfBirth.split('-')[0]);
-
-        for (let i = 0; i < PatientDataToDisplay.length; i++) {
-            let LabelValueText = '-';
-            switch (i) {
-                case 0:
-                    LabelValueText = Patient.Title + ' ' + Patient.FirstName + ' ' + Patient.LastName;
-                    break;
-
-                case 1:
-                    LabelValueText = PatientsAge;
-                    break;
-
-                case 2:
-                    LabelValueText = Patient.Mobile;
-                    break;
-
-                case 3:
-                    LabelValueText = new Date().toISOString().slice(0, 10);
-                    break;
-            }
-
-            const InnerArray = PatientDataToDisplay[i];
-            const LabelText = InnerArray[0];
-            const LabelValueTextId = InnerArray[1];
-
-            const ColumnOne = new Div(undefined, 'col-md-2');
-            ColumnOne.appendChild(new Label(undefined, LabelText, undefined));
-            ModalContentBodyRowOne.appendChild(ColumnOne);
-
-            const ColumnTwo = new Div(undefined, 'col-md-10');
-            ColumnTwo.appendChild(new Label(LabelValueTextId, LabelValueText, undefined));
-            ModalContentBodyRowOne.appendChild(ColumnTwo);
-        }
-
-        //modal content body > row one
-        ModalContentBody.appendChild(ModalContentBodyRowOne);
-        //modal content body > row two
-        const ModalContentBodyRowTwo = MedicalBillTableWithDynamicRowsGet();
-        ModalContentBody.appendChild(ModalContentBodyRowTwo);
-        ModalDialogContent.appendChild(ModalContentBody);
-
-        const ModalContentFooter = new Div(undefined, "modal-footer");
-        ModalContentFooter.appendChild(new Button('BtnCloseMedicalBill', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')]));
-        // ModalContentFooter.appendChild(new Button('BtnPrintMedicalBill', 'Print', 'btn btn-primary mx-2',
-        //     [
-        //         // new Attribute('data-dismiss', 'modal'),
-        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
-        //     ]
-        // ));
-        // ModalContentFooter.appendChild(new Button('BtnSaveMedicalBill', 'Save', 'btn btn-primary',
-        //     [
-        //         // new Attribute('data-dismiss', 'modal'),
-        //         new Attribute(_AttributeOnClick, 'medicalBillInputsValidate(' + Patient.Id + ',' + appId + ')')
-        //     ]
-        // ));
-        ModalDialogContent.appendChild(ModalContentFooter);
-
-        ModalDialog.appendChild(ModalDialogContent);
-        MedicalBillModal.appendChild(ModalDialog);
-
-        BindView(Container, MedicalBillModal);
-
-        //replace the first empty table row with the pre-defined row
-        medicalBillTableFirstRowReplace();
-
-        $('#PatientMedicalBillModal').modal('show');
-    }
-}
-
 
 /*=================================
             Session UIs
@@ -1490,6 +1395,7 @@ function MedicalBill(Patient, appId) {
         //modal content body > row two
         const ModalContentBodyRowTwo = MedicalBillTableWithDynamicRowsGet();
         ModalContentBody.appendChild(ModalContentBodyRowTwo);
+
         ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
@@ -1532,19 +1438,17 @@ function MedicalBillTableWithDynamicRowsGet() {
     const ParentRowColumnTwo = new Div(undefined, 'col-md-12');
 
     const TableWrapper = new Div(undefined, 'table-responsive');
-    const TableHeaders = ["#", "Item *", "Fee Type *", "Amount (Rs.) *", "Actions"];
+    const TableHeaders = ["#", "Item *", "Fee Type *", "Amount (Rs.) *", ""];
     const TableData = [
-        {
-            '#': '',
-            'Item *': '',
-            'Fee Type *': '',
-            'Amount (Rs.) *': '',
-            'Actions': ''
-        }
+
     ];
     const Table = new TableView("TblPatientInvoice", "table", TableHeaders, TableData, undefined);
     TableWrapper.appendChild(Table);
     ParentRowColumnTwo.appendChild(TableWrapper);
+    ParentRowColumnTwo.innerHTML += `
+    <div class="d-flex justify-content-end w-100 mb-3">
+        <button class="btn btn-primary" onclick="addNewFee()">Add Fee</button>
+    </div>`
 
     const ParentRowColumnThree = new Div(undefined, 'col-md-12');
 
@@ -2985,16 +2889,18 @@ function DoctorsAddOrUpdateModal() {
         LableAndTextFeild("col-sm-6", "DoctorPhone_No", "Phone No.", "Phone No.", "", "", ParentRow);
         LableAndTextFeild("col-sm-6", "DoctorEmail", "Email *", "Email", "", "", ParentRow);
         LableAndTextFeild("col-sm-6", "DoctorNIC", "N.I.C *", "N.I.C", "", "", ParentRow);
-        LableAndTextFeild("col-sm-6", "DoctorRegistration_Number", "Registration Number", "Registration Number", "", "", ParentRow, '',ProcessType === 'AddNew' ? false : true);
+        LableAndTextFeild("col-sm-6", "DoctorRegistration_Number", "SLMC Registration Number", "Registration Number", "", "", ParentRow, '');
         LableAndTextFeild("col-sm-6", "DoctorDate_Of_Birth", "Date Of Birth *", "Date Of Birth", "", "", ParentRow, "date");
 
         DropDown("col-sm-6  mt-2", "DrpSpecialization", "Specialization *", "", undefined, ParentRow);
         DropDown("col-sm-6  mt-2", "DrpQualifications", "Qualifications *", "", undefined, ParentRow);
         ModalContentBody.appendChild(ParentRow);
 
-        const DoctorFeeRow = new Div(undefined, "row");
-        LableAndTextFeild("col-sm-6", "DoctorFee", "Doctor Fee *", "Doctor Fee", "", "", DoctorFeeRow);
-        ModalContentBody.appendChild(DoctorFeeRow);
+        const DoctorFeeAndMedicaIdRow = new Div(undefined, "row");
+        LableAndTextFeild("col-sm-6", "DoctorFee", "Doctor Fee *", "Doctor Fee", "", "", DoctorFeeAndMedicaIdRow);
+        LableAndTextFeild("col-sm-6", "MedicaId", "Medica Id", "45875", "", "", DoctorFeeAndMedicaIdRow,'',ProcessType === 'AddNew' ? false : true);
+
+        ModalContentBody.appendChild(DoctorFeeAndMedicaIdRow);
 
         ModalDialogContent.appendChild(ModalContentBody);
 

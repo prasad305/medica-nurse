@@ -1255,11 +1255,11 @@ function doctorTblData(Response) {
                 "Registration Number": isNull(Doctor.RegistrationNumber),
                 "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
-                    '</button>' +
+                    '</button>'
                     // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
                     // '<i class="nav-icon i-Close-Window"></i></button>' +
-                    '<button class="btn btn-primary" style="margin-left: 0.5rem" type="button" id="6" data-toggle="modal" ' +
-                    'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
+                    // '<button class="btn btn-primary" style="margin-left: 0.5rem" type="button" id="6" data-toggle="modal" ' +
+                    // 'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
             });
         }
     }

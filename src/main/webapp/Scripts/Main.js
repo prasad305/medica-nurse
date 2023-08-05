@@ -221,6 +221,8 @@ const FeeTypes = createEnum({
     OtherFee:"Other Fee"
 });
 
+let MedicalBillData = [];
+
 function createEnum(obj) {
     return Object.freeze(obj);
 }
@@ -370,7 +372,7 @@ function Page_Load() {
 		Nurse > Appointments > Table > Rows > 'Bill' Button > Dynamic Table > Constants
 ===============================================================================================*/
 
-const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)">Delete</button>';
+const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)"><i class="fa-trash"></i></button>';
 const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()"><i class="i-Add"></i></button>';
 
 const _MedicalBillTableRow = '<tr class="TblRow">' +
@@ -397,32 +399,54 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '</tr> ';
 
 const _MedicaBillTableRowBuilder = ({
-                                        itemName,
-                                        feeType = FeeTypes.OtherFee,
-                                        feeAmount,
-                                        disabled = false,
-                                        actionButtons = []
-                                    }) => {
+    itemName,
+    feeType = FeeTypes.OtherFee,
+    feeAmount,
+    disabled = false,
+    actionButtons = []
+}) => {
+return `<tr class="TblRow">
+            <td>1</td>
+            <td> 
+                <input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text" value="${itemName ? itemName : ''}" ${disabled?'disabled':''}> 
+            </td> 
+            <td> 
+                <select class="form-control" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
+                    <option value="" >Select A Fee Type</option> 
+                    ${
+                    Object.keys(FeeTypes).map(key => {
+                    return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
+                    }).join('')
+                    }
+                </select>
+            </td> 
+            <td> 
+                <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number"  value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
+            </td> 
+            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0"> 
+            ${actionButtons.map(button => button).join('')}
+            </td> 
+        </tr> `
+}
+
+const _MedicaBillTableReadOnlyRowBuilder = ({
+    itemName,
+    feeType = FeeTypes.OtherFee,
+    feeAmount,
+})=>{
     return `<tr class="TblRow">
-                <td>1</td>
-                <td> 
-                    <input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text" value="${itemName ? itemName : null}" ${disabled?'disabled':''}> 
-                </td> 
-                <td> 
-                    <select class="form-control" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
-                        <option value="" >Select A Fee Type</option> 
-                        ${
-                            Object.keys(FeeTypes).map(key => {
-                                return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
-                            }).join('')
-                        }
-                    </select>
-                </td> 
-                <td> 
-                    <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number"  value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
-                </td> 
-                <td class="ButtonHolderColumn d-flex justify-content-end gap-1"> 
-                    ${actionButtons.map(button => button).join('')}
-                </td> 
-            </tr> `
+            <td>1</td>
+            <td> 
+             ${itemName}
+            </td> 
+            <td> 
+             ${feeType}
+            </td> 
+            <td> 
+             ${feeAmount}
+            </td> 
+            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0" title="Deletion of this fee is not allowed"> 
+                <button class="btn btn-error disabled">Delete</button>
+            </td> 
+        </tr> `
 }
