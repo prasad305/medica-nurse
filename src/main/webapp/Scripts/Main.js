@@ -411,7 +411,7 @@ return `<tr class="TblRow">
                 <input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text" value="${itemName ? itemName : ''}" ${disabled?'disabled':''}> 
             </td> 
             <td> 
-                <select class="form-control" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
+                <select class="form-control form-control-sm" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
                     <option value="" >Select A Fee Type</option> 
                     ${
                     Object.keys(FeeTypes).map(key => {
@@ -445,8 +445,9 @@ const _MedicaBillTableReadOnlyRowBuilder = ({
             <td> 
              ${feeAmount}
             </td> 
-            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0" title="Deletion of this fee is not allowed"> 
-                <button class="btn btn-error disabled">Delete</button>
+            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0" > 
+                <button class="btn bg-transparent disabled" title="Cannot edit this fee"><i class="i-Pen-2"></i></button>
+                <button class="btn bg-transparent disabled" title="Cannot delete this fee"><i class="i-Close-Window"></i></button>
             </td> 
         </tr> `
 }

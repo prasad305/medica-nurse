@@ -947,17 +947,20 @@ function MedicalBillDisplay(AppointmentId, appId) {
             medicalBillTableSavedResponseAppend(res);
         } else {
             billId = 0;
-            MedicalBillData = [];
-            MedicalBillData.push(_MedicaBillTableReadOnlyRowBuilder({
-                itemName: 'Doctor charges',
-                feeType: FeeTypes.DoctorFee,
-                feeAmount: '500',
-            }));
-            MedicalBillData.push(_MedicaBillTableReadOnlyRowBuilder({
-                itemName: 'Service charges',
-                feeType: FeeTypes.HospitalFee,
-                feeAmount: '250',
-            }));
+            MedicalBillData = [
+                {
+                    itemName: 'Doctor charges',
+                    feeType: FeeTypes.DoctorFee,
+                    feeAmount: '500',
+                    disabled: true,
+                },
+                {
+                    itemName: 'Service charges',
+                    feeType: FeeTypes.HospitalFee,
+                    feeAmount: '250',
+                    disabled: true,
+                }
+            ]
             RerenderMedicalBillTable();
             medicalBillTableTotalSumGet();
         }
@@ -987,16 +990,41 @@ function medicalBillTableFirstRowReplace() {
 }
 
 function addNewFee() {
-    MedicalBillData.push(_MedicaBillTableRowBuilder({
+    MedicalBillData.push({
         itemName: "",
         feeType: "",
         feeAmount: "",
         disabled: false,
-        actionButtons:[
-            `<button class="btn btn-danger">Delete</button>`
-        ]
-    }));
+        saved:false,
+    });
     RerenderMedicalBillTable();
+    medicalBillTableTotalSumGet();
+}
+
+function discardFeeChanges(index){
+   //remove element at index from array
+    MedicalBillData.splice(index,1);
+    RerenderMedicalBillTable();
+}
+
+function deleteFee(index){
+    MedicalBillData.splice(index,1);
+    RerenderMedicalBillTable();
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+}
+
+function edit(index){
+    MedicalBillData[index].saved = false;
+    RerenderMedicalBillTable();
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+}
+
+function  saveFeeToList(index){
+    MedicalBillData[index].saved = true;
+    RerenderMedicalBillTable();
+    medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
 }
 
@@ -1209,8 +1237,34 @@ function medicalBillPrint() {
 
 function RerenderMedicalBillTable(){
     $('#TblPatientInvoiceBody').html('');
-    for (let i = 0; i < MedicalBillData.length; i++) {
-        $("#TblPatientInvoiceBody").append(MedicalBillData[i]);
+    for (let index = 0; index < MedicalBillData.length; index++) {
+        const rowData = MedicalBillData[index];
+        if(rowData.disabled){
+            $("#TblPatientInvoiceBody").append(_MedicaBillTableReadOnlyRowBuilder({
+                itemName: rowData.itemName,
+                feeType: rowData.feeType,
+                feeAmount: rowData.feeAmount,
+            }));
+        }else{
+            const tableRowObj = {
+                itemName: rowData.itemName,
+                feeType: rowData.feeType,
+                feeAmount: rowData.feeAmount,
+            }
+            if(rowData.saved){
+                tableRowObj.actionButtons = [
+                    `<button class="btn bg-transparent" title="Discard changes" onclick="editFee(${index})"><i class="i-Pen-2"></i></button>`,
+                    `<button class="btn bg-transparent" title="Add fee to list" onclick="deleteFee(${index})"><i class="i-Close-Window"></i></button>`
+                ]
+            }else{
+                tableRowObj.actionButtons = [
+                    `<button class="btn bg-transparent" title="Discard changes" onclick="discardFeeChanges(${index})"><i class="i-Close-Window"></i></button>`,
+                    `<button class="btn bg-transparent" title="Add fee to list" onclick="saveFeeToList(${index})"><i class="i-Yes"></i></button>`
+                ]
+            }
+            $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder(tableRowObj));
+
+        }
     }
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
