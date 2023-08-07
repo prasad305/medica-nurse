@@ -953,12 +953,16 @@ function MedicalBillDisplay(AppointmentId, appId) {
                     feeType: FeeTypes.DoctorFee,
                     feeAmount: '500',
                     disabled: true,
+                    saved: true,
+                    hasChanges: false
                 },
                 {
                     itemName: 'Service charges',
                     feeType: FeeTypes.HospitalFee,
                     feeAmount: '250',
                     disabled: true,
+                    saved: true,
+                    hasChanges: false
                 }
             ]
             RerenderMedicalBillTable();
@@ -996,6 +1000,7 @@ function addNewFee() {
         feeAmount: "",
         disabled: false,
         saved:false,
+        hasChanges:false
     });
     RerenderMedicalBillTable();
     medicalBillTableTotalSumGet();
@@ -1014,18 +1019,81 @@ function deleteFee(index){
     medicalBillTableTotalSumGet();
 }
 
-function edit(index){
+function editFee(index){
     MedicalBillData[index].saved = false;
+    MedicalBillData[index].hasChanges = true;
+    RerenderMedicalBillTable();
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+}
+
+function discardChanges(index){
+    MedicalBillData[index].saved = true;
+    MedicalBillData[index].hasChanges = false;
+    RerenderMedicalBillTable();
+    medicalBillTableRowCountReset();
+    medicalBillTableTotalSumGet();
+}
+
+function saveChanges(index){
+    const itemName = $('#TxtItem'+index).val();
+    const feeType = $('#TxtFeeType'+index).val();
+    let feeAmount = $('#TxtFeeAmount'+index).val();
+    if(itemName === '' || feeType === '' || feeAmount === ''){
+        return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
+    }
+    feeAmount = parseFloat(feeAmount);
+
+    if(isNaN(feeAmount) || feeAmount < 0){
+        return ShowMessage(Messages.InvalidAmount, MessageTypes.Warning, "Warning!");
+    }
+    MedicalBillData[index].itemName = itemName;
+    MedicalBillData[index].feeType = feeType;
+    MedicalBillData[index].feeAmount = feeAmount;
+    MedicalBillData[index].saved = true;
+    MedicalBillData[index].hasChanges = false;
     RerenderMedicalBillTable();
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
 }
 
 function  saveFeeToList(index){
+    const itemName = $('#TxtItem'+index).val();
+    const feeType = $('#TxtFeeType'+index).val();
+    let feeAmount = $('#TxtFeeAmount'+index).val();
+
+    if(itemName === '' || feeType === '' || feeAmount === ''){
+        return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
+    }
+
+    feeAmount = parseFloat(feeAmount);
+
+    if(isNaN(feeAmount) || feeAmount < 0){
+        return ShowMessage(Messages.InvalidAmount, MessageTypes.Warning, "Warning!");
+    }
+
     MedicalBillData[index].saved = true;
+    MedicalBillData[index].hasChanges = false;
     RerenderMedicalBillTable();
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
+}
+
+function handleBillTextItemChange(index) {
+    const content = $('#TxtItem'+index).val();
+    console.log(content, index);
+    MedicalBillData[index].itemName = content;
+
+}
+
+function handleBillFeeTypeChange(index) {
+    const content = $('#TxtFeeType'+index).val();
+    MedicalBillData[index].feeType = content;
+}
+
+function handleBillFeeAmountChange(index) {
+    const content = $('#TxtFeeAmount'+index).val();
+    MedicalBillData[index].feeAmount = content;
 }
 
 
@@ -1042,56 +1110,37 @@ function medicalBillTableRowAdd() {
 }
 
 function medicalBillInputsAreAllValid() {
-    let TableRows = $('#TblPatientInvoiceBody .TblRow');
-    let TableRow = '';
-    let Item = '-';
-    let FeeType = '-';
-    let FeeAmount = 0;
-    let TotalInputElements = 0;
-    let FilledInputElements = 0;
-
-    for (let i = 0; i < TableRows.length; i++) {
-        TableRow = TableRows[i];
-        Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
-        FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
-        FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
-        TotalInputElements += 3;
-        if (Item !== '') {
-            FilledInputElements++;
+   let isAllValid = true;
+    MedicalBillData.forEach((item) => {
+        const feeAmount = parseInt(item.feeAmount);
+        if (item.itemName === "" || item.feeType === "" || item.feeAmount === "" || isNaN(feeAmount)) {
+            isAllValid = false;
         }
-        if (FeeType !== '') {
-            FilledInputElements++;
-        }
-        if (FeeAmount > 0) {
-            FilledInputElements++;
-        }
-    }
-
-    // console.log('medicalBillInputsValidate:', 'FilledInputElements:', FilledInputElements, 'TotalInputElements:', TotalInputElements);
-
-    return FilledInputElements === TotalInputElements;
+    });
+    return isAllValid;
 }
 
 function medicalBillTableAllRowsRemove() {
-    $("#TblPatientInvoiceBody").html('');
-    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
-        itemName: 'Doctor charges',
-        feeType: FeeTypes.ConsultationFee,
-        feeAmount: '500',
-        disabled: true
-    }));
-    $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({
-        itemName: 'Service charges',
-        feeType: FeeTypes.ServiceFee,
-        feeAmount: '250',
-        disabled: true
-    }));
-    $("#TblPatientInvoiceBody").append(_MedicalBillTableRow);
-    medicalBillTableRowCountReset();
-    $('#TxtDiscount').val('');
+    MedicalBillData = [
+        {
+            itemName: 'Doctor charges',
+            feeType: FeeTypes.DoctorFee,
+            feeAmount: '500',
+            disabled: true,
+            saved:true,
+            hasChanges:false
+        },
+        {
+            itemName: 'Service charges',
+            feeType: FeeTypes.HospitalFee,
+            feeAmount: '250',
+            disabled: true,
+            saved:true,
+            hasChanges:false
+        }
+    ]
+    RerenderMedicalBillTable();
     medicalBillTableTotalSumGet();
-    medicalBillTableButtonsReset();
-    // $('#TxtTotal').text(0);
 }
 
 function medicalBillTableRowDelete(TableRowElement) {
@@ -1102,15 +1151,13 @@ function medicalBillTableRowDelete(TableRowElement) {
 }
 
 function medicalBillTableTotalSumGet() {
-    let FeeAmounts = document.getElementsByName('TxtFeeAmount');
     let Sum = 0;
-    let TableRow = '';
-    let TableRowValue = '';
-    for (let i = 0; i < FeeAmounts.length; i++) {
-        TableRow = FeeAmounts[i].value;
-        TableRowValue = TableRow != NaN && TableRow != '' ? parseInt(TableRow) : 0;
-        Sum += TableRowValue;
-    }
+    MedicalBillData.forEach((item) => {
+        const feeAmount = parseInt(item.feeAmount);
+        if(!isNaN(feeAmount)){
+            Sum += feeAmount;
+        }
+    });
     let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseInt($('#TxtDiscount').val()) : 0;
     let Total = Sum - Discount;
     if (Total < 0) {
@@ -1118,7 +1165,6 @@ function medicalBillTableTotalSumGet() {
     } else {
         Total = Sum - Discount;
     }
-    console.log("total",Total);
     $('#TxtTotal').text(Total);
     $('#TxtDiscount').attr('max', (Sum));
 }
@@ -1158,30 +1204,29 @@ function medicalBillTableButtonsReset() {
 function medicalBillSave(PatientId, appId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === PatientId)[0];
-    const MedicalBillItems = [];
+    let MedicalBillItems = [];
+    let hasUnsavedChanges = false;
+    MedicalBillData.forEach((item) => {
+        if (!item.saved) {
+            hasUnsavedChanges = true;
+        }
+    });
+
+    if(hasUnsavedChanges){
+        return ShowMessage(Messages.UnsavedChanges, MessageTypes.Warning, "Warning!");
+    }
 
     if (!medicalBillInputsAreAllValid()) {
         //failed
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     } else {
-        //passed
-        let TableRows = $('#TblPatientInvoiceBody .TblRow');
-        let TableRow = '';
-        let Item = '-';
-        let FeeType = '-';
-        let FeeAmount = 0;
-        let MedicalBillItem = {};
-
-        for (let i = 0; i < TableRows.length; i++) {
-            TableRow = TableRows[i];
-            Item = $(TableRow).find('#TxtItem').val() !== '' ? $(TableRow).find('#TxtItem').val() : '';
-            FeeType = $(TableRow).find('#TxtFeeType').val() !== '' ? $(TableRow).find('#TxtFeeType').val() : '';
-            FeeAmount = $(TableRow).find('#TxtFeeAmount').val() > 0 ? $(TableRow).find('#TxtFeeAmount').val() : 0;
-            MedicalBillItem = {
-                'Item': Item, 'FeeType': FeeType, 'FeeAmount': FeeAmount
-            };
-            MedicalBillItems.push(MedicalBillItem);
-        }
+        MedicalBillItems = MedicalBillData.map((item) => {
+            return {
+                Item: item.itemName,
+                FeeType: item.feeType,
+                FeeAmount: item.feeAmount,
+            }
+        });
     }
 
     let date = new Date();
@@ -1246,24 +1291,7 @@ function RerenderMedicalBillTable(){
                 feeAmount: rowData.feeAmount,
             }));
         }else{
-            const tableRowObj = {
-                itemName: rowData.itemName,
-                feeType: rowData.feeType,
-                feeAmount: rowData.feeAmount,
-            }
-            if(rowData.saved){
-                tableRowObj.actionButtons = [
-                    `<button class="btn bg-transparent" title="Discard changes" onclick="editFee(${index})"><i class="i-Pen-2"></i></button>`,
-                    `<button class="btn bg-transparent" title="Add fee to list" onclick="deleteFee(${index})"><i class="i-Close-Window"></i></button>`
-                ]
-            }else{
-                tableRowObj.actionButtons = [
-                    `<button class="btn bg-transparent" title="Discard changes" onclick="discardFeeChanges(${index})"><i class="i-Close-Window"></i></button>`,
-                    `<button class="btn bg-transparent" title="Add fee to list" onclick="saveFeeToList(${index})"><i class="i-Yes"></i></button>`
-                ]
-            }
-            $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder(tableRowObj));
-
+            $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({index, ...rowData}));
         }
     }
     medicalBillTableRowCountReset();
@@ -1274,31 +1302,24 @@ function medicalBillTableSavedResponseAppend(Response) {
 
     const data = Response.Data?.BillData;
     console.log(Response.Data);
+    MedicalBillData = [];
 
-    //if data is empty, render default table with initial fees, hospital charges and doctor charges
-    if(data.length === 0){
-
-
-    }else{
-        //just renders the received data. must contain the hospital charges and doctor charges
-        for (let i = 0; i < data.length; i++) {
-            let billItem = data[i];
-            let isDisabled = billItem.ItemName === 'Doctor charges' || billItem.ItemName === 'Service charges';
-            let isLastRow = i === data.length - 1;
-            MedicalBillData.push(_MedicaBillTableRowBuilder({
-                itemName: billItem.ItemName,
-                feeType: billItem.FeeType,
-                feeAmount: billItem.Amount,
-                disabled: isDisabled,
-                actionButtons: [
-                    isLastRow ? _MedicalBillTableButtonAddRow : '',
-                    isDisabled ? '' : _MedicalBillTableButtonDelete]
-            }));
-        }
-        medicalBillTableButtonsReset();
-        $("#TxtDiscount").val(Response.Data.Discount);
-        $("#TxtTotal").text(Response.Data.Total);
+    //just renders the received data. must contain the hospital charges and doctor charges
+    for (let i = 0; i < data.length; i++) {
+        let billItem = data[i];
+        let isDisabled = billItem.ItemName === 'Doctor charges' || billItem.ItemName === 'Service charges';
+        MedicalBillData.push({
+            itemName: billItem.ItemName,
+            feeType: billItem.FeeType,
+            feeAmount: billItem.Amount,
+            disabled: isDisabled,
+            saved: true,
+            hasChanges: false,
+        });
     }
+    $("#TxtDiscount").val(Response.Data.Discount);
+    $("#TxtTotal").text(Response.Data.Total);
+    RerenderMedicalBillTable();
 }
 
 function AddVitals(PatientId) {

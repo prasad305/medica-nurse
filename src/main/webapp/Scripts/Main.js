@@ -185,7 +185,9 @@ const Messages =
         NofileChoosen: "No file chosen, yet.",
         FileUploadFailed: "Upload Information Failed",
         NoDataToDisplay: "No data to display",
-        BranchSaveSuccess: "Branch Saved Successfully!"
+        BranchSaveSuccess: "Branch Saved Successfully!",
+        UnsavedChanges: "You have unsaved changes. Save changes to continue",
+        InvalidAmount: "You have entered an invalid amount",
     };
 
 const Images =
@@ -403,28 +405,44 @@ const _MedicaBillTableRowBuilder = ({
     feeType = FeeTypes.OtherFee,
     feeAmount,
     disabled = false,
-    actionButtons = []
+    actionButtons = [],
+    saved = false,
+    index,
+    hasChanges
 }) => {
 return `<tr class="TblRow">
             <td>1</td>
             <td> 
-                <input name="TxtItem" id="TxtItem" class="form-control form-control-sm" type="text" value="${itemName ? itemName : ''}" ${disabled?'disabled':''}> 
+            ${
+                saved ? 
+                    `${itemName}` : `<input name="TxtItem" id="TxtItem${index}" class="form-control form-control-sm" style="width:auto" type="text" value="${itemName ? itemName : ''}" ${disabled?'disabled':''} ${hasChanges?'':'onkeyup="handleBillTextItemChange('+index+')"'}>`
+             }
             </td> 
             <td> 
-                <select class="form-control form-control-sm" name="TxtFeeType" id="TxtFeeType" ${disabled?'disabled':''} > 
-                    <option value="" >Select A Fee Type</option> 
-                    ${
-                    Object.keys(FeeTypes).map(key => {
-                    return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
-                    }).join('')
-                    }
-                </select>
+             ${
+                saved ?`${feeType}`:
+                           `<select class="form-control form-control-sm" name="TxtFeeType" style="width:auto" id="TxtFeeType${index}" ${disabled?'disabled':''} ${hasChanges?'':'onchange="handleBillFeeTypeChange('+index+')"'}> 
+                                <option value="" >Select A Fee Type</option> 
+                                ${
+                                Object.keys(FeeTypes).map(key => {
+                                return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
+                                }).join('')
+                                }
+                            </select>`
+            }
             </td> 
             <td> 
-                <input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number"  value="${feeAmount ? feeAmount : null}" ${disabled?'disabled':''}> 
+            ${
+                saved ?`${feeAmount}`:`<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount${index}" class="form-control form-control-sm" style="width:auto"  value="${feeAmount ? feeAmount : ''}" ${disabled?'disabled':''} ${hasChanges ? '' :'onkeyup="handleBillFeeAmountChange('+index+')"'}> `
+             }
             </td> 
             <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0"> 
-            ${actionButtons.map(button => button).join('')}
+            ${
+                saved ?
+                    `<button class="btn bg-transparent" title="Edit fee" onclick="editFee(${index})"><i class="i-Pen-2"></i></button>
+                    <button class="btn bg-transparent" title="Remove fee" onclick="deleteFee(${index})"><i class="i-Close-Window"></i></button>`
+                    :`<button class="btn bg-transparent" title="${hasChanges ?'Discard changes':'Remove fee'}" onclick="${hasChanges ? `discardChanges(${index})` : `deleteFee(${index})`}"><i class="${hasChanges ? 'i-Back1':'i-Close-Window'}"></i></button>
+                     <button class="btn bg-transparent" title="${hasChanges ?'Save changes':'Add fee to list'}" onclick="${hasChanges ? `saveChanges(${index})` : `saveFeeToList(${index})`}"><i class="i-Yes"></i></button>`}
             </td> 
         </tr> `
 }

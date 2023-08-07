@@ -340,11 +340,11 @@ function SavePatient_Click() {
 
 function SaveBillData(printData) {
 
-    var dataset = [];
-
-    $('#TblPatientInvoice > tbody  > tr').each(function (index, tr) {
-        dataset.push(new BillData(tr.cells[3].children[0].value, tr.cells[2].children[0].value, tr.cells[1].children[0].value))
-    });
+    const dataset = MedicalBillData.map((item)=>(new BillData(
+        item.feeAmount,
+        item.feeType,
+        item.itemName
+    )));
 
     var allData = new Bill(billId, selectedSessionId, selectedDoctorId, selectedPatientId
         , $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0
