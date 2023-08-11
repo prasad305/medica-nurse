@@ -2676,12 +2676,31 @@ function BranchAddOrUpdateModal() {
         ColumnContactNo.appendChild(TextContactNo);
         ParentRow.appendChild(ColumnContactNo);
 
+        const ColumnInstituteFee = new Div(undefined, "col-sm-6 mt-2");
+        const LabelInstituteFee = new Label(undefined, "Institute Fee *",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtBranchUpdateInstituteFee"),
+                new Attribute("disabled", true)]
+        );
+        const TextInstituteFee = new Textbox("TxtBranchUpdateInstituteFee", "form-control form-control-rounded",
+            [
+                new Attribute(_AttributePlaceHolder, 'Institute fee'),
+                new Attribute(_AttributeType, 'text'),
+                new Attribute('value', ''),
+            ]
+        );
+
+        ColumnInstituteFee.appendChild(LabelInstituteFee);
+        ColumnInstituteFee.appendChild(TextInstituteFee);
+        ParentRow.appendChild(ColumnInstituteFee);
+
         ModalContentBody.appendChild(ParentRow);
         ModalDialogContent.appendChild(ModalContentBody);
 
         const ModalContentFooter = new Div(undefined, "modal-footer");
         ModalContentFooter.appendChild(new Button('BtnCloseBranchUpdateModal', 'Close', 'btn btn-primary', [new Attribute('data-dismiss', 'modal')
            ]));
+        ModalContentFooter.appendChild(new Button('BtnUpdateBranch', 'Update', 'btn btn-primary', [new Attribute(_AttributeOnClick, 'CMD_UpdateBranch(' + BranchId + ')')
+        ]));
 
         // if (ProcessType === 'AddNew') {
         //     ModalContentFooter.appendChild(new Button('BtnBranchSave', 'Save', 'btn btn-primary',
@@ -2873,12 +2892,12 @@ function DoctorsAddOrUpdateModal() {
 
         let data = [];
         data.push(new SelectItem("Select Title", "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Dr.", "Dr.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Prof.", "Prof.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Mr.", "Mr.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Mrs.", "Mrs.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Miss.", "Miss.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        data.push(new SelectItem("Rev.", "Rev.", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Dr.", "Dr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Prof.", "Prof", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mr.", "Mr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Mrs.", "Mrs", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Miss.", "Miss", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        data.push(new SelectItem("Rev.", "Rev", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
         DropDown("col-sm-3  mt-2", "DrpTitle", "Title *", "", data, ParentRow);
 
@@ -2896,11 +2915,19 @@ function DoctorsAddOrUpdateModal() {
         DropDown("col-sm-6  mt-2", "DrpQualifications", "Qualifications *", "", undefined, ParentRow);
         ModalContentBody.appendChild(ParentRow);
 
-        const DoctorFeeAndMedicaIdRow = new Div(undefined, "row");
-        LableAndTextFeild("col-sm-6", "DoctorFee", "Doctor Fee *", "Doctor Fee", "", "", DoctorFeeAndMedicaIdRow);
-        LableAndTextFeild("col-sm-6", "MedicaId", "Medica Id", "45875", "", "", DoctorFeeAndMedicaIdRow,'',ProcessType === 'AddNew' ? false : true);
+        const DoctorPayableHospitalRow = new Div(undefined, "row");
+        LableAndTextFeild("col-sm-6", "DoctorPayable", "Doctor Payable*", "Doctor payable", "", "", DoctorPayableHospitalRow);
+        LableAndTextFeild("col-sm-6", "HospitalFee", "Hospital fee*", "Hospital fee", "", "", DoctorPayableHospitalRow);
 
-        ModalContentBody.appendChild(DoctorFeeAndMedicaIdRow);
+        ModalContentBody.appendChild(DoctorPayableHospitalRow);
+
+
+
+        const OtherFeeAndMedicaIdRow = new Div(undefined, "row");
+        LableAndTextFeild("col-sm-6", "OtherFee", "Other Fee*", "Other Fee", "", "", OtherFeeAndMedicaIdRow);
+        LableAndTextFeild("col-sm-6", "MedicaId", "Medica Id", "45875", "", "", OtherFeeAndMedicaIdRow,'',ProcessType === 'AddNew' ? false : true);
+
+        ModalContentBody.appendChild(OtherFeeAndMedicaIdRow);
 
         ModalDialogContent.appendChild(ModalContentBody);
 
@@ -3068,6 +3095,14 @@ function ReportSearch() {
         data.push(new SelectItem( "Rescheduled","Unsuccessful consultation with Rescheduling", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
         DropDown("col-sm-3  mt-2 form-group", "DrpReportAppointmentStatus", "Appointment Status", "", data, DoctorSearchActionRow);
+
+        let doctorFees = [];
+        doctorFees.push(new SelectItem("AllFees", "All Fees", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class"),new Attribute('id', "All_Fees")]))
+        doctorFees.push(new SelectItem( "DoctorPayable","Doctor Payable", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        doctorFees.push(new SelectItem( "HospitalFee","Hospital Fee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        doctorFees.push(new SelectItem("OtherFee","Other Fee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+
+        DropDown("col-sm-3  mt-2 form-group", "DrpFeeFilter", "Fee Type", "", doctorFees, DoctorSearchActionRow);
 
         let ButtonPatientSearch = new Button("DoctorBranchSearchButton", "Search",
             "btn btn-primary btn-rounded  col-2 form-group",
