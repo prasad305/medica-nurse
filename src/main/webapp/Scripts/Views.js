@@ -2916,8 +2916,8 @@ function DoctorsAddOrUpdateModal() {
         ModalContentBody.appendChild(ParentRow);
 
         const DoctorPayableHospitalRow = new Div(undefined, "row");
-        LableAndTextFeild("col-sm-6", "DoctorPayable", "Doctor Payable*", "Doctor payable", "", "", DoctorPayableHospitalRow);
-        LableAndTextFeild("col-sm-6", "HospitalFee", "Hospital fee*", "Hospital fee", "", "", DoctorPayableHospitalRow);
+        LableAndTextFeild("col-sm-6", "DoctorPayable", "Doctor Payable*", "Doctor payable", "", "500", DoctorPayableHospitalRow);
+        LableAndTextFeild("col-sm-6", "HospitalFee", "Hospital fee*", "Hospital fee", "", "250", DoctorPayableHospitalRow);
 
         ModalContentBody.appendChild(DoctorPayableHospitalRow);
 
