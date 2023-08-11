@@ -62,11 +62,11 @@ function LayoutMain() {
         let DivMainContent = Div(undefined, "main-content");
         DivMainContent.appendChild(new Div(Containers.ButtonBar));
 
-        let DivSwitchMenu = new Div(undefined, "d-flex justify-content-center align-items-center mb-3");
-        DivSwitchMenu.appendChild( new Button(undefined, "", "SwitchMenuButton SwitchMenuButton-Active", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]));
-        DivSwitchMenu.appendChild(new Button(undefined, "", "SwitchMenuButton", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]));
-
-        DivMainContent.appendChild(DivSwitchMenu);
+        // let DivSwitchMenu = new Div(undefined, "d-flex justify-content-center align-items-center mb-3");
+        // DivSwitchMenu.appendChild( new Button(undefined, "", "SwitchMenuButton SwitchMenuButton-Active", [new Attribute(_AttributeOnClick, "LnkGeneral_Click(this)")]));
+        // DivSwitchMenu.appendChild(new Button(undefined, "", "SwitchMenuButton", [new Attribute(_AttributeOnClick, "LnkSettings_Click(this)")]));
+        //
+        // DivMainContent.appendChild(DivSwitchMenu);
 
         let DivRowMainContent = new Div(undefined, "row");
         DivRowMainContent.appendChild(new Div(undefined, "col-lg-2"));
