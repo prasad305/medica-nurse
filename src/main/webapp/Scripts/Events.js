@@ -1289,6 +1289,8 @@ let _SelectedDoctor;
 function DoctorAddOrUpdateModalView(index, id) {
     if (id) {
         _SelectedDoctor = AllDoctor[index];
+        const doctorFees = JSON.parse(_SelectedDoctor.ZoomEmail);
+
         new DoctorsAddOrUpdateModal().Render(Containers.Footer, id, 'Update');
 
         $("#DrpTitle").val(_SelectedDoctor.Title);
@@ -1299,6 +1301,10 @@ function DoctorAddOrUpdateModalView(index, id) {
         $("#TxtDoctorNIC").val(_SelectedDoctor.NIC);
         $("#TxtDoctorRegistration_Number").val(_SelectedDoctor.RegistrationNumber);
         $("#TxtDoctorDate_Of_Birth").val((_SelectedDoctor.DateOfBirth).substring(0, 10));
+        $("#TxtDoctorPayable").val(doctorFees.DoctorFee);
+        $("#TxtHospitalFee").val(doctorFees.HospitalFee);
+        $("#TxtOtherFee").val(doctorFees.OtherFee);
+        $("#TxtMedicaId").val(doctorFees.Id);
 
         let Payload = new DoctorSpecialization(undefined, _SelectedDoctor.Id, undefined, undefined, _UserId);
         _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp) {
