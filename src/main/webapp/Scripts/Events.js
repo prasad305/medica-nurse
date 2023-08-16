@@ -1162,7 +1162,8 @@ function DoctorBranch_Search() {
 
     let id = $('#DrpBranch').val();
     if (id == "0") {
-        document.getElementById('DoctorBranchSearchButton').setAttribute('disabled', false);
+        document.getElementById('DoctorBranchSearchButton').value = 'Search';
+        document.getElementById('DoctorBranchSearchButton').removeAttribute('disabled');
         return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
     }
     LoadAllDoctorsForBranch(id);
