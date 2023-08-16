@@ -1156,8 +1156,13 @@ function Misc_Click(CardElement) {
 //doctor
 
 function DoctorBranch_Search() {
+    //set loader from here
+    document.getElementById('DoctorBranchSearchButton').value = 'Searching...';
+    document.getElementById('DoctorBranchSearchButton').setAttribute('disabled', true);
+
     let id = $('#DrpBranch').val();
     if (id == "0") {
+        document.getElementById('DoctorBranchSearchButton').setAttribute('disabled', false);
         return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
     }
     LoadAllDoctorsForBranch(id);
@@ -1228,6 +1233,8 @@ function LoadDoctorToTable(Res) {
         // console.log(AllDoctor);
         doctorTblData(AllDoctor);
     }
+    document.getElementById('DoctorBranchSearchButton').value = 'Search';
+    document.getElementById('DoctorBranchSearchButton').removeAttribute('disabled');
 }
 
 function doctorDrpData(Res) {
@@ -1308,12 +1315,12 @@ function DoctorAddOrUpdateModalView(index, id) {
 
         let Payload = new DoctorSpecialization(undefined, _SelectedDoctor.Id, undefined, undefined, _UserId);
         _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp) {
-            DoctorSpecializationId = ResponseSp.Data[0].Id
-            DoctorSpecializationDrpId = ResponseSp.Data[0].SpecializationId
+            DoctorSpecializationId = ResponseSp?.Data[0]?.Id
+            DoctorSpecializationDrpId = ResponseSp?.Data[0]?.SpecializationId
             _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
         });
         _Request.Post("DoctorQualification/Get", Payload, function (ResponseQa) {
-            DoctorQualificationId = ResponseQa.Data[0].Id
+            DoctorQualificationId = ResponseQa?.Data ? ResponseQa?.Data[0]?.Id : undefined
             _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
         });
         _Request.Post("DoctorContactNumber/GetContactNumber", Payload, function (Response) {
@@ -1363,7 +1370,10 @@ function AddOrUpdateDoctor(id) {
     let DOB = $("#TxtDoctorDate_Of_Birth").val().trim();
     let Specialization = $("#DrpSpecialization").val();
     let Qualification = $("#DrpQualifications").val();
-    // console.log('AddOrUpdateDoctor:', Specialization, Qualification);
+    let DoctorPayable = $("#TxtDoctorPayable").val().trim();
+    let HospitalFee = $("#TxtHospitalFee").val().trim();
+    let OtherFee = $("#TxtOtherFee").val().trim();
+
 
     //validation
     if (Title === "")
@@ -1402,7 +1412,7 @@ function AddOrUpdateDoctor(id) {
 
 
     let Payload = new DoctorSave(id, Title, FirstName, MiddleName, LastName, Email, NIC, 1,
-        _UserIdAdmin, RegNumber, DOB, undefined, ContactList);
+        _UserIdAdmin, RegNumber, DOB, undefined, ContactList, DoctorPayable, HospitalFee, OtherFee);
 
     _Request.Post("doctor/post", Payload, SuccessSaveDoctorDetails);
 
@@ -1447,8 +1457,8 @@ function SuccessSaveDoctorDetails(Response) {
 
     } else {
         let PayLoad = new DoctorBranch($('#DrpBranch').val(), Response.Data.Id, 1, _UserIdAdmin);
-        _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
-        });
+        // _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
+        // });
 
         //create Doctor Specialization object
         let selectedSpecialization = $("#DrpSpecialization").val();

@@ -47,7 +47,7 @@ function LayoutCommon() {
     };
 
     this.DerenderLoader = function () {
-        document.getElementById(_Body).removeChild(document.getElementById(this.IdLoader));
+        // document.getElementById(_Body).removeChild(document.getElementById(this.IdLoader));
     };
 }
 
@@ -60,6 +60,7 @@ function LayoutMain() {
         let DivHeader = new Div(undefined, "main-content-wrap sidenav-close d-flex flex-column m-auto");
 
         let DivMainContent = Div(undefined, "main-content");
+
         DivMainContent.appendChild(new Div(Containers.ButtonBar));
 
         let DivSwitchMenu = new Div(undefined, "d-flex justify-content-center align-items-center mb-3");
@@ -1555,7 +1556,7 @@ function ClinicMedicalBillPrintPageIframeModal(Prescription) {
 }
 
 function AppointmentDetailsEditModal() {
-    this.Render = function (Container, AppointmentId, ViewType, AppointmentNumber) {
+    this.Render = function (Container, AppointmentId, ViewType, AppointmentNumber, doctor) {
         // console.log('AppointmentDetailsEditModal:', Container, AppointmentId, ViewType, AppointmentNumber);
 
         // console.log('AppointmentDetailsEditModal._ArrayAppointmentsForToday:', _ArrayAppointmentsForToday);
@@ -1602,6 +1603,8 @@ function AppointmentDetailsEditModal() {
         // );
         ColumnPatientName.appendChild(AppointmentPatientLabel);
         ColumnPatientName.appendChild(AppointmentPatientName);
+
+
         // RowOneColumnOne.appendChild(AppointmentPatientId);
         FormRowOne.appendChild(ColumnPatientName);
 
@@ -1635,6 +1638,24 @@ function AppointmentDetailsEditModal() {
         ColumnDoctor.appendChild(AppointmentDoctorLabel);
         ColumnDoctor.appendChild(AppointmentDoctorSelect);
 
+        const ColumnTime = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
+        const AppointmentDoctorSessionLabel = new Label(undefined, "Session *",
+            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
+        );
+        const AppointmentDoctorSession = new Select("TxtAppointmentUpdateDoctorSession",
+            [
+                new Attribute(_AttributeClass, "form-control form-control-rounded select"),
+                new Attribute('disabled', 'true')
+            ]
+        );
+        AppointmentDoctorSession.appendChild(new SelectItem("None", " ",
+            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
+        ));
+        ColumnTime.appendChild(AppointmentDoctorSessionLabel);
+        ColumnTime.appendChild(AppointmentDoctorSession);
+        // FormRowOne.appendChild(ColumnEmpty);
+
+
 
         const ColumnDoctorEnable = new Div(undefined, "col-sm-12 col-md-12 col-lg-2 text-right mt-2 d-flex");
         const AppointmentDoctorEnable = new Button('BtnAppointmentDoctorEnable', 'Change', 'btn btn-primary btn-rounded mt-auto',
@@ -1663,10 +1684,140 @@ function AppointmentDetailsEditModal() {
                     new Attribute(_AttributeOnChange, 'GetDoctorsSessionsForAppointmentUpdate()')]
             );
         }
+
+        // doctor fees
+        const ColumnDoctorFee = new Div(
+            undefined,
+            "col-sm-12 col-md-12 col-lg-5 text-left mt-2"
+        );
+        const DoctorFeeLabel = new Label("DoctorFeeLabel", "Doctor Payable *", [
+            new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorFee"),
+        ]);
+        const AppointmentDoctorFee = new Textbox(
+            "TxtAppointmentUpdateDoctorFee",
+            "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute("disabled", "true"),
+                new Attribute("value", parseFloat(doctor?.fees?.DoctorFee).toFixed(2)),
+            ]
+        );
+
+        ColumnDoctorFee.appendChild(DoctorFeeLabel);
+        ColumnDoctorFee.appendChild(AppointmentDoctorFee);
+        //doctor fees
+
+
+        // Hospital fees
+        const ColumnHospitalFee = new Div(
+            undefined,
+            "col-sm-12 col-md-12 col-lg-5 text-left mt-2"
+        );
+        const HospitalFeeLabel = new Label("HospitalFeeLabel", "Hospital Fee *", [
+            new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "TxtAppointmentUpdateHospitalFee"),
+        ]);
+        const AppointmentHospitalFee = new Textbox(
+            "TxtAppointmentUpdateHospitalFee",
+            "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute("disabled", "true"),
+                new Attribute("value", parseFloat(doctor?.fees?.HospitalFee).toFixed(2)),
+            ]
+        );
+
+        ColumnHospitalFee.appendChild(HospitalFeeLabel);
+        ColumnHospitalFee.appendChild(AppointmentHospitalFee);
+        //Hospital fees
+
+        // Other fees
+        const ColumnOtherFee = new Div(
+            undefined,
+            "col-sm-12 col-md-12 col-lg-5 text-left mt-2"
+        );
+        const OtherFeeLabel = new Label("OtherFeeLabel", "Other Fee *", [
+            new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "TxtAppointmentUpdateOtherFee"),
+        ]);
+        const AppointmentOtherFee = new Textbox(
+            "TxtAppointmentUpdateOtherFee",
+            "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute("disabled", "true"),
+                new Attribute("value", parseFloat(doctor?.fees?.OtherFee).toFixed(2)),
+            ]
+        );
+
+        ColumnOtherFee.appendChild(OtherFeeLabel);
+        ColumnOtherFee.appendChild(AppointmentOtherFee);
+        //Other fees
+
+        // Service fees
+        const ColumnServiceFee = new Div(
+            undefined,
+            "col-sm-12 col-md-12 col-lg-5 text-left mt-2"
+        );
+        const ServiceFeeLabel = new Label("ServiceFeeLabel", "Service Fee *", [
+            new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "TxtAppointmentUpdateServiceFee"),
+        ]);
+        const AppointmentServiceFee = new Textbox(
+            "TxtAppointmentUpdateServiceFee",
+            "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute("disabled", "true"),
+                new Attribute("value", parseFloat(250).toFixed(2)),
+            ]
+        );
+
+        ColumnServiceFee.appendChild(ServiceFeeLabel);
+        ColumnServiceFee.appendChild(AppointmentServiceFee);
+        //Service fees
+
+        const totalFee = parseFloat(
+            doctor?.fees?.DoctorFee +
+            doctor?.fees?.HospitalFee +
+            doctor?.fees?.OtherFee +
+            250
+        ).toFixed(2);
+        // Total fees
+        const ColumnTotalFee = new Div(
+            undefined,
+            "col-sm-12 col-md-12 col-lg-5 text-left mt-2"
+        );
+        const TotalFeeLabel = new Label("TotalFeeLabel", "Total Fee *", [
+            new Attribute(_AttributeClass, "col-form-label"),
+            new Attribute(_AttributeFor, "TxtAppointmentUpdateTotalFee"),
+        ]);
+        const AppointmentTotalFee = new Textbox(
+            "TxtAppointmentUpdateTotalFee",
+            "form-control form-control-rounded",
+            [
+                new Attribute(_AttributeType, "text"),
+                new Attribute("disabled", "true"),
+                new Attribute("value", totalFee),
+            ]
+        );
+
+        ColumnTotalFee.appendChild(TotalFeeLabel);
+        ColumnTotalFee.appendChild(AppointmentTotalFee);
+        //Total fees
+
         ColumnDate.appendChild(AppointmentDateLabel);
         ColumnDate.appendChild(AppointmentDate);
         FormRowOne.appendChild(ColumnDate);
         FormRowOne.appendChild(ColumnDoctor);
+        FormRowOne.appendChild(ColumnTime);
+        FormRowOne.appendChild(ColumnDoctorFee);
+        FormRowOne.appendChild(ColumnHospitalFee);
+        FormRowOne.appendChild(ColumnServiceFee);
+        FormRowOne.appendChild(ColumnOtherFee);
+        FormRowOne.appendChild(ColumnTotalFee);
+
         if (ViewType === 0) {
             FormRowOne.appendChild(ColumnDoctorEnable);//button
         }
@@ -1677,6 +1828,8 @@ function AppointmentDetailsEditModal() {
         // );
         // ColumnDateEnable.appendChild(AppointmentDateEnable);
         // FormRowOne.appendChild(ColumnDateEnable);
+
+
 
         //---- row 03
 
@@ -1705,23 +1858,7 @@ function AppointmentDetailsEditModal() {
             FormRowOne.appendChild(ColumnEmpty);
         }
 
-        const ColumnTime = new Div(undefined, "col-sm-12 col-md-12 col-lg-5 text-left mt-2");
-        const AppointmentDoctorSessionLabel = new Label(undefined, "Session *",
-            [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "TxtAppointmentUpdateDoctorSession")]
-        );
-        const AppointmentDoctorSession = new Select("TxtAppointmentUpdateDoctorSession",
-            [
-                new Attribute(_AttributeClass, "form-control form-control-rounded select"),
-                new Attribute('disabled', 'true')
-            ]
-        );
-        AppointmentDoctorSession.appendChild(new SelectItem("None", " ",
-            [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]
-        ));
-        ColumnTime.appendChild(AppointmentDoctorSessionLabel);
-        ColumnTime.appendChild(AppointmentDoctorSession);
-        // FormRowOne.appendChild(ColumnEmpty);
-        FormRowOne.appendChild(ColumnTime);
+
 
         // const ColumnTimeEnable = new Div(undefined, "col-sm-2 text-left mt-2 d-flex");
         // const AppointmentTimeEnable = new Button('BtnAppointmentTimeEnable', 'Change', 'btn btn-primary btn-rounded mx-2 mt-auto',
@@ -2775,7 +2912,7 @@ function DoctorSearch() {
 
         let DivFormRowDoctor = new Div(undefined, "col-sm-3 text-left");
         let LabelAppoinment = new Label(undefined, "Select Branch *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpBranch")]);
-        let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select"), new Attribute(_AttributeOnChange, "GetDoctorByBranch()")]);
+        let SelectBranch = new Select("DrpBranch", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
         SelectBranch.appendChild(new SelectItem("Select Branch", 0, [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]));
         DivFormRowDoctor.appendChild(LabelAppoinment);
         DivFormRowDoctor.appendChild(SelectBranch);
@@ -2891,7 +3028,6 @@ function DoctorsAddOrUpdateModal() {
         const ParentRow = new Div(undefined, "row");
 
         let data = [];
-        data.push(new SelectItem("Select Title", "", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Dr.", "Dr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Prof.", "Prof", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
         data.push(new SelectItem("Mr.", "Mr", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
@@ -2916,15 +3052,15 @@ function DoctorsAddOrUpdateModal() {
         ModalContentBody.appendChild(ParentRow);
 
         const DoctorPayableHospitalRow = new Div(undefined, "row");
-        LableAndTextFeild("col-sm-6", "DoctorPayable", "Doctor Payable*", "Doctor payable", "", "500", DoctorPayableHospitalRow);
-        LableAndTextFeild("col-sm-6", "HospitalFee", "Hospital fee*", "Hospital fee", "", "250", DoctorPayableHospitalRow);
+        LableAndTextFeild("col-sm-6", "DoctorPayable", "Doctor Payable*", "Doctor payable", "", "", DoctorPayableHospitalRow);
+        LableAndTextFeild("col-sm-6", "HospitalFee", "Hospital fee*", "Hospital fee", "", "", DoctorPayableHospitalRow);
 
         ModalContentBody.appendChild(DoctorPayableHospitalRow);
 
 
 
         const OtherFeeAndMedicaIdRow = new Div(undefined, "row");
-        LableAndTextFeild("col-sm-6", "OtherFee", "Other Fee*", "Other Fee", "", "", OtherFeeAndMedicaIdRow);
+        LableAndTextFeild("col-sm-6", "OtherFee", "Other Fee*", "Other Fee", "", "0", OtherFeeAndMedicaIdRow);
         LableAndTextFeild("col-sm-6", "MedicaId", "Medica Id", "45875", "", "", OtherFeeAndMedicaIdRow,'',ProcessType === 'AddNew' ? false : true);
 
         ModalContentBody.appendChild(OtherFeeAndMedicaIdRow);
@@ -3080,8 +3216,8 @@ function ReportSearch() {
         FormRow0Appoinment.appendChild(DivFormRowDoctor);
         FormRow0Appoinment.appendChild(DivFormRowDoctor1);
 
-        LableAndTextFeild("col-sm-3", "ReportFrom_Date", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
-        LableAndTextFeild("col-sm-3", "ReportTo_Date", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3 text-left", "ReportFrom_Date", "From Date", "From Date", "", "", FormRow0Appoinment, "date");
+        LableAndTextFeild("col-sm-3 text-left", "ReportTo_Date", "To Date", "To Date", "", "", FormRow0Appoinment, "date");
 
 
         let DoctorSearchActionRow = new Div("ReportSearchRow", "row align-items-end justify-items-end mb-3");
@@ -3097,12 +3233,28 @@ function ReportSearch() {
         DropDown("col-sm-3  mt-2 form-group", "DrpReportAppointmentStatus", "Appointment Status", "", data, DoctorSearchActionRow);
 
         let doctorFees = [];
-        doctorFees.push(new SelectItem("AllFees", "All Fees", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class"),new Attribute('id', "All_Fees")]))
-        doctorFees.push(new SelectItem( "DoctorPayable","Doctor Payable", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        doctorFees.push(new SelectItem( "HospitalFee","Hospital Fee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
-        doctorFees.push(new SelectItem("OtherFee","Other Fee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        doctorFees.push(new SelectItem("All Fees", "AllFees", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class"),new Attribute('id', "All_Fees")]))
+        doctorFees.push(new SelectItem( "Doctor Payable","DoctorPayable", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        doctorFees.push(new SelectItem( "Hospital Fee","HospitalFee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
+        doctorFees.push(new SelectItem("Other Fee","OtherFee", [new Attribute(_AttributeClass, "form-control form-control-rounded appointment-class")]))
 
-        DropDown("col-sm-3  mt-2 form-group", "DrpFeeFilter", "Fee Type", "", doctorFees, DoctorSearchActionRow);
+        // DropDown("col-sm-3  mt-2 form-group", "DrpFeeFilter", "Fee Type", "", doctorFees, DoctorSearchActionRow);
+
+        DoctorSearchActionRow.innerHTML += `<div class="col-sm-3  mt-2 form-group">
+                                                <label >Select Fee *</label>
+                                                <div class="dropdown">
+                                                  <button class="btn btn-default dropdown-toggle form-control form-control-rounded  text-left" type="button" data-toggle="dropdown"><span class="dropdown-text"> Select Fees</span>
+                                                  <span class="caret"></span></button>
+                                                  <ul class="dropdown-menu px-2 bg-white" style="left: 10px!important;">
+                                                    <li><label><input type="checkbox" class="selectAll" /><span class="select-text"> Select</span> all fees</label></li>
+                                                    <li class="divider"></li>
+                                                    <li class="option justOne"><label><input name='options[]' type="checkbox" class="option justOne" value='Option 1'/> Doctor payable</label></li>
+                                                    <li class="option justOne"><label><input name='options[]' type="checkbox" class="option justOne" value='Option 2'/> Hospital fee</label></li>
+                                                    <li class="option justOne"><label><input name='options[]' type="checkbox" class="option justOne" value='Option 3'/> Service fee</label></li>
+                                                    <li class="option justOne"><label><input name='options[]' type="checkbox" class="option justOne" value='Option 4'/> Other fee</label></li>
+                                                  </ul>
+                                                </div>
+                                            </div>`
 
         let ButtonPatientSearch = new Button("DoctorBranchSearchButton", "Search",
             "btn btn-primary btn-rounded  col-2 form-group",
@@ -3122,6 +3274,38 @@ function ReportSearch() {
 
         $('#TxtReportFrom_Date').prop('type', 'date');
         $('#TxtReportTo_Date').prop('type', 'date');
+
+
+        $('body').on("click", ".dropdown-menu", function (e) {
+            $(this).parent().is(".open") && e.stopPropagation();
+        });
+
+        $('.selectAll').click(function() {
+            if ($(this).is(':checked')) {
+                $('.option').prop('checked', true);
+                let total = $('input[name="options[]"]:checked').length;
+                $(".dropdown-text").html('(' + total + ') fees selected');
+                $(".select-text").html(' Deselect');
+            } else {
+                $('.option').prop('checked', false);
+                $(".dropdown-text").html('(0) fees selected');
+                $(".select-text").html(' Select');
+            }
+        });
+
+        $("li.justOne").click(function(){
+            let a = $("input[type='checkbox'].justOne");
+            if(a.length == a.filter(":checked").length){
+                $('.selectAll').prop('checked', true);
+                $(".select-text").html(' Deselect');
+            }
+            else {
+                $('.selectAll').prop('checked', false);
+                $(".select-text").html(' Select');
+            }
+            let total = $('input[name="options[]"]:checked').length;
+            $(".dropdown-text").html('(' + total + ') fees selected');
+        });
     }
 }
 

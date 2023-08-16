@@ -376,7 +376,7 @@ function Page_Load() {
 
 const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)"><i class="fa-trash"></i></button>';
 const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()"><i class="i-Add"></i></button>';
-
+let _MedicalBillDoctor = {}
 const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td>1</td>' +
     '<td> ' +

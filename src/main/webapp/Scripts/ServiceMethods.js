@@ -722,7 +722,7 @@ function FilterAppointedPatientData(Data) {
             PaymentTypeIcon = `<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ${PaidButton}`;
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + 'Unpaid' + '</button>'
+        let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ',' + Data[Count].DoctorId + ')">' + 'Unpaid' + '</button>'
 
         let IsPaid = false;
         let PaymentStatusColumn = '';
@@ -805,7 +805,7 @@ function FilterAppointedPatientData(Data) {
             "M/F": Gender,
             "Payment": PaymentStatusColumn,
             "Status": ChannelingStatus,
-            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
+            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ','+ Data[Count].DoctorId +')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
         });
 
     }
@@ -864,14 +864,30 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType,Status) {
+async function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType,Status, DoctorId) {
     // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
     selectedRowPatientId = PatientId;
     selectedRowStatus = Status;
-    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber);
+    let doctor = {};
+    //get doctor to fetch the fees
+    try{
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${DoctorId}`,
+            }
+        );
+
+        doctor = response?.Data;
+        doctor.fees = JSON.parse(doctor?.ZoomEmail);
+        console.log(doctor);
+    }catch(e){
+        console.log(e)
+    }
+
+    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber,doctor);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
@@ -931,7 +947,7 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(AppointmentId, appId) {
+async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
     // console.log(appId)
     selectedAppId = appId;
     selectedAppointmentId = AppointmentId;
@@ -939,7 +955,22 @@ function MedicalBillDisplay(AppointmentId, appId) {
 
     var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId, undefined, undefined, selectedAppId, undefined, AppointmentId);
 
-    _Request.Post(ServiceMethods.BillGet, allData, function (res) {
+    let doctor = {};
+    try{
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${doctorId}`,
+            }
+        );
+
+        doctor = response?.Data;
+        doctor.fees = JSON.parse(doctor?.ZoomEmail);
+        _MedicalBillDoctor = doctor;
+    }catch(e){
+        console.log(e)
+    }
+
+    _Request.Post(ServiceMethods.BillGet, allData, async function (res) {
         // console.log(res);
         if (res.Data) {
             billId = res.Data.Id;
@@ -947,18 +978,19 @@ function MedicalBillDisplay(AppointmentId, appId) {
             medicalBillTableSavedResponseAppend(res);
         } else {
             billId = 0;
+
             MedicalBillData = [
                 {
                     itemName: 'Doctor charges',
                     feeType: FeeTypes.DoctorFee,
-                    feeAmount: '500',
+                    feeAmount: parseFloat(doctor?.fees?.DoctorFee + doctor?.fees?.HospitalFee + doctor?.fees?.OtherFee).toFixed(2),
                     disabled: true,
                     saved: true,
                     hasChanges: false
                 },
                 {
                     itemName: 'Service charges',
-                    feeType: FeeTypes.HospitalFee,
+                    feeType: FeeTypes.BookingFee,
                     feeAmount: '250',
                     disabled: true,
                     saved: true,
@@ -1125,18 +1157,18 @@ function medicalBillTableAllRowsRemove() {
         {
             itemName: 'Doctor charges',
             feeType: FeeTypes.DoctorFee,
-            feeAmount: '500',
+            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee + _MedicalBillDoctor?.fees?.HospitalFee + _MedicalBillDoctor?.fees?.OtherFee).toFixed(2),
             disabled: true,
-            saved:true,
-            hasChanges:false
+            saved: true,
+            hasChanges: false
         },
         {
             itemName: 'Service charges',
-            feeType: FeeTypes.HospitalFee,
+            feeType: FeeTypes.BookingFee,
             feeAmount: '250',
             disabled: true,
-            saved:true,
-            hasChanges:false
+            saved: true,
+            hasChanges: false
         }
     ]
     RerenderMedicalBillTable();
@@ -1876,6 +1908,7 @@ function setDoctorsTable(Data){
     if(Data.length === 0){
         $('#TableDoctorsSearchResults').append('<tr><td colspan="5" class="text-center">No Data Found</td></tr>')
     }
+    CreateDataTable('TableDoctorsSearchResults');
 }
 
 
