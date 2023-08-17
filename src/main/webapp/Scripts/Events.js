@@ -449,7 +449,7 @@ function CmdSessionSearch_Click() {
     if (document.getElementById('DrpSessionDoctor').value === '0')
         return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
 
-    _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
+    _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId,_NurseBranch.Id ), GetDoctorSessionData_Success);
 }
 
 function CmdCancelSession_Click() {
@@ -1256,12 +1256,13 @@ function doctorTblData(Response) {
         let Doctor = {};
         for (let Count = 0; Count < Response.length; Count++) {
             Doctor = Response[Count];
+            if(Doctor?.Title && Doctor?.FirstName){
             ArrayDoctorSearchResultsData.push({
-                "Doctor Name": Doctor.Title + ' ' + Doctor.FirstName + ' ' + Doctor.LastName,
-                "Email": Doctor.Email,
-                "NIC": isNull(Doctor.NIC),
-                "Registration Number": isNull(Doctor.RegistrationNumber),
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor.Id + ')">' +
+                "Doctor Name": Doctor?.Title + ' ' + Doctor?.FirstName + ' ' + Doctor?.LastName,
+                "Email": Doctor?.Email,
+                "NIC": isNull(Doctor?.NIC),
+                "Registration Number": isNull(Doctor?.RegistrationNumber),
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor?.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>'
                     // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
@@ -1269,6 +1270,7 @@ function doctorTblData(Response) {
                     // '<button class="btn btn-primary" style="margin-left: 0.5rem" type="button" id="6" data-toggle="modal" ' +
                     // 'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
             });
+            }
         }
     }
 
