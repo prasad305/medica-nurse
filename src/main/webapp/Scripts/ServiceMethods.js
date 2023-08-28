@@ -20,7 +20,7 @@ var selectedAppointmentId;
 var selectedPatientId;
 var billId = 0;
 
-function Login_Success(Response) {
+async function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
         return ShowMessage(Messages.LoginInvalid, MessageTypes.Warning, "Warning!");
     } else {
@@ -32,13 +32,60 @@ function Login_Success(Response) {
         InitRequestHandler();
 
         new LayoutMain().Render();
-        new PatientSearch().Render(Containers.MainContent);
-        document.getElementById("PatientCard").style.backgroundColor = "#BDC3C7";
+        document.getElementById("SessionCard").style.backgroundColor = "#BDC3C7";
+        new Session().Render(Containers.MainContent);
+        _AppointmentSessionId = undefined;
+        try{
+            $('#loading').modal('show');
+            const allocatedDoctorsForNurse = await GetAsyncV2(
+                {
+                    serviceUrl: ServiceMethods.NurseDoctor,
+                    searchParam: _UserId
+                }
+            )
+            console.log(allocatedDoctorsForNurse);
+            _DoctorSessionData = [];
+            if (allocatedDoctorsForNurse.Data === 0 || allocatedDoctorsForNurse.Status !== 1000) {
+                return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+            } else {
+                let Count;
+                let DataLength = allocatedDoctorsForNurse.Data.length;
+                if(DataLength !== 0){
+                    _NurseId = allocatedDoctorsForNurse.Data[0].NurseId;
+                    NurseGet();
+                }
+                const doctorGetPromises = []
+                for (Count = 0; Count < DataLength; Count++) {
+                    doctorGetPromises.push(GetAsyncV2({
+                        serviceUrl: ServiceMethods.DoctorGet + allocatedDoctorsForNurse.Data[Count].DoctorId,
+                        searchParam: undefined
+                    }))
+                }
+                const doctorGetResponses = await Promise.all(doctorGetPromises)
+                doctorGetResponses.forEach(doctor=>GetDoctorData_Success(doctor))
+                console.log(doctorGetResponses);
+                if (_DoctorId !== "" && _DoctorId !== undefined) {
+                    console.log(_DoctorId);
+                    document.getElementById('DrpAppoinmentDoctor').value = _DoctorId;
+                    GetDoctorAllSessionDataByDoctor(_DoctorId);
+                }
+            }
 
+            SetDoctorData('DrpSessionDoctor');
 
-        GetSessionDoctorId();
+        }catch (e) {
+            console.log(e)
+        }finally {
+
+        }
+        // GetSessionDoctorId();
         GetNurseBranches();
         NurseGet();
+        // new PatientSearch().Render(Containers.MainContent);
+
+
+
+
     }
 }
 
@@ -375,6 +422,7 @@ function GetSessionDoctorId_Success(Response) {
             GetDoctorAllSessionDataByDoctor(_DoctorId);
         }
     }
+
 }
 
 function GetDoctorData_Success(Response) {
@@ -382,15 +430,105 @@ function GetDoctorData_Success(Response) {
     _DoctorSessionData.push(Response.Data);
 }
 
-function SetDoctorData(Id) {
+async function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
+    console.log(_DoctorSessionData)
     //all doctors - as the first option
     // $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
+    console.log(_DoctorSessionData);
+
+
+    let doctors = {};
+
+   _DoctorSessionData.forEach((doctor) => {
+         doctors[doctor.Id] = {doctor, sessions:[]};
+    });
+
+    //get all sessions for doctor list
+    try{
+        const getSessionsResponse = await Promise.all(Object.keys(doctors).map((doctorId) => PostAsyncV2({
+            serviceUrl:ServiceMethods.SessionsGet,
+            requestBody:{
+                "DoctorId": doctorId,
+            }
+        })));
+
+        console.log("session response",getSessionsResponse);
+
+        for(let i=0; i<getSessionsResponse.length; i++){
+            if(getSessionsResponse[i]?.Data?.length > 0){
+                const session = getSessionsResponse[i]?.Data[0];
+                doctors[session.DoctorId].sessions.push(session);
+            }
+        }
+
+        doctors = Object.values(doctors);
+        _DoctorsAndSessions = doctors;
+
+
+
+        let tableData = doctors.map((doctor) => {
+            return {
+                "DoctorName":doctor.doctor.FirstName + " " + doctor.doctor.LastName,
+                "NearestSession":doctor?.sessions?.length > 0 ? doctor.sessions[0].TimeStart : "No sessions",
+                "NoOfSessions":doctor?.sessions?.length ? doctor.sessions.length : "N/A",
+                "Actions":"<button class='btn btn-primary p-1 me-1' style='font-size: 0.7rem' onclick='GetDoctorAllSessionDataByDoctor("+doctor.doctor.Id+")'>View Sessions</button> <button class='btn btn-primary p-1' style='font-size: 0.7rem' onclick='showNearestDoctorSession("+doctor.doctor.Id+")'>Place Appointment</button>"
+            }
+        });
+
+        new DoctorAndSessionsTable().Render('DivDoctorsAndSessionTable', tableData);
+        CreateDataTable('TableDoctorAndSessions');
+
+    }catch (e) {
+        console.log(e)
+    }finally {
+        $('#loading').modal('hide');
+    }
+
 }
+
+function  showNearestDoctorSession (doctorId){
+    console.log(doctorId)
+    const doctorAndSession = _DoctorsAndSessions.find((doctor) => doctor.doctor.Id == doctorId);
+    const doctor = doctorAndSession.doctor;
+    const selectSessionElement = document.getElementById('session-select');
+    const startTime = '11:00'//new Date(doctor.sessions?.[0]?.TimeStart).toISOString().split('T')[1];
+
+    selectSessionElement.innerHTML = `  
+          <div class="d-flex justify-content-between ">  
+          <h3>Place appointment </h3>
+            <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#session-select-modal').modal('hide')">X</button>
+          </div>
+          <p style="color:green">Session available on 31/03/2023 </p>
+          <div class="row">
+            <div class="col-6">
+            Doctor name
+            </div>  
+            <div class="col">
+           ${doctor.Title} ${doctor.FirstName} ${doctor.LastName}
+            </div>
+          </div><div class="row">
+            <div class="col-6">
+            Start time
+            </div>  
+            <div class="col">
+            ${startTime}
+</div>
+          </div><div class="row">
+            <div class="col-6">Appointment No</div>  
+            <div class="col">01</div>
+          </div>
+        
+          <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-outline-primary">See other sessions</button><button class="btn btn-primary bg-transparent">Continue</button>
+          </div>`
+    $('#session-select-modal').modal('show');
+}
+
 
 function GetDoctorSessionData_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
@@ -398,6 +536,23 @@ function GetDoctorSessionData_Success(Response) {
 }
 
 function FilterDoctorSessionData(Data) {
+
+    console.log(Data);
+
+    const filteredData = {};
+
+    Data?.forEach((item) => {
+        let DoctorId = item?.Title + item?.FirstName + item?.LastName;
+        if(filteredData[DoctorId]){
+            filteredData[DoctorId].push(item);
+        }else{
+            filteredData[DoctorId] = [item];
+        }
+    });
+
+    console.log(filteredData);
+
+
     let DataLength = Data.length;
     let Count = 0;
     let Type;
@@ -796,6 +951,21 @@ function FilterAppointedPatientData(Data) {
         } else if (GenderOriginal === 'male') {
             Gender = 'M';
         }
+
+        console.log(Data);
+
+        const groupedData = {}
+
+        Data?.forEach((item) => {
+            if (!groupedData[item?.DoctorName]) {
+                groupedData[item?.DoctorName] = [];
+                groupedData[item?.DoctorName].push(item);
+            }else{
+                groupedData[item?.DoctorName].push(item);
+            }
+        });
+
+        console.log(groupedData); //TODO: show data
 
         _ArrayAppointedPatientData.push({
             "A#": isNull(Data[Count].Number),

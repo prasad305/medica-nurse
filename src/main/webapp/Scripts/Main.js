@@ -95,6 +95,7 @@ let _NurseLoggedIn = {};
 let _NurseBranch = {};
 let _NurseInstitute = {};
 let _ArrayAllInstitutes = [];
+let _DoctorsAndSessions = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
@@ -296,9 +297,11 @@ function Wait(FnCondition, FncSuccess) {
 }
 
 function BindView(Container, View) {
-    let Element = document.getElementById(Container);
-    Element.innerHTML = "";
-    Element.appendChild(View);
+    if(Element){
+        let Element = document.getElementById(Container);
+        Element.innerHTML = "";
+        Element.appendChild(View);
+    }
 }
 
 function ValidateFields(Selector) {

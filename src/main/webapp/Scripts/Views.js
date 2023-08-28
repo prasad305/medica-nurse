@@ -78,6 +78,17 @@ function LayoutMain() {
 
         DivMainContent.appendChild(DivRowMainContent);
 
+        // DivMainContent.innerHTML += `<div class='modal fade' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+        //                                 <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
+        //                                     <div style="background-color:white; width:150px; height:150px; border-radius:10px;
+        //                                                 " class="d-flex flex-column  justify-content-center align-items-center
+        //                                                          ">
+        //                                      <span class="loader-animation mt-3 mb-1"></span>
+        //                                      <p class="mt-3">Loading ... </p>
+        //                                     </div>
+        //                                 </div>
+        //                             </div>`;
+
         DivHeader.appendChild(DivMainContent);
 
         let DivFlex = new Div(undefined, "flex-grow-1");
@@ -843,11 +854,20 @@ function Session() {
         let DivSessionNew = new Div(undefined, "col-lg-12");
 
         DivSessionNew.appendChild(new Div("DivSessionTable"));
+        DivSessionNew.appendChild(new Div("DivDoctorsAndSessionTable"));
         RowNewSession.appendChild(DivSessionNew);
         CardBodySession.appendChild(RowNewSession);
         CardSession.appendChild(CardBodySession);
 
         BindView(Container, CardSession);
+
+        const ContainerEl = document.getElementById(Container);
+        ContainerEl.innerHTML += `<div class='modal' id='session-select-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
+                                            <div id="session-select" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
+                                            </div>
+                                        </div>
+                                    </div>`;
     }
 }
 
@@ -868,6 +888,29 @@ function DoctorSessionTable() {
            row.cells[3].classList.add('text-center');
            row.cells[4].classList.add('text-center');
            row.cells[5].classList.add('text-center');
+        });
+
+    }
+}
+
+function DoctorAndSessionsTable() {
+    this.Render = function (Container, Data) {
+        let Headers = ["DoctorName", "NearestSession", "NoOfSessions", "Actions"];
+
+        let DivMain = new Div(undefined, "card-body");
+
+        let DivTablePrescriptions = new Div(undefined, "table-responsive mt-4");
+
+        DivTablePrescriptions.appendChild(new TableView("TableDoctorAndSessions", "table table-striped", Headers, Data, undefined));
+
+        DivMain.appendChild(DivTablePrescriptions);
+
+        BindView(Container, DivMain);
+
+        Object.values(document.getElementById('TableDoctorAndSessions').rows).forEach(function (row, index) {
+            row.cells[1].classList.add('text-center');
+            row.cells[2].classList.add('text-center');
+            row.cells[3].classList.add('text-center');
         });
 
     }
@@ -2379,6 +2422,16 @@ function Footer() {
 
         CardBodyFooter.appendChild(RowFooter);
         CardFooter.appendChild(CardBodyFooter);
+        CardFooter.innerHTML += `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
+                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;
+                                                        " class="d-flex flex-column  justify-content-center align-items-center
+                                                                 ">
+                                             <span class="loader-animation mt-3 mb-1"></span>
+                                             <p class="mt-3">Loading ... </p>
+                                            </div>
+                                        </div>
+                                    </div>`;
 
         BindView(Container, CardFooter);
     }
