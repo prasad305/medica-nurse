@@ -450,6 +450,7 @@ async function SetDoctorData(Id) {
 
     //get all sessions for doctor list
     try{
+        $('#loading').modal('show');
         const getSessionsResponse = await Promise.all(Object.keys(doctors).map((doctorId) => PostAsyncV2({
             serviceUrl:ServiceMethods.SessionsGet,
             requestBody:{
@@ -471,8 +472,9 @@ async function SetDoctorData(Id) {
 
 
 
-        let tableData = doctors.map((doctor) => {
+        let tableData = doctors.map((doctor, index) => {
             return {
+                "No": index + 1,
                 "DoctorName":doctor.doctor.FirstName + " " + doctor.doctor.LastName,
                 "NearestSession":doctor?.sessions?.length > 0 ? doctor.sessions[0].TimeStart : "No sessions",
                 "NoOfSessions":doctor?.sessions?.length ? doctor.sessions.length : "N/A",
@@ -517,7 +519,7 @@ function  showNearestDoctorSession (doctorId){
             </div>  
             <div class="col">
             ${startTime}
-</div>
+            </div>
           </div><div class="row">
             <div class="col-6">Appointment No</div>  
             <div class="col">01</div>
@@ -841,6 +843,9 @@ function GetDoctorAppoinmentList_Success(Response) {
 function FilterAppointedPatientData(Data) {
 
     let DataLength = Data.length;
+    console.log(Data)
+    _ArrayAppointedPatientData= []
+    groupedData = {}
 
     for (let Count = 0; Count < DataLength; Count++) {
 
@@ -954,31 +959,38 @@ function FilterAppointedPatientData(Data) {
 
         console.log(Data);
 
-        const groupedData = {}
-
-        Data?.forEach((item) => {
-            if (!groupedData[item?.DoctorName]) {
-                groupedData[item?.DoctorName] = [];
-                groupedData[item?.DoctorName].push(item);
+            const propName = Data[Count]?.DoctorName + Data[Count]?.TimeStart;
+            if (!groupedData[propName]) {
+                groupedData[propName] = [];
+                groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, IsPaid});
             }else{
-                groupedData[item?.DoctorName].push(item);
+                groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, IsPaid});
             }
-        });
+
 
         console.log(groupedData); //TODO: show data
 
-        _ArrayAppointedPatientData.push({
-            "A#": isNull(Data[Count].Number),
-            "Doctor": isNull(Data[Count].DoctorName),
-            "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
-            "Mobile": isNull(Data[Count].Mobile),
-            "M/F": Gender,
-            "Payment": PaymentStatusColumn,
-            "Status": ChannelingStatus,
-            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ','+ Data[Count].DoctorId +')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
-        });
 
     }
+
+    Object.keys(groupedData).forEach((propName, index) => {
+        const timeStart = groupedData[propName]?.[0]?.TimeStart
+        let StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + "@";
+        let TimeStartSplit = timeStart.split("T")[1].split(":");
+        let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+        StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+            timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+        });
+        _ArrayAppointedPatientData.push({
+            "A#": isNull(index + 1),
+            "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
+            "Session Start": isNull(StartingDateTime),
+            "No of Appointments": isNull(groupedData[propName]?.length),
+            "Action": `<button class='btn btn-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>`
+        });
+
+    });
+
 }
 
 function GetAllPatientAppointmentsList(SearchType) {

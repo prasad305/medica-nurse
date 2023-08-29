@@ -799,81 +799,21 @@ function AddPatient() {
 
 function Session() {
     this.Render = function (Container) {
-        let CardSession = new Div(undefined, "card text-left");
-        let CardBodySession = new Div(undefined, "card-body");
-
-        let HeadingSession = new Heading4("Session Management", [new Attribute(_AttributeClass, "card-title mb-3 text-center")]);
-        CardBodySession.appendChild(HeadingSession);
-
-        let RowSub0Session = new Div(undefined, "row");
-
-        RowSub0Session.appendChild(new Div(undefined, "col-lg-2"));
-
-        let ColSub0Session = new Div(undefined, "col-lg-8 text-center");
-
-        RowSub0Session.appendChild(ColSub0Session);
-        CardBodySession.appendChild(RowSub0Session);
-
-        let FormSession = new Form(undefined);
-
-        let FormRow0Session = new Div(undefined, "form-group row");
-
-        FormRow0Session.appendChild(new Div(undefined, "col-sm-4 col-2"));
-
-        let DivFormSubRowSession = new Div(undefined, "col-sm-4 col-5");
-        FormRow0Session.appendChild(DivFormSubRowSession);
-
-        let DivFormSubRowNewSession = new Div(undefined, "col-sm-4 col-5");
-        let ButtonSessionAddNew = new Button(undefined, "New Session", "btn btn-primary btn-rounded w-100", [new Attribute(_AttributeOnClick, "CmdAddSession_Click()")]);
-        DivFormSubRowNewSession.appendChild(ButtonSessionAddNew);
-        FormRow0Session.appendChild(DivFormSubRowNewSession);
-
-        FormSession.appendChild(FormRow0Session);
-
-        let FormRowSession = new Div(undefined, "form-group row mt-3");
-        let DivFormRowSession = new Div(undefined, "col-sm-12 col-12 text-left");
-        let LabelSession = new Label(undefined, "Select Doctor *", [new Attribute(_AttributeClass, "col-form-label"), new Attribute(_AttributeFor, "DrpAppoinments")]);
-        let SelectSession = new Select("DrpSessionDoctor", [new Attribute(_AttributeClass, "form-control form-control-rounded select")]);
-        SelectSession.appendChild(new SelectItem("Select Doctor", "0", [new Attribute(_AttributeClass, "form-control form-control-rounded")]));
-
-        DivFormRowSession.appendChild(LabelSession);
-        DivFormRowSession.appendChild(SelectSession);
-        FormRowSession.appendChild(DivFormRowSession);
-        FormSession.appendChild(FormRowSession);
-
-        let FormRowSessionNew = new Div(undefined, "form-group row");
-        let DivFormRowNewSession = new Div(undefined, "col-sm-12 col-12");
-        let ButtonSessionSearch = new Button(undefined, "Search", "btn btn-primary btn-rounded w-100", [new Attribute(_AttributeOnClick, "CmdSessionSearch_Click()")]);
-
-        DivFormRowNewSession.appendChild(ButtonSessionSearch);
-        FormRowSessionNew.appendChild(DivFormRowNewSession);
-        FormSession.appendChild(FormRowSessionNew);
-        ColSub0Session.appendChild(FormSession);
-
-        let RowNewSession = new Div(undefined, "row");
-        let DivSessionNew = new Div(undefined, "col-lg-12");
-
-        DivSessionNew.appendChild(new Div("DivSessionTable"));
-        DivSessionNew.appendChild(new Div("DivDoctorsAndSessionTable"));
-        RowNewSession.appendChild(DivSessionNew);
-        CardBodySession.appendChild(RowNewSession);
-        CardSession.appendChild(CardBodySession);
-
-        BindView(Container, CardSession);
 
         const ContainerEl = document.getElementById(Container);
-        ContainerEl.innerHTML += `<div class='modal' id='session-select-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+        ContainerEl.innerHTML += `<div id="DivDoctorsAndSessionTable"></div>
+                                        <div class='modal' id='session-select-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
                                             <div id="session-select" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
                                             </div>
                                         </div>
-                                    </div>`;
+                                   </div>`;
     }
 }
 
 function DoctorSessionTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["Date", "StartTime", "EndTime", "Max.App","Reserved","Room", "Type", "Action"];
+        let Headers = ["#","DoctorName", "NearestSession", "NoOfSessions", "Actions"];
 
         let DivMain = new Div(undefined, "card-body");
 
@@ -884,18 +824,18 @@ function DoctorSessionTable() {
 
         BindView(Container, DivMain);
 
-       Object.values(document.getElementById('TableSession').rows).forEach(function (row, index) {
-           row.cells[3].classList.add('text-center');
-           row.cells[4].classList.add('text-center');
-           row.cells[5].classList.add('text-center');
-        });
+       // Object.values(document.getElementById('TableSession').rows).forEach(function (row, index) {
+       //     row.cells[3].classList.add('text-center');
+       //     row.cells[4].classList.add('text-center');
+       //     row.cells[5].classList.add('text-center');
+       //  });
 
     }
 }
 
 function DoctorAndSessionsTable() {
     this.Render = function (Container, Data) {
-        let Headers = ["DoctorName", "NearestSession", "NoOfSessions", "Actions"];
+        let Headers = ["No","DoctorName", "NearestSession", "NoOfSessions", "Actions"];
 
         let DivMain = new Div(undefined, "card-body");
 
@@ -908,11 +848,11 @@ function DoctorAndSessionsTable() {
         BindView(Container, DivMain);
 
         Object.values(document.getElementById('TableDoctorAndSessions').rows).forEach(function (row, index) {
+            row.cells[0].classList.add('text-center');
             row.cells[1].classList.add('text-center');
             row.cells[2].classList.add('text-center');
             row.cells[3].classList.add('text-center');
-        });
-
+         });
     }
 }
 
@@ -1208,6 +1148,14 @@ function NewAppoinment() {
         CardAddAppoinment.appendChild(CardBodyAddAppoinment);
 
         BindView(Container, CardAddAppoinment);
+        const ContainerEl = document.getElementById(Container);
+        ContainerEl.innerHTML += `<div class='modal' id='show-patients-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
+                                            <div id="show-patients-content" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
+                                            dskjfnklj
+                                            </div>
+                                        </div>
+                                    </div>`;
 
         // console.log('NewAppoinment._CardClicked:', _CardClicked);
         if (_CardClicked === '' || _CardClicked === 'PatientSearch') {
@@ -1220,6 +1168,68 @@ function NewAppoinment() {
 
         $('#TxtAppointmentSearchDate').prop('type', 'date');
     }
+}
+
+
+function ShowPatientsModal(propName) {
+    console.log(propName);
+    const appointments = groupedData[propName];
+
+    const tableContent = appointments.map((appointment, index) => {
+        const date = new Date(appointment?.TimeStart).toISOString().split('T')[0];
+        const paymentStatus = appointment?.IsPaid ? 'Paid' : 'Unpaid';
+        let TimeStartSplit = appointment?.TimeStart.split("T")[1].split(":");
+        let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+        const startTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+            timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+        });
+        return ` <tr>
+                    <td>${appointment.Number}</td>
+                    <td>${appointment.DoctorName}</td>
+                    <td>${date}</td>
+                    <td>${startTime}</td>
+                    <td class="text-center"><button class="btn btn-outline-primary p-1" ${appointment?.IsPaid ? 'disabled':'' } onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},
+                        ${appointment.SessionId},${appointment.PatientId},1, ${appointment.Status},${appointment.DoctorId})">${paymentStatus}</button></td>
+                    <td>
+                        <button class="btn btn-outline-warning p-1 ml-2" onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},
+                        ${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
+                        <button class="btn btn-outline-danger p-1" onclick="MedicalBillDisplay(${appointment?.Id},0,${appointment?.DoctorId})">View bill</button>
+                    </td>
+          </tr>`
+    });
+
+    const modalContentElement = document.getElementById('show-patients-content');
+
+    const element = `
+    <div class="d-flex justify-content-between">
+      <h3>View Appointments</h3>
+       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide')">X</button>
+    </div>
+      
+        <div
+            style="overflow:auto; height:178px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem"
+          >
+            <table class="patient-table">
+              <thead>
+                <tr>
+                  <th>#A</th>
+                  <th>Doctor</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Payment Status</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableContent.join('')}
+              </tbody>
+            </table>
+          </div>
+    `
+
+    modalContentElement.innerHTML = element;
+
+    $('#show-patients-modal').modal('show');
 }
 
 function VitalsEditor() {
@@ -1349,7 +1359,7 @@ function DocumentUploader() {
 function TablePatientAppointment() {
     this.Render = function (Container, Data) {
 
-        let Headers = ["A#", "Doctor", "Patient", "Mobile", "M/F", "Payment", "Status", "Action"];
+        let Headers = ["A#", "Doctor", "Session Start","No of Appointments", "Action"];
 
         let DivMainAppointmnetTable = new Div(undefined, "card-body");
         let DivHeadingPrescriptions = new Div(undefined, "col-lg-12");
@@ -1371,6 +1381,14 @@ function TablePatientAppointment() {
 
         DivMainAppointmnetTable.appendChild(DivTablePrescriptions);
         BindView(Container, DivMainAppointmnetTable);
+
+        Object.values(document.getElementById('TableAppointedPatient').rows).forEach(function (row, index) {
+            row.cells[1].classList.add('text-center');
+            row.cells[2].classList.add('text-center');
+            row.cells[3].classList.add('text-center');
+            row.cells[4].classList.add('text-center');
+        });
+
     }
 }
 
@@ -3005,9 +3023,9 @@ function DoctorsSearchResultsTable() {
 
         const ColumnDoctorPageActions = new Div(undefined, "col-md-12 d-flex justify-content-end gap-2");
         TextField({
+            parentRow:ColumnDoctorPageActions,
             classList:"col-3 mr-1",
             elementId:"Doctor_Search",
-            parentRow:ColumnDoctorPageActions,
             type:"text",
             value: _DoctorSearchKeyword,
             onKeyUp:'SearchDoctor()',
@@ -3022,8 +3040,8 @@ function DoctorsSearchResultsTable() {
                 selectedValue:_DoctorSearchBy,
                 options:[
                     {
-                    value:"Doctor Name",
-                    label:"Doctor Name"
+                        value:"Doctor Name",
+                        label:"Doctor Name"
                     },
                     {
                         value:"Email",

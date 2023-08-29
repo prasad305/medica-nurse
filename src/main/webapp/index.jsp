@@ -63,6 +63,49 @@
         animation-delay: .4s;
     }
 
+    .patient-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: none;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        font-size: 12px;
+        color: #666;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+    .patient-table > thead {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .patient-table th {
+        background-color: #f5f5f5 !important;
+        color: #333 !important;
+        font-weight: 600;
+        padding: 10px 10px !important;
+        text-align: left;
+    }
+
+    .patient-table td {
+        padding: 10px 5px;
+        border: 1px solid #ddd !important;
+        padding: 9px !important;
+    }
+
+    .patient-table > tbody tr:nth-child(even) {
+        background-color: #f3f3f3;
+    }
+
+    .patient-table > tbody tr:hover {
+        background-color: #eaeaea;
+    }
+
     @keyframes rotate {
         0% {
             transform: translate(-50%, -50%) rotateZ(0deg);

@@ -49,6 +49,7 @@ var _RequestUpload;
 let _DoctorSearchKeyword = '';
 let _DoctorSearchBy = 'Doctor Name';
 const ArrayDoctorSearchResultsData = [];
+let groupedData = {}
 
 
 var _PaymentCheck = "LKR2000";
@@ -76,7 +77,7 @@ var _ArrayDrugData = [];
 var _DoctorSessionData = [];
 var _BranchData = [];
 var _ArrayPrescriptionData = [];
-var _ArrayAppointedPatientData = [];
+let _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
