@@ -430,6 +430,19 @@ function GetDoctorData_Success(Response) {
     _DoctorSessionData.push(Response.Data);
 }
 
+
+function setDoctorDropDown(Id){
+    let Count;
+    let DataLength = _DoctorSessionData.length;
+    console.log(_DoctorSessionData)
+    //all doctors - as the first option
+    // $('#' + Id).append('<option value="all">All Doctors</option>');
+    for (Count = 0; Count < DataLength; Count++) {
+        $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
+    }
+}
+
+
 async function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
@@ -462,8 +475,9 @@ async function SetDoctorData(Id) {
 
         for(let i=0; i<getSessionsResponse.length; i++){
             if(getSessionsResponse[i]?.Data?.length > 0){
-                const session = getSessionsResponse[i]?.Data[0];
+                getSessionsResponse[i]?.Data?.forEach((session) => {
                 doctors[session.DoctorId].sessions.push(session);
+                });
             }
         }
 
@@ -473,17 +487,33 @@ async function SetDoctorData(Id) {
 
 
         let tableData = doctors.map((doctor, index) => {
+            let StartingDateTime = "No sessions";
+            if(doctor?.sessions?.length > 0){
+                const timeStart = doctor.sessions[0]?.TimeStart
+                StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + " @ ";
+                let TimeStartSplit = timeStart.split("T")[1].split(":");
+                let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+                StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+            }
+            const doctorObjString = JSON.stringify(doctor);
+
             return {
                 "No": index + 1,
                 "DoctorName":doctor.doctor.FirstName + " " + doctor.doctor.LastName,
-                "NearestSession":doctor?.sessions?.length > 0 ? doctor.sessions[0].TimeStart : "No sessions",
-                "NoOfSessions":doctor?.sessions?.length ? doctor.sessions.length : "N/A",
-                "Actions":"<button class='btn btn-primary p-1 me-1' style='font-size: 0.7rem' onclick='GetDoctorAllSessionDataByDoctor("+doctor.doctor.Id+")'>View Sessions</button> <button class='btn btn-primary p-1' style='font-size: 0.7rem' onclick='showNearestDoctorSession("+doctor.doctor.Id+")'>Place Appointment</button>"
+                "NearestSession":StartingDateTime,
+                "NoOfSessions":doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
+                "Actions":`
+                    <button class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>Appointment</button>
+                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
             }
         });
 
         new DoctorAndSessionsTable().Render('DivDoctorsAndSessionTable', tableData);
         CreateDataTable('TableDoctorAndSessions');
+        document.getElementById('doctor-count').innerHTML = `${doctors.length} Total doctors`;
 
     }catch (e) {
         console.log(e)
@@ -493,19 +523,59 @@ async function SetDoctorData(Id) {
 
 }
 
-function  showNearestDoctorSession (doctorId){
-    console.log(doctorId)
-    const doctorAndSession = _DoctorsAndSessions.find((doctor) => doctor.doctor.Id == doctorId);
+function seeOtherSessions(index){
+    $('#session-select-modal').modal('hide');
+    showViewMoreSessionsModal(index);
+}
+
+function onCLickContinueQuickSuggestedSession(index, sessionIndex){
+    const doctor = _DoctorsAndSessions[index]?.doctor;
+    const doctorName = doctor.FirstName + " " + doctor.LastName;
+    const session = _DoctorsAndSessions[index]?.sessions[sessionIndex];
+    const sessionDate = new Date(session.TimeStart).toISOString().split('T')[0];
+    const timeStart = session.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const StartingDateTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    const timeEnd = session.TimeEnd
+    let TimeEndSplit = timeEnd.split("T")[1].split(":");
+    let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+    const EndingDateTime = new Date(TimeFormat.DateFormat + TimeEnd + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+    let Type = "";
+    if (session.Type === 1) Type = "Virtual"; else if (session.Type === 2) Type = "Physical"; else Type = "Both";
+    const sessionDetails = `Session : Room No ${session.RoomNumber}/ ${sessionDate} / ${StartingDateTime}-${EndingDateTime} / ${Type}`
+    $('#session-select-modal').modal('hide');
+    _AppointmentSessionId = session?.Id;
+    StoredSessionId = session?.Id;
+    LoadSessionViceAppointments(undefined,session?.Id);
+    SetAppoinmentDoctorDetails(doctorName, sessionDetails);
+
+}
+
+function  showNearestDoctorSession (index){
+    const doctorAndSession = _DoctorsAndSessions[index];
     const doctor = doctorAndSession.doctor;
     const selectSessionElement = document.getElementById('session-select');
-    const startTime = '11:00'//new Date(doctor.sessions?.[0]?.TimeStart).toISOString().split('T')[1];
+    const availableDate = new Date(doctorAndSession.sessions?.[0].TimeStart).toISOString().split('T')[0];
+
+    const timeStart = doctorAndSession.sessions[0]?.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const startTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
 
     selectSessionElement.innerHTML = `  
           <div class="d-flex justify-content-between ">  
           <h3>Place appointment </h3>
             <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#session-select-modal').modal('hide')">X</button>
           </div>
-          <p style="color:green">Session available on 31/03/2023 </p>
+          <p style="color:green">Session available on ${availableDate} </p>
           <div class="row">
             <div class="col-6">
             Doctor name
@@ -526,7 +596,8 @@ function  showNearestDoctorSession (doctorId){
           </div>
         
           <div class="d-flex justify-content-between mt-3">
-            <button class="btn btn-outline-primary">See other sessions</button><button class="btn btn-primary bg-transparent">Continue</button>
+            <button class="btn btn-outline-primary"  onclick='seeOtherSessions(${index})'>See other sessions</button>
+            <button class="btn btn-primary bg-transparent" onclick='onCLickContinueQuickSuggestedSession(${index},0)'>Continue</button>
           </div>`
     $('#session-select-modal').modal('show');
 }
@@ -836,7 +907,7 @@ function GetDoctorAppoinmentList_Success(Response) {
 
         //*******new
         FilterAppointedPatientData(Response.Data);
-        LoadAppointmentedPatientList();
+
     }
 }
 
@@ -844,8 +915,6 @@ function FilterAppointedPatientData(Data) {
 
     let DataLength = Data.length;
     console.log(Data)
-    _ArrayAppointedPatientData= []
-    groupedData = {}
 
     for (let Count = 0; Count < DataLength; Count++) {
 
@@ -961,17 +1030,15 @@ function FilterAppointedPatientData(Data) {
 
             const propName = Data[Count]?.DoctorName + Data[Count]?.TimeStart;
             if (!groupedData[propName]) {
-                groupedData[propName] = [];
-                groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, IsPaid});
+                groupedData[propName] = [{...Data[Count], Gender, ChannelingStatus, IsPaid}];
             }else{
                 groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, IsPaid});
             }
 
-
         console.log(groupedData); //TODO: show data
 
-
     }
+    _ArrayAppointedPatientData = [];
 
     Object.keys(groupedData).forEach((propName, index) => {
         const timeStart = groupedData[propName]?.[0]?.TimeStart
@@ -986,10 +1053,11 @@ function FilterAppointedPatientData(Data) {
             "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
             "Session Start": isNull(StartingDateTime),
             "No of Appointments": isNull(groupedData[propName]?.length),
-            "Action": `<button class='btn btn-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>`
+            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>`
         });
 
     });
+    LoadAppointmentedPatientList();
 
 }
 
@@ -1012,28 +1080,33 @@ function GetAllPatientAppointmentsList(SearchType) {
     }
 }
 
-function GetAllPatientAppointmentsForTodayList_Success(Response) {
+async function GetAllPatientAppointmentsForTodayList_Success(Response) {
+    console.log(Response);
     $('#AppointmentsSearchButton').prop('disabled', false);
 
     if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     } else {
         const AppointmentsForToday = Response.Data;
-        // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday:', AppointmentsForToday);
         _ArrayAppointmentsForToday = [];
-        // _AppointmentsForToday = Response.Data;
-        for (let i = 0; i < AppointmentsForToday.length; i++) {
-            // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday[i].Id:', AppointmentsForToday[i].Id);
-            _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, AppointmentsForToday[i].Id), GetDoctorAppoinmentList_Success);
-        }
+        _ArrayAppointedPatientData= []
+        groupedData = {}
+
+        const getAppointmentsResponses = await Promise.all(AppointmentsForToday.map(appointment => PostAsyncV2({
+            serviceUrl: ServiceMethods.GetAppoinment,
+            requestBody: new AppointmentList(undefined, undefined, undefined, appointment.Id)
+        })));
+        getAppointmentsResponses.forEach((response, ) => {
+            FilterAppointedPatientData(response?.Data);
+        });
     }
 }
 
 function GetAllPatientAppointmentsList_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _AppointmentDetails = Response.Data;
-        FilterAppointedPatientData(Response.Data);
-        LoadAppointmentedPatientList();
+        // FilterAppointedPatientData(Response.Data);
+        // LoadAppointmentedPatientList();
     }
 }
 

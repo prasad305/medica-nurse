@@ -403,18 +403,14 @@ function CmdSession_Click(CardElement) {
 
 }
 
-function CmdAddSession_Click() {
-    _UpdateSession = false;
-    if (document.getElementById('DrpSessionDoctor').value === '0')
-        return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
-    else {
+function CmdAddSession_Click(doctorId) {
+        _UpdateSession = false;
         _SessionId = 0;
-        _DoctorId = document.getElementById('DrpSessionDoctor').value;
+        _DoctorId = doctorId;
         new AddNewSession().Render(Containers.MainContent);
         GetInstituteBranches();
         DatePicker();
         TimePicker();
-    }
 }
 
 function CmdSaveSession_Click() {
@@ -438,17 +434,9 @@ function CmdSaveSession_Click() {
     _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId,AppointmentReserved), SaveSession_Success);
 }
 
-function CmdSessionSearch_Click() {
-    _DoctorId = document.getElementById('DrpSessionDoctor').value;
-    _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
-    // _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    // selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
-    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
-    // selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
-
-    if (document.getElementById('DrpSessionDoctor').value === '0')
-        return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
-
+function CmdSessionSearch_Click(_DoctorId) {
+    // _DoctorId = document.getElementById('DrpSessionDoctor').value;
+    // _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
     _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId,_NurseBranch.Id ), GetDoctorSessionData_Success);
 }
 
@@ -459,11 +447,13 @@ function CmdCancelSession_Click() {
     // document.getElementById('DrpSessionDoctor').value = _DoctorId;
     // _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
     new Session().Render(Containers.MainContent);
+    // SetDoctorData('DrpSessionDoctor');
+    // if(_DoctorId !== "" && _DoctorId !== undefined){
+    //     document.getElementById('DrpSessionDoctor').value = _DoctorId;
+    //     CmdSessionSearch_Click();
+    // }
+    _AppointmentSessionId = undefined;
     SetDoctorData('DrpSessionDoctor');
-    if(_DoctorId !== "" && _DoctorId !== undefined){
-        document.getElementById('DrpSessionDoctor').value = _DoctorId;
-        CmdSessionSearch_Click();
-    }
 }
 
 
@@ -484,7 +474,8 @@ function CmdAppoinments_Click(CardElement) {
         // new Appoinments().Render(Containers.MainContent);
         new NewAppoinment().Render(Containers.MainContent);
         GetAllPatientAppointmentsList('all');
-        SetDoctorData('DrpAppoinmentDoctor');
+        setDoctorDropDown('DrpAppoinmentDoctor');
+        // SetDoctorData('DrpAppoinmentDoctor');
     }
 }
 
@@ -533,7 +524,19 @@ function SetAppoinmentToDoctor_Click() {
     }
 }
 
+function SetAppoinmentDoctorDetails(_AppointmentDoctorName,_SessionDetails) {
+    _AppointmentSessionId = StoredSessionId;
+    _IsSetAppointmentToDoctorClicked = true;
+    // console.log('SetAppoinmentToDoctor_Click._AppointmentSessionId:', _AppointmentSessionId);
+    GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+    GetDoctorAppoinmentList();
+    document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+}
+
 function Appointments_Search() {
+    groupedData = {};
+    _ArrayAppointedPatientData = [];
+
     _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
     _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
     _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
