@@ -1496,7 +1496,7 @@ function Session() {
                     0 Total doctors
                 </div>
                 <div class="d-flex">
-                    <input class="form form-control form-control-rounded col" style="width:250px" placeholder="Search by doctor name" />
+                    <input class="form form-control form-control-rounded col" id="doctor-search-text" style="width:250px" placeholder="Search by doctor name" onkeyup="handleOnChangeDoctorSearch()"/>
                     <select  class="form form-control form-control-rounded  ml-2 col">
                         <option>All doctors</option>
                         <option>Now Available</option>
@@ -2295,7 +2295,7 @@ function NewAppoinment() {
     ContainerEl.innerHTML += `<div class='modal' id='show-patients-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
                                             <div id="show-patients-content" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
-                                            dskjfnklj
+                                            
                                             </div>
                                         </div>
                                     </div>`;
@@ -2315,7 +2315,9 @@ function NewAppoinment() {
 
 function ShowPatientsModal(propName) {
   console.log(propName);
+  _ViewedDoctorSessionName = propName;
   const appointments = groupedData[propName];
+  if(!appointments) return;
 
   const tableContent = appointments.map((appointment, index) => {
     const date = new Date(appointment?.TimeStart).toISOString().split("T")[0];
@@ -2335,24 +2337,17 @@ function ShowPatientsModal(propName) {
                     <td>${appointment.DoctorName}</td>
                     <td>${date}</td>
                     <td>${startTime}</td>
-                    <td class="text-center"><button class="btn btn-outline-primary p-1" ${
-                      appointment?.IsPaid ? "disabled" : ""
-                    } onclick="AppointmentDetailsEdit(${appointment?.Id},${
-      appointment.Number
-    },
-                        ${appointment.SessionId},${appointment.PatientId},1, ${
-      appointment.Status
-    },${appointment.DoctorId})">${paymentStatus}</button></td>
+                    <td class="text-center">
+                    ${appointment?.IsPaid ? appointment.PaymentTypeIcon : `<button class="btn btn-outline-primary p-1" ${appointment?.IsPaid ? "disabled" : ""} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},1, ${appointment.Status},${appointment.DoctorId})">${paymentStatus}</button>`}
+                    </td>
+                    <td class="text-center">
+                        ${appointment?.ChannelingStatus === "Pending" ? 
+                        `<button class="btn btn-outline-primary p-1"  onclick="AppointmentChannelingStatusEdit(${appointment?.Id})">${appointment.ChannelingStatus}</button>` 
+                      : `<button class="btn btn-outline-primary p-1" disabled >${appointment.ChannelingStatus}</button>`}
+                    </td>
                     <td class="d-flex justify-content-center">
-                        <button class="btn btn-outline-warning p-1" onclick="AppointmentDetailsEdit(${
-                          appointment?.Id
-                        },${appointment.Number},
-                        ${appointment.SessionId},${appointment.PatientId},0, ${
-      appointment.Status
-    },${appointment.DoctorId})">Edit</button>
-                        <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${
-                          appointment?.Id
-                        },0,${appointment?.DoctorId})">View bill</button>
+                        <button class="btn btn-outline-warning p-1" onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
+                        <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${appointment?.Id},0,${appointment?.DoctorId})">View bill</button>
                     </td>
           </tr>`;
   });
@@ -2362,11 +2357,11 @@ function ShowPatientsModal(propName) {
   const element = `
     <div class="d-flex justify-content-between">
       <h3>View Appointments</h3>
-       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide')">X</button>
+       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide');_ViewedDoctorSessionName='';$('.modal-backdrop').remove();">X</button>
     </div>
       
         <div
-            style="overflow:auto; height:178px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 660px"
+            style="overflow:auto; height:350px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 660px"
           >
             <table class="patient-table">
               <thead>
@@ -2376,6 +2371,7 @@ function ShowPatientsModal(propName) {
                   <th>Date</th>
                   <th>Time</th>
                   <th  class="text-center">Payment Status</th>
+                  <th>Status</th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
@@ -2697,7 +2693,6 @@ function TablePatientAppointment() {
     if (_CardClicked != "Appointments") {
       DivHeadingPrescriptions.innerHTML = `<div class="row px-0 d-flex justify-content-between mb-2">
         <h4>Patient Appointments</h4>
-        <button id="cancelAllBtn" class="btn btn-primary btn-rounded btn-sm " onclick="cancelAllAppointments()">Cancel All</button>
         </div>`;
 
       DivMainAppointmnetTable.appendChild(DivHeadingPrescriptions);
@@ -2757,7 +2752,7 @@ function MedicalBill(Patient, appId) {
 
     const PatientsAge =
       parseInt(new Date().getFullYear().toString()) -
-      parseInt(Patient.DateOfBirth.split("-")[0]);
+      parseInt(Patient?.DateOfBirth.split("-")[0]);
 
     for (let i = 0; i < PatientDataToDisplay.length; i++) {
       let LabelValueText = "-";
@@ -4143,11 +4138,11 @@ function Footer() {
     CardFooter.appendChild(CardBodyFooter);
     CardFooter.innerHTML += `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
-                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;
-                                                        " class="d-flex flex-column  justify-content-center align-items-center
+                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;position: relative;
+                                                        " class="d-flex flex-column  align-items-center
                                                                  ">
-                                             <span class="loader-animation mt-3 mb-1"></span>
-                                             <p class="mt-3">Loading ... </p>
+                                             <span class="loader-animation mt-5"></span>
+                                             <p class="mt-3" style="position: absolute; bottom: 5px;">Loading ... </p>
                                             </div>
                                         </div>
                                     </div>`;

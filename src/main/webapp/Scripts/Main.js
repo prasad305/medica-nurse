@@ -50,6 +50,7 @@ let _DoctorSearchKeyword = '';
 let _DoctorSearchBy = 'Doctor Name';
 const ArrayDoctorSearchResultsData = [];
 let groupedData = {}
+let _ViewedDoctorSessionName = '';
 
 
 var _PaymentCheck = "LKR2000";
@@ -96,6 +97,7 @@ let _NurseLoggedIn = {};
 let _NurseBranch = {};
 let _NurseInstitute = {};
 let _ArrayAllInstitutes = [];
+let _DoctorsAndSessionsWithoutFiltering = []
 let _DoctorsAndSessions = [];
 
 let _IsSetAppointmentToDoctorClicked = false;

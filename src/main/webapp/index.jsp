@@ -37,30 +37,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
     .loader-animation {
-        transform: rotateZ(45deg);
-        perspective: 1000px;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        color: #175aa9;
+        width: 64px;
+        height: 64px;
+        position: relative;
+        background-image:
+                linear-gradient(#FE0000 16px, transparent 0) ,
+                linear-gradient(#28FE01 16px, transparent 0) ,
+                linear-gradient(#FFBB00 16px, transparent 0) ,
+                linear-gradient(#4300FF 16px, transparent 0);
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        background-position: left top , left bottom , right top , right bottom;
+        animation: rotate 1s linear infinite;
     }
-    .loader-animation:before,
-    .loader-animation:after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: inherit;
-        height: inherit;
-        border-radius: 50%;
-        transform: rotateX(70deg);
-        animation: 1s spin linear infinite;
-    }
-    .loader-animation:after {
-        color: #FF3D00;
-        transform: rotateY(70deg);
-        animation-delay: .4s;
+    @keyframes rotate {
+        0% {
+            width: 64px;
+            height: 64px;
+            transform: rotate(0deg)
+        }
+        50% {
+            width: 30px;
+            height: 30px;
+            transform: rotate(180deg)
+        }
+        100% {
+            width: 64px;
+            height: 64px;
+            transform: rotate(360deg)
+        }
     }
 
     .patient-table {
@@ -106,51 +111,7 @@
         background-color: #eaeaea;
     }
 
-    @keyframes rotate {
-        0% {
-            transform: translate(-50%, -50%) rotateZ(0deg);
-        }
-        100% {
-            transform: translate(-50%, -50%) rotateZ(360deg);
-        }
-    }
 
-    @keyframes rotateccw {
-        0% {
-            transform: translate(-50%, -50%) rotate(0deg);
-        }
-        100% {
-            transform: translate(-50%, -50%) rotate(-360deg);
-        }
-    }
-
-    @keyframes spin {
-        0%,
-        100% {
-            box-shadow: .2em 0px 0 0px currentcolor;
-        }
-        12% {
-            box-shadow: .2em .2em 0 0 currentcolor;
-        }
-        25% {
-            box-shadow: 0 .2em 0 0px currentcolor;
-        }
-        37% {
-            box-shadow: -.2em .2em 0 0 currentcolor;
-        }
-        50% {
-            box-shadow: -.2em 0 0 0 currentcolor;
-        }
-        62% {
-            box-shadow: -.2em -.2em 0 0 currentcolor;
-        }
-        75% {
-            box-shadow: 0px -.2em 0 0 currentcolor;
-        }
-        87% {
-            box-shadow: .2em -.2em 0 0 currentcolor;
-        }
-    }
 
 </style>
 </head>

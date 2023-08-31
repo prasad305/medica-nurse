@@ -274,11 +274,18 @@ function SetAppointmentPatient(Object, PatientId) {
 
 function ViewAppointmentedPatientList() {
     if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
-        new NewAppoinment().Render(Containers.MainContent);
+        // new NewAppoinment().Render(Containers.MainContent);
         // CmdBtnColorRemove_Click();
         // $('#AppoinmentsCard').css('background-color', '#BDC3C7');
         // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+        // GetDoctorAppoinmentList();
+
+        // new Appoinments().Render(Containers.MainContent);
+        // GetSessionDoctorId('DrpAppoinmentDoctor');
+        // SetDoctorData('DrpAppoinmentDoctor');
+        GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
+        document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
     } else {
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');
@@ -462,6 +469,7 @@ function CmdCancelSession_Click() {
  =================================*/
 
 function CmdAppoinments_Click(CardElement) {
+    console.log('CmdAppoinments_Click.CardElement:', CardElement);
     if (CmdCardClicked !== CardElement.id) {
         $('#' + CardElement.id).attr('disabled', true);
         $('#' + CardElement.id).css('cursor', 'auto');
@@ -704,7 +712,9 @@ function AppointmentUpdate() {
 }
 
 function SaveAppointment_Success_Update(Response) {
-    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+    if (Response.Status !== 1000) {
+        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    } else {
         CmdAppoinments_Click('AppoinmentsCard');
         // send sms to patient
         let appointmentNumber = Response.Data.Number;
@@ -723,7 +733,21 @@ function SaveAppointment_Success_Update(Response) {
             startingDateTime: startingDateTime
         })
 
-        return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
+
+        return swal({
+                type: 'success',
+                title: "Success!",
+                text: Messages.ApoointmentSaveSuccess,
+                buttonsStyling: false,
+                confirmButtonText: 'OK',
+                confirmButtonClass:  'btn btn-success btn-lg',
+            }).then(()=>{
+                $('.modal-backdrop').remove();
+                $('#show-patients-modal').modal('hide');
+                $('#BtnCloseModal').click();
+                $('#AppoinmentsCard').click();
+        });
+
     }
 }
 
@@ -750,8 +774,22 @@ function AppointmentPaymentTypeUpdate_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.message.split("-")[1].trim(), MessageTypes.Warning, "Warning!");
     else {
-        CmdAppoinments_Click('AppoinmentsCard');
-        return ShowMessage("Payment Type Updated!", MessageTypes.Success, "Success!");
+
+        return swal(
+            {
+                type: 'success',
+                title: "Success!",
+                text: "Payment Type Updated!",
+                buttonsStyling: true,
+                confirmButtonText: 'OK',
+                confirmButtonClass: 'btn btn-success btn-lg',
+            }).then(()=>{
+                $('.modal-backdrop').remove();
+                $('#show-patients-modal').modal('hide');
+                $('#BtnCloseModal').click();
+                $('#AppoinmentsCard').click();
+            })
+
     }
 }
 
