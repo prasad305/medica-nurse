@@ -594,10 +594,8 @@ function  showNearestDoctorSession (index){
             <div class="col">
             ${startTime}
             </div>
-          </div><div class="row">
-            <div class="col-6">Appointment No</div>  
-            <div class="col">01</div>
           </div>
+         
         
           <div class="d-flex justify-content-between mt-3">
             <button class="btn btn-outline-primary"  onclick='seeOtherSessions(${index})'>See other sessions</button>
