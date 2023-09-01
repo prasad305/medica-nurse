@@ -2009,26 +2009,26 @@ function Appoinments() {
 
     let FormRow1Appoinment = new Div(undefined, "form-group row mt-3");
     let DivFormRowSession = new Div(undefined, "col-sm-12 col-12 text-left ");
-    let LabelAppoinmentSession = new Label(undefined, "Select Session *", [
-      new Attribute(_AttributeClass, "col-form-label"),
-      new Attribute(_AttributeFor, "DrpSessionDateDoctor"),
-    ]);
+    // let LabelAppoinmentSession = new Label(undefined, "Select Session *", [
+    //   new Attribute(_AttributeClass, "col-form-label"),
+    //   new Attribute(_AttributeFor, "DrpSessionDateDoctor"),
+    // ]);
     let SelectAppoinmentSession = new Select("DrpSessionDateDoctor", [
       new Attribute(
         _AttributeClass,
         "form-control form-control-rounded select"
       ),
     ]);
-    SelectAppoinmentSession.appendChild(
-      new SelectItem("Select Session", " ", [
-        new Attribute(
-          _AttributeClass,
-          "form-control form-control-rounded appointment-class"
-        ),
-      ])
-    );
-    DivFormRowSession.appendChild(LabelAppoinmentSession);
-    DivFormRowSession.appendChild(SelectAppoinmentSession);
+    // SelectAppoinmentSession.appendChild(
+    //   new SelectItem("Select Session", " ", [
+    //     new Attribute(
+    //       _AttributeClass,
+    //       "form-control form-control-rounded appointment-class"
+    //     ),
+    //   ])
+    // );
+    // DivFormRowSession.appendChild(LabelAppoinmentSession);
+    // DivFormRowSession.appendChild(SelectAppoinmentSession);
     FormRow1Appoinment.appendChild(DivFormRowSession);
     FormAppoinments.appendChild(FormRow1Appoinment);
 
@@ -2234,30 +2234,30 @@ function NewAppoinment() {
     DivFormRowDate.appendChild(AppointmentDateSelect);
     FormRow0Appoinment.appendChild(DivFormRowDate);
 
-    let LabelAppoinmentSession = new Label(undefined, "Select Session *", [
-      new Attribute(_AttributeClass, "col-form-label"),
-      new Attribute(_AttributeFor, "DrpSessionDateDoctor"),
-    ]);
+    // let LabelAppoinmentSession = new Label(undefined, "Select Session *", [
+    //   new Attribute(_AttributeClass, "col-form-label"),
+    //   new Attribute(_AttributeFor, "DrpSessionDateDoctor"),
+    // ]);
 
-    let SelectAppoinmentSession = new Select("DrpSessionDateDoctor", [
-      new Attribute(
-        _AttributeClass,
-        "form-control form-control-rounded select"
-      ),
-    ]);
+    // let SelectAppoinmentSession = new Select("DrpSessionDateDoctor", [
+    //   new Attribute(
+    //     _AttributeClass,
+    //     "form-control form-control-rounded select"
+    //   ),
+    // ]);
 
-    SelectAppoinmentSession.appendChild(
-      new SelectItem("Select Session", " ", [
-        new Attribute(
-          _AttributeClass,
-          "form-control form-control-rounded appointment-class"
-        ),
-      ])
-    );
+    // SelectAppoinmentSession.appendChild(
+    //   new SelectItem("Select Session", " ", [
+    //     new Attribute(
+    //       _AttributeClass,
+    //       "form-control form-control-rounded appointment-class"
+    //     ),
+    //   ])
+    // );
 
-    DivFormRowSession.appendChild(LabelAppoinmentSession);
-    DivFormRowSession.appendChild(SelectAppoinmentSession);
-    FormRow0Appoinment.appendChild(DivFormRowSession);
+    // DivFormRowSession.appendChild(LabelAppoinmentSession);
+    // DivFormRowSession.appendChild(SelectAppoinmentSession);
+    // FormRow0Appoinment.appendChild(DivFormRowSession);
 
     let DivFormRowSearch = new Div(undefined, "col-sm-3 d-flex mt-2");
     let ButtonPatientSearch = new Button(
@@ -3749,28 +3749,28 @@ function Pharmacy() {
     ColumnDoctor.appendChild(DropdownSelectDoctor);
     RowSearch.appendChild(ColumnDoctor);
 
-    let ColumnSession = new Div(undefined, "col-sm-3 text-left");
-    let LabelSelectSession = new Label(undefined, "Select Session *", [
-      new Attribute(_AttributeClass, "col-form-label"),
-      new Attribute(_AttributeFor, "TxtPrescriptionsSearchSession"),
-    ]);
-    let DropdownSelectSession = new Select("TxtPrescriptionsSearchSession", [
-      new Attribute(
-        _AttributeClass,
-        "form-control form-control-rounded select"
-      ),
-    ]);
-    DropdownSelectSession.appendChild(
-      new SelectItem("All Sessions", "null", [
-        new Attribute(
-          _AttributeClass,
-          "form-control form-control-rounded appointment-class"
-        ),
-      ])
-    );
-    ColumnSession.appendChild(LabelSelectSession);
-    ColumnSession.appendChild(DropdownSelectSession);
-    RowSearch.appendChild(ColumnSession);
+    // let ColumnSession = new Div(undefined, "col-sm-3 text-left");
+    // let LabelSelectSession = new Label(undefined, "Select Session *", [
+    //   new Attribute(_AttributeClass, "col-form-label"),
+    //   new Attribute(_AttributeFor, "TxtPrescriptionsSearchSession"),
+    // ]);
+    // let DropdownSelectSession = new Select("TxtPrescriptionsSearchSession", [
+    //   new Attribute(
+    //     _AttributeClass,
+    //     "form-control form-control-rounded select"
+    //   ),
+    // ]);
+    // DropdownSelectSession.appendChild(
+    //   new SelectItem("All Sessions", "null", [
+    //     new Attribute(
+    //       _AttributeClass,
+    //       "form-control form-control-rounded appointment-class"
+    //     ),
+    //   ])
+    // );
+    // ColumnSession.appendChild(LabelSelectSession);
+    // ColumnSession.appendChild(DropdownSelectSession);
+    // RowSearch.appendChild(ColumnSession);
 
     let ColumnDate = new Div(undefined, "col-sm-3 text-left");
     const DateToday = new Date().toISOString().slice(0, 10);

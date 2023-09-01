@@ -287,6 +287,7 @@ function ViewAppointmentedPatientList() {
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
         document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+        document.getElementById('NewAppointmentAddRow').style.display = '';
     } else {
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');

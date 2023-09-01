@@ -443,7 +443,9 @@ function GetDoctorData_Success(Response) {
 function setDoctorDropDown(Id){
     let Count;
     let DataLength = _DoctorSessionData.length;
+    _DoctorSessionData = [{DoctorId:0, FirstName:"All", LastName:"Doctors"} , ..._DoctorSessionData]
     console.log(_DoctorSessionData)
+
     //all doctors - as the first option
     // $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
@@ -853,13 +855,13 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
         document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + PatientMatched.FirstName + ' ' + PatientMatched.LastName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
-        document.getElementById("BtnNewAppointment").style.display = "block";
+        // document.getElementById("BtnNewAppointment").style.display = "block";
     } else {
         document.getElementById('TxtAppointmentsDetails').innerHTML = " "+ DoctorName + "<br>" + SessionDetails;
 
         _ApoointmentHeadingTitle = "Dr." + DoctorName + "/" + SessionDetails;
         $("#BtnSaveAppointment").hide();
-        document.getElementById("BtnNewAppointment").style.display = "block";
+        // document.getElementById("BtnNewAppointment").style.display = "block";
 
     }
     _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
@@ -878,14 +880,14 @@ function SaveAppointment_Success(Response) {
         let startingDateTime = Response.Data.TimeStart;
         let patientMobileNo = Response.Data.Mobile;
 
-        shareAppointmentDetailsWithPatient({
-            messageTitle: 'New Appointment Placed!',
-            mobileNumber: patientMobileNo,
-            appointmentNumber: appointmentNumber,
-            appointmentId: appointmentId,
-            doctorName: doctorName,
-            startingDateTime: startingDateTime
-        })
+        // shareAppointmentDetailsWithPatient({
+        //     messageTitle: 'New Appointment Placed!',
+        //     mobileNumber: patientMobileNo,
+        //     appointmentNumber: appointmentNumber,
+        //     appointmentId: appointmentId,
+        //     doctorName: doctorName,
+        //     startingDateTime: startingDateTime
+        // })
 
 
         _PatientId = null;
@@ -893,10 +895,21 @@ function SaveAppointment_Success(Response) {
         StoredSessionId = null;
 
 
-        $('#AppoinmentsCard').click();
+        // $('#AppoinmentsCard').click();
 
-        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-        // GetDoctorAppoinmentList();
+        $('#AppoinmentsCard').attr('disabled', true);
+        $('#AppoinmentsCard').css('cursor', 'auto');
+        CmdCardClicked = 'AppoinmentsCard';
+        _CardClicked = 'Appointments';
+        // console.log('_CardClicked:', _CardClicked);
+        _PatientId = undefined;
+        InitRequestHandler();
+        _AppointmentPatientName = undefined;
+        // new Appoinments().Render(Containers.MainContent);
+        new NewAppoinment().Render(Containers.MainContent);
+        GetAllPatientAppointmentsList('all');
+        setDoctorDropDown('DrpAppoinmentDoctor');
+        // SetDoctorData('DrpAppoinmentDoctor');
 
         //SavePatientAnalytics(Response.Data);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
@@ -1104,7 +1117,7 @@ function FilterAppointedPatientData(Data) {
             "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
             "Session Start": isNull(StartingDateTime),
             "No of Appointments": isNull(groupedData[propName]?.length),
-            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>
+            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
                        <button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
         });
 
