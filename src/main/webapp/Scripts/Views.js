@@ -39,28 +39,22 @@ function LayoutCommon() {
     document.body.appendChild(DivLayout);
 
     new Login().Render(this.IdHolder);
+    let DivContentLoader = `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
+                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;position: relative;
+                                                        " class="d-flex flex-column  align-items-center
+                                                                 ">
+                                             <span class="loader-animation mt-5"></span>
+                                             <p class="mt-3" style="position: absolute; bottom: 5px;">Loading ... </p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+    document.getElementById(_Body).innerHTML += DivContentLoader;
   };
 
   this.RenderLoader = function () {
-    let DivContentLoader = new Div(
-      this.IdLoader,
-      "row zindex-10 w-100 align-items-center"
-    );
-    let DivLoadingIconLoader = new Div(
-      "DivLoadingIconLoader",
-      "mx-auto justify-content-center"
-    );
-    DivLoadingIconLoader.appendChild(
-      new Imagebox(
-        "imageLoader",
-        "dist-assets/images/Spinner-1s-204px.gif",
-        undefined,
-        undefined,
-        [new Attribute(_AttributeClass, "c-default w-50")]
-      )
-    );
-    DivContentLoader.appendChild(DivLoadingIconLoader);
-    document.getElementById(_Body).appendChild(DivContentLoader);
+
+
   };
 
   this.DerenderLoader = function () {
@@ -2357,7 +2351,7 @@ function ShowPatientsModal(propName) {
   const element = `
     <div class="d-flex justify-content-between">
       <h3>View Appointments</h3>
-       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide');_ViewedDoctorSessionName='';$('.modal-backdrop').remove();">X</button>
+       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide');_ViewedDoctorSessionName='';$('.modal-backdrop').hide();">X</button>
     </div>
       
         <div

@@ -100,9 +100,18 @@ function SaveDetails_Success(Response) {
         if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
-            new NewAppoinment().Render(Containers.MainContent);
-            GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-            GetDoctorAppoinmentList();
+            if(StoredSessionId !== ''){
+                _ArrayPatientSearchResultsData.push(Response.Data);
+                GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+                GetDoctorAppoinmentList();
+                document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+            }else{
+                _ArrayPatientSearchResultsData.push(Response.Data);
+                new NewAppoinment().Render(Containers.MainContent);
+                GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+                GetDoctorAppoinmentList();
+            }
+
         }
 
         _PatientDetails = Response.Data;

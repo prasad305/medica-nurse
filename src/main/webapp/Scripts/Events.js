@@ -283,6 +283,7 @@ function ViewAppointmentedPatientList() {
         // new Appoinments().Render(Containers.MainContent);
         // GetSessionDoctorId('DrpAppoinmentDoctor');
         // SetDoctorData('DrpAppoinmentDoctor');
+        groupedData = {};
         GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
         document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');

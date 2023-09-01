@@ -66,7 +66,7 @@ var _AppointmentUser;
 var _AppointmentNumber;
 var _AppointmentDetails;
 var _AppointmentSessionId;
-let StoredSessionId;
+let StoredSessionId = '';
 var _AppointmentPatientId;
 var _AppointmentDoctorName;
 var _AppointmentPatientName;
