@@ -12,17 +12,18 @@
 }
 
 .btn-primary, .btn-outline-primary {
-    border-color: #7583e0 !important;
+    border-color: #003473 !important;
 }
 
 .btn-info:hover, .btn-outline-info:hover {
-    background: #7583e0;
-    box-shadow: 0 8px 25px -8px #7583e0;
+    background: #003473;
+    box-shadow: 0 8px 25px -8px #003473;
 }
 
 .btn-primary:hover, .btn-outline-primary:hover {
-    background: #7583e0;
-    box-shadow: 0 8px 25px -8px #7583e0;
+    background: #003473;
+    box-shadow: 0 8px 25px -8px #003473;
+    color: white !important;
 }
 
 

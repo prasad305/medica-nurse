@@ -515,9 +515,9 @@ async function SetDoctorData(Id) {
                 "NearestSession":StartingDateTime,
                 "NoOfSessions":doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
                 "Actions":`
-                    <button class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
-                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>Appointment</button>
-                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+                    <button title='View available sessions of ${doctor.doctor.Title + ' '+ doctor.doctor.FirstName +' '+ doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button title="Place new appointment for ${doctor.doctor.Title + ' '+ doctor.doctor.FirstName +' '+ doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
+                    <button title="Add new session to ${doctor.doctor.Title + ' '+ doctor.doctor.FirstName +' '+ doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
             }
         });
 
@@ -543,22 +543,26 @@ function onCLickContinueQuickSuggestedSession(index, sessionIndex){
     _AppointmentDoctorName  = doctor.FirstName + " " + doctor.LastName;
     const session = _DoctorsAndSessions[index]?.sessions[sessionIndex];
     const sessionDate = new Date(session.TimeStart).toISOString().split('T')[0];
+
     const timeStart = session.TimeStart
     let TimeStartSplit = timeStart.split("T")[1].split(":");
     let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
     const StartingDateTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
         timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
     });
+
     const timeEnd = session.TimeEnd
     let TimeEndSplit = timeEnd.split("T")[1].split(":");
     let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
     const EndingDateTime = new Date(TimeFormat.DateFormat + TimeEnd + "Z").toLocaleTimeString(Language.SelectLanguage, {
         timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
     });
+
     let Type = "";
     if (session.Type === 1) Type = "Virtual"; else if (session.Type === 2) Type = "Physical"; else Type = "Both";
     _SessionDetails  = `Session : Room No ${session.RoomNumber}/ ${sessionDate} / ${StartingDateTime}-${EndingDateTime} / ${Type}`
     $('#session-select-modal').modal('hide');
+
     _AppointmentSessionId = session?.Id;
     StoredSessionId = session?.Id;
     _IsSetAppointmentToDoctorClicked = true;
@@ -567,6 +571,37 @@ function onCLickContinueQuickSuggestedSession(index, sessionIndex){
     // new PatientSearch().Render(Containers.MainContent);
     // LoadSessionViceAppointments(undefined,session?.Id);
     // SetAppoinmentDoctorDetails(doctorName, sessionDetails);
+
+}
+
+function PlaceQuickAppointment(propName){
+    const appointments = groupedData[propName];
+    if(!appointments) return;
+    const appointment = appointments[0];
+
+    _AppointmentDoctorName = appointment.DoctorName;
+    const sessionDate = new Date(appointment.TimeStart).toISOString().split('T')[0];
+
+    const timeStart = appointment.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const StartingDateTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    const timeEnd = appointment.TimeEnd
+    let TimeEndSplit = timeEnd.split("T")[1].split(":");
+    let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+    const EndingDateTime = new Date(TimeFormat.DateFormat + TimeEnd + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    _SessionDetails  = `Session : Room No ${appointment.RoomNumber}/ ${sessionDate} / ${StartingDateTime}-${EndingDateTime} / ${appointment.Type}`
+
+    _AppointmentSessionId = appointment?.SessionId;
+    StoredSessionId = appointment?.SessionId;
+    _IsSetAppointmentToDoctorClicked = true;
+    LoadSessionViceAppointments(undefined,appointment?.SessionId);
 
 }
 
@@ -811,15 +846,16 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     // }
     _AppointmentSessionId = Id;
     if (_PatientId !== null && _PatientId !== undefined) {
-        document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
+        document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : " + DoctorName;
         document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " + SessionDetails;
         // document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
         const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === _PatientId)[0];
         document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + PatientMatched.FirstName + ' ' + PatientMatched.LastName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
+        document.getElementById("BtnNewAppointment").style.display = "block";
     } else {
-        document.getElementById('TxtAppointmentsDetails').innerHTML = "Dr." + "  " + DoctorName + "<br>" + SessionDetails;
+        document.getElementById('TxtAppointmentsDetails').innerHTML = " "+ DoctorName + "<br>" + SessionDetails;
 
         _ApoointmentHeadingTitle = "Dr." + DoctorName + "/" + SessionDetails;
         $("#BtnSaveAppointment").hide();
@@ -1022,6 +1058,17 @@ function FilterAppointedPatientData(Data) {
             }
         }
 
+        let Type = '';
+
+        if(Data[Count].Type === "offline"){
+            Type = "Physical";
+        }else if(Data[Count] === "online"){
+            Type = "Virtual";
+
+        }else{
+            Type="Both";
+        }
+
         // console.log(ChannelingStatusOriginal, ChannelingStatus);
 
         const GenderOriginal = Data[Count].Gender != null ? Data[Count].Gender.toLowerCase() : '-';
@@ -1034,16 +1081,12 @@ function FilterAppointedPatientData(Data) {
             Gender = 'M';
         }
 
-        console.log(Data);
-
-            const propName = Data[Count]?.DoctorName + Data[Count]?.TimeStart;
+            const propName = Data[Count]?.DoctorId + Data[Count]?.TimeStart;
             if (!groupedData[propName]) {
-                groupedData[propName] = [{...Data[Count], Gender, ChannelingStatus, IsPaid,PaymentTypeIcon}];
+                groupedData[propName] = [{...Data[Count], Gender, ChannelingStatus,Type, IsPaid,PaymentTypeIcon}];
             }else{
-                groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, IsPaid,PaymentTypeIcon});
+                groupedData[propName].push({...Data[Count], Gender, ChannelingStatus,Type, IsPaid,PaymentTypeIcon});
             }
-
-        console.log(groupedData); //TODO: show data
 
     }
     _ArrayAppointedPatientData = [];
@@ -1061,7 +1104,8 @@ function FilterAppointedPatientData(Data) {
             "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
             "Session Start": isNull(StartingDateTime),
             "No of Appointments": isNull(groupedData[propName]?.length),
-            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>`
+            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Patients</button>
+                       <button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
         });
 
     });
@@ -1092,9 +1136,9 @@ function handleOnChangeDoctorSearch(){
             "NearestSession":StartingDateTime,
             "NoOfSessions":doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
             "Actions":`
-                    <button class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
-                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>Appointment</button>
-                    <button class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+                    <button title='View available sessions of ${doctor.doctor.Title + ' '+  doctor.doctor.FirstName + ' '+  doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button title="Place new appointment for ${doctor.doctor.Title + ' '+  doctor.doctor.FirstName + ' '+  doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
+                    <button title="Add new session to ${doctor.doctor.Title + ' '+  doctor.doctor.FirstName + ' '+  doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
         }
     });
 

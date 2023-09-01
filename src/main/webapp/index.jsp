@@ -14,7 +14,7 @@
     <link rel="shortcut icon" type="image/png" href="dist-assets/images/LogoNurse.png">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet"/>
-    <link href="dist-assets/css/themes/lite-blue.min.css" rel="stylesheet"/>
+    <link href="dist-assets/css/themes/lite-blue-v1.min.css" rel="stylesheet"/>
     <link href="dist-assets/css/plugins/perfect-scrollbar.css" rel="stylesheet"/>
     <link href="dist-assets/css/themes/component-custom-switch.css" rel="stylesheet"/>
     <link href="dist-assets/css/plugins/sweetalert2.min.css" rel="stylesheet"/>
@@ -36,36 +36,36 @@
             src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
-    .loader-animation {
-        width: 64px;
-        height: 64px;
+    .loader-animation{
+        display: block;
         position: relative;
-        background-image:
-                linear-gradient(#FE0000 16px, transparent 0) ,
-                linear-gradient(#28FE01 16px, transparent 0) ,
-                linear-gradient(#FFBB00 16px, transparent 0) ,
-                linear-gradient(#4300FF 16px, transparent 0);
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        background-position: left top , left bottom , right top , right bottom;
-        animation: rotate 1s linear infinite;
+        height: 20px;
+        width: 80px;
+        border: 3px solid #4382ce;
+        border-radius: 20px;
+        box-sizing: border-box;
+        animation: balancing 1s linear infinite alternate;
+        transform-origin: center center;
     }
-    @keyframes rotate {
-        0% {
-            width: 64px;
-            height: 64px;
-            transform: rotate(0deg)
-        }
-        50% {
-            width: 30px;
-            height: 30px;
-            transform: rotate(180deg)
-        }
-        100% {
-            width: 64px;
-            height: 64px;
-            transform: rotate(360deg)
-        }
+    .loader-animation:before{
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 35px;
+        height: 15px;
+        border-radius: 20px;
+        background: #003473;
+        animation: ballbns 1s linear infinite alternate;
+    }
+    @keyframes ballbns {
+        0% {  left: 0; transform: translateX(0%); }
+        100% {  left: 100%; transform: translateX(-100%); }
+    }
+    @keyframes balancing {
+        0% {  transform: rotate(-25deg); }
+        50% {  transform: rotate(0deg); }
+        100% {  transform: rotate(25deg); }
     }
 
     .patient-table {

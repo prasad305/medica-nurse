@@ -40,8 +40,8 @@ function LayoutCommon() {
 
     new Login().Render(this.IdHolder);
     let DivContentLoader = `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
-                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;position: relative;
+                                        <div style="height:100vh; width:100vw;background: rgba(255, 255, 255, 0.74);" class="d-flex justify-content-center align-items-center">
+                                            <div style="background-color:transparent; width:150px; height:150px; border-radius:10px;position: relative;
                                                         " class="d-flex flex-column  align-items-center
                                                                  ">
                                              <span class="loader-animation mt-5"></span>
@@ -1623,7 +1623,7 @@ function showViewMoreSessionsModal(index) {
     </div>
       
         <div
-            style="overflow:auto; height:178px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 660px"
+            style="overflow:auto; height:350px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 660px"
           >
             <table class="patient-table">
               <thead>
@@ -4131,8 +4131,8 @@ function Footer() {
     CardBodyFooter.appendChild(RowFooter);
     CardFooter.appendChild(CardBodyFooter);
     CardFooter.innerHTML += `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                        <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
-                                            <div style="background-color:white; width:150px; height:150px; border-radius:10px;position: relative;
+                                        <div style="height:100vh; width:100vw;background: rgba(255, 255, 255, 0.74);" class="d-flex justify-content-center align-items-center">
+                                            <div style="background-color:transparent; width:150px; height:150px; border-radius:10px;position: relative;
                                                         " class="d-flex flex-column  align-items-center
                                                                  ">
                                              <span class="loader-animation mt-5"></span>
