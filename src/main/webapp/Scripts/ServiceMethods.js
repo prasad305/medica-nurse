@@ -35,6 +35,7 @@ async function Login_Success(Response) {
         document.getElementById("SessionCard").style.backgroundColor = "#BDC3C7";
         new Session().Render(Containers.MainContent);
         _AppointmentSessionId = undefined;
+
         try{
             $('#loading').modal('show');
             const allocatedDoctorsForNurse = await GetAsyncV2(
@@ -442,14 +443,13 @@ function GetDoctorData_Success(Response) {
 
 function setDoctorDropDown(Id){
     let Count;
-    let DataLength = _DoctorSessionData.length;
-    _DoctorSessionData = [{DoctorId:0, FirstName:"All", LastName:"Doctors"} , ..._DoctorSessionData]
-    console.log(_DoctorSessionData)
+    const _DoctorSessionDataWithAllDoctorsOption = [{Id:" ", FirstName:"All", LastName:"Doctors"} , ..._DoctorSessionData]
+    $('#' + Id).empty();
 
     //all doctors - as the first option
     // $('#' + Id).append('<option value="all">All Doctors</option>');
-    for (Count = 0; Count < DataLength; Count++) {
-        $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
+    for (Count = 0; Count < _DoctorSessionDataWithAllDoctorsOption.length; Count++) {
+        $('#' + Id).append('<option value="' + _DoctorSessionDataWithAllDoctorsOption[Count].Id + '">' + _DoctorSessionDataWithAllDoctorsOption[Count].FirstName + " " + _DoctorSessionDataWithAllDoctorsOption[Count].LastName + '</option>');
     }
 }
 
@@ -880,14 +880,14 @@ function SaveAppointment_Success(Response) {
         let startingDateTime = Response.Data.TimeStart;
         let patientMobileNo = Response.Data.Mobile;
 
-        // shareAppointmentDetailsWithPatient({
-        //     messageTitle: 'New Appointment Placed!',
-        //     mobileNumber: patientMobileNo,
-        //     appointmentNumber: appointmentNumber,
-        //     appointmentId: appointmentId,
-        //     doctorName: doctorName,
-        //     startingDateTime: startingDateTime
-        // })
+        shareAppointmentDetailsWithPatient({
+            messageTitle: 'New Appointment Placed!',
+            mobileNumber: patientMobileNo,
+            appointmentNumber: appointmentNumber,
+            appointmentId: appointmentId,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
 
 
         _PatientId = null;
@@ -936,6 +936,8 @@ function shareAppointmentDetailsWithPatient({
                                                 doctorName,
                                                 startingDateTime
                                             }, onSuccess = null) {
+
+
     _Request.Post(ServiceMethods.SENDSMS, {
         "ScheduleMedium": [{
             "MediumId": 1, "Destination": mobileNumber, "Status": 0
@@ -1106,19 +1108,21 @@ function FilterAppointedPatientData(Data) {
 
     Object.keys(groupedData).forEach((propName, index) => {
         const timeStart = groupedData[propName]?.[0]?.TimeStart
+        const timeEnd = groupedData[propName]?.[0]?.TimeEnd
         let StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + "@";
         let TimeStartSplit = timeStart.split("T")[1].split(":");
         let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
         StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
             timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
         });
+        const isExpired = new Date(timeEnd) < new Date();
         _ArrayAppointedPatientData.push({
             "A#": isNull(index + 1),
             "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
             "Session Start": isNull(StartingDateTime),
             "No of Appointments": isNull(groupedData[propName]?.length),
-            "Action": `<button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
-                       <button class='btn btn-outline-primary p-1' style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
+            "Action": `<button class='btn btn-outline-primary p-1' title='View appointments' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
+                       <button class='btn btn-outline-primary p-1' ${isExpired ? 'disabled' : ''} ${isExpired ? `title='Expired session!. Cannot place new appointments'` : `title='Place new appointment'`} style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
         });
 
     });
@@ -1177,7 +1181,7 @@ function GetAllPatientAppointmentsList(SearchType) {
     } else if (SearchType === 'search') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     } else if (SearchType === 'all') {
-        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
+        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     }
 }
 

@@ -132,7 +132,7 @@
 <script src="dist-assets/js/scripts/jquery.dataTables.min.js"></script>
 <script src="dist-assets/js/scripts/dataTables.responsive.min.js"></script>
 <script src="dist-assets/js/scripts/qrcode.min.js"></script>
-
+<script src="dist-assets/js/plugins/sha256.min.js"></script>
 <script src="https://js.devartsoftware.com/devart/extender/main/v1.0/devart.extender.min.js"></script>
 <script src="https://js.devartsoftware.com/devart/extender/UI/v1.0/DevArt.Extender.UI.min.js"></script>
 

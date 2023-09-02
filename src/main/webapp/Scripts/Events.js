@@ -503,7 +503,10 @@ function GetDoctorSessionDataForAppoinment(CardType) {
     else {
         const AppointmentSearchDate = $('#TxtAppointmentSearchDate').val();
         // console.log('GetDoctorSessionDataForAppoinment:', document.getElementById('DrpAppoinmentDoctor').value, AppointmentSearchDate);
-        _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null), GetDoctorSessionDataForAppoinment_Success);
+        _Request.Post(ServiceMethods.SessionGetByDate,
+            AppointmentDoctorId === " " ? new AllAppointmentsForToday(_UserId, AppointmentSearchDate) :
+            new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null),
+            GetDoctorSessionDataForAppoinment_Success);
     }
 }
 
@@ -547,30 +550,29 @@ function Appointments_Search() {
     groupedData = {};
     _ArrayAppointedPatientData = [];
 
-    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
-    _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    _AppointmentSessionId = 0;
+    // _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
+    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
 
     $('#AppointmentsSearchButton').prop('disabled', true);
 
-    if (document.getElementById('DrpAppoinmentDoctor').value.trim() !== "" &&
-        document.getElementById('DrpSessionDateDoctor').value === "0") {
+    const drpAppointmentDoctor = document.getElementById('DrpAppoinmentDoctor').value;
+    const txtAppointmentSearchDate = document.getElementById('TxtAppointmentSearchDate').value;
+
+    if (drpAppointmentDoctor === " ") {
+
+        GetAllPatientAppointmentsList('all');
+
+    } else if (drpAppointmentDoctor !== " ") {
 
         GetAllPatientAppointmentsList('sessions');
 
-    } else if (document.getElementById('DrpSessionDateDoctor').value === "0" &&
-               document.getElementById('DrpAppoinmentDoctor').value === "0") {
+    }else if (drpAppointmentDoctor === " " && txtAppointmentSearchDate !== "") {
 
         GetAllPatientAppointmentsList('search');
 
-    } else if (document.getElementById('DrpSessionDateDoctor').value != " " &&
-               document.getElementById('DrpAppoinmentDoctor').value != " " &&
-                (AppointmentDate !== "" && AppointmentDate != NaN)) {
-
-        GetDoctorAppoinmentList();
-
-    } else {
+    }  else {
         $('#AppointmentsSearchButton').prop('disabled', false);
         return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
     }

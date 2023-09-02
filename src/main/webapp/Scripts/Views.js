@@ -1994,14 +1994,14 @@ function Appoinments() {
         "GetDoctorSessionDataForAppoinment('Appoinments')"
       ),
     ]);
-    SelectAppoinment.appendChild(
-      new SelectItem("Select Doctor", " ", [
-        new Attribute(
-          _AttributeClass,
-          "form-control form-control-rounded appointment-class"
-        ),
-      ])
-    );
+    // SelectAppoinment.appendChild(
+    //   new SelectItem("All doctors", " ", [
+    //     new Attribute(
+    //       _AttributeClass,
+    //       "form-control form-control-rounded appointment-class"
+    //     ),
+    //   ])
+    // );
     DivFormRowDoctor.appendChild(LabelAppoinment);
     DivFormRowDoctor.appendChild(SelectAppoinment);
     FormRow0Appoinment.appendChild(DivFormRowDoctor);
@@ -2225,7 +2225,7 @@ function NewAppoinment() {
         new Attribute("value", DateToday),
         new Attribute(
           _AttributeOnChange,
-          "GetDoctorSessionDataForAppoinment('NewAppoinment')"
+          "GetDoctorSessionDataForAppoinment('')"
         ),
       ]
     );
@@ -3737,14 +3737,14 @@ function Pharmacy() {
       ),
       new Attribute(_AttributeOnChange, "GetDoctorSessionDataForPharmacy()"),
     ]);
-    DropdownSelectDoctor.appendChild(
-      new SelectItem("All Doctors", "null", [
-        new Attribute(
-          _AttributeClass,
-          "form-control form-control-rounded appointment-class"
-        ),
-      ])
-    );
+    // DropdownSelectDoctor.appendChild(
+    //   new SelectItem("All Doctors", "null", [
+    //     new Attribute(
+    //       _AttributeClass,
+    //       "form-control form-control-rounded appointment-class"
+    //     ),
+    //   ])
+    // );
     ColumnDoctor.appendChild(LabelSelectDoctor);
     ColumnDoctor.appendChild(DropdownSelectDoctor);
     RowSearch.appendChild(ColumnDoctor);
