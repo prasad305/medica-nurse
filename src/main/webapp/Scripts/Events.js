@@ -559,6 +559,15 @@ function Appointments_Search() {
 
     const drpAppointmentDoctor = document.getElementById('DrpAppoinmentDoctor').value;
     const txtAppointmentSearchDate = document.getElementById('TxtAppointmentSearchDate').value;
+    const today = new Date().toISOString().split('T')[0];
+
+    // if(drpAppointmentDoctor === " " && txtAppointmentSearchDate !== today){
+    //     GetAllPatientAppointmentsList('sessions');
+    // }else if(drpAppointmentDoctor !== " " && txtAppointmentSearchDate !== today){
+    //     GetAllPatientAppointmentsList('search');
+    // }else if (drpAppointmentDoctor === " " && txtAppointmentSearchDate === today) {
+    //     GetAllPatientAppointmentsList('all');
+    // }
 
     if (drpAppointmentDoctor === " ") {
 
@@ -572,7 +581,8 @@ function Appointments_Search() {
 
         GetAllPatientAppointmentsList('search');
 
-    }  else {
+    }
+    else {
         $('#AppointmentsSearchButton').prop('disabled', false);
         return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
     }

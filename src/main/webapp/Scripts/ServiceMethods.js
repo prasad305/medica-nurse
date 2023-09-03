@@ -799,7 +799,7 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
     }
     //if session is set load it
     if (StoredSessionId !== undefined && StoredSessionId !== "") {
-        document.getElementById('DrpSessionDateDoctor').value = StoredSessionId;
+        // document.getElementById('TxtAppointmentSearchDate').value = StoredSessionId;
     }
 }
 
@@ -962,6 +962,7 @@ function GetDoctorAppoinmentList() {
 }
 
 function GetDoctorAppoinmentList_Success(Response) {
+    console.log("sermehod 965");
     if ($('#AppointmentsSearchButton').prop('disabled', true)) {
         $('#AppointmentsSearchButton').prop('disabled', false);
     }
@@ -972,7 +973,7 @@ function GetDoctorAppoinmentList_Success(Response) {
         //GetAppointedPatients(Response.Data);
 
         if (Response.Data.length > 0) {
-            _ArrayAppointmentsForToday = [..._ArrayAppointmentsForToday, ...Response.Data];
+            _ArrayAppointmentsForToday = [ ..._ArrayAppointmentsForToday, ...Response.Data];
         }
         $('#loading').modal('hide');
 
@@ -1195,7 +1196,6 @@ async function GetAllPatientAppointmentsForTodayList_Success(Response) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     } else {
         const AppointmentsForToday = Response.Data;
-        // _ArrayAppointmentsForToday = [];
         _ArrayAppointedPatientData = []
         groupedData = {}
 
