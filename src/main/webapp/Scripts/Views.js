@@ -2307,30 +2307,48 @@ function NewAppoinment() {
   };
 }
 
+function calculateAge(dob) {
+  const birthYear = dob.getFullYear();
+  const currentYear = new Date().getFullYear();
+  const age = currentYear - birthYear;
+  return age;
+
+}
+
 function ShowPatientsModal(propName) {
   console.log(propName);
   _ViewedDoctorSessionName = propName;
   const appointments = groupedData[propName];
+  let doctorNameAndDateTime = '';
+
   if(!appointments) return;
 
-  const tableContent = appointments.map((appointment, index) => {
-    const date = new Date(appointment?.TimeStart).toISOString().split("T")[0];
-    const paymentStatus = appointment?.IsPaid ? "Paid" : "Unpaid";
+  if(appointments.length > 0){
+    const appointment = appointments[0];
+    const sessionDate = new Date(appointment?.TimeStart).toISOString().split("T")[0];
     let TimeStartSplit = appointment?.TimeStart.split("T")[1].split(":");
     let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
     const startTime = new Date(
-      TimeFormat.DateFormat + TimeStart + "Z"
+        TimeFormat.DateFormat + TimeStart + "Z"
     ).toLocaleTimeString(Language.SelectLanguage, {
       timeZone: "UTC",
       hour12: true,
       hour: "numeric",
       minute: "numeric",
     });
+    doctorNameAndDateTime = `${appointment.DoctorName} - ${sessionDate}@${startTime}`;
+
+  }
+
+  const tableContent = appointments.map((appointment, index) => {
+    const paymentStatus = appointment?.IsPaid ? "Paid" : "Unpaid";
+    const patientAge = calculateAge(new Date(appointment?.DateOfBirth));
+
     return ` <tr>
                     <td>${appointment.Number}</td>
-                    <td>${appointment.DoctorName}</td>
-                    <td>${date}</td>
-                    <td>${startTime}</td>
+                    <td>${appointment.Title} ${appointment.FirstName} ${appointment.LastName}</td>
+                    <td  class="text-center">${appointment.Gender}</td>
+                    <td  class="text-center">${patientAge} yrs</td>
                     <td class="text-center">
                     ${appointment?.IsPaid ? appointment.PaymentTypeIcon : `<button class="btn btn-outline-primary p-1" ${appointment?.IsPaid ? "disabled" : ""} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},1, ${appointment.Status},${appointment.DoctorId})">${paymentStatus}</button>`}
                     </td>
@@ -2350,7 +2368,7 @@ function ShowPatientsModal(propName) {
 
   const element = `
     <div class="d-flex justify-content-between">
-      <h3>View Appointments</h3>
+      <h3 class="d-flex align-items-center">View Appointments <span style="font-size: 13px;margin-top: 2px;margin-left: 5px;">(${doctorNameAndDateTime})</span></h3>
        <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#show-patients-modal').modal('hide');_ViewedDoctorSessionName='';$('.modal-backdrop').hide();">X</button>
     </div>
       
@@ -2361,9 +2379,9 @@ function ShowPatientsModal(propName) {
               <thead>
                 <tr>
                   <th>#A</th>
-                  <th>Doctor</th>
-                  <th>Date</th>
-                  <th>Time</th>
+                  <th >Patient</th>
+                  <th  class="text-center">Gender</th>
+                  <th  class="text-center">Age</th>
                   <th  class="text-center">Payment Status</th>
                   <th>Status</th>
                   <th class="text-center">Action</th>
