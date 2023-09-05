@@ -62,7 +62,6 @@ async function Login_Success(Response) {
                 })
                 GetNurseBranches_Success(getNurseInstituteBranchResponse);
 
-
                 const doctorGetPromises = []
                 for (Count = 0; Count < DataLength; Count++) {
                     doctorGetPromises.push(GetAsyncV2({
@@ -1140,11 +1139,26 @@ function FilterAppointedPatientData(Data) {
 
 }
 
-function handleOnChangeDoctorSearch() {
-    const doctorsAndSessions = [..._DoctorsAndSessionsWithoutFiltering]
-    const keyword = document.getElementById('doctor-search-text').value;
-    _DoctorsAndSessions = doctorsAndSessions.filter(doctorAndSession => (doctorAndSession.doctor.Title + doctorAndSession.doctor.FirstName + doctorAndSession.doctor.LastName).toLowerCase().includes(keyword.toLowerCase()));
+function filterDoctorsBySearchKeyword(doctorsAndSessions) {
 
+    const keyword = document.getElementById('doctor-search-text').value;
+    return doctorsAndSessions.filter(doctorAndSession => (doctorAndSession.doctor.Title + doctorAndSession.doctor.FirstName + doctorAndSession.doctor.LastName).toLowerCase().includes(keyword.toLowerCase()));
+
+}
+
+
+function filterDoctorsBySessionAvailability(doctorsAndSessions){
+    const filterBy = document.getElementById('filter-doctors-by').value;
+    if(filterBy === 'ALL_DOCTORS'){
+        return doctorsAndSessions;
+    }else if(filterBy === 'SESSIONS_AVAILABLE'){
+        return doctorsAndSessions.filter(doctorAndSession => doctorAndSession.sessions.length > 0);
+    }
+}
+
+function filterDoctorAndSessionTable(){
+    const doctorsFilterBySearchKeyword = filterDoctorsBySearchKeyword([..._DoctorsAndSessionsWithoutFiltering])
+    _DoctorsAndSessions = filterDoctorsBySessionAvailability(doctorsFilterBySearchKeyword);
     let tableData = _DoctorsAndSessions.map((doctor, index) => {
         let StartingDateTime = "No sessions";
         if (doctor?.sessions?.length > 0) {
@@ -1172,8 +1186,8 @@ function handleOnChangeDoctorSearch() {
     new DoctorAndSessionsTable().Render('DivDoctorsAndSessionTable', tableData);
     CreateDataTable('TableDoctorAndSessions');
     document.getElementById('doctor-count').innerHTML = `${_DoctorsAndSessions.length} Total doctors`;
-
 }
+
 
 function GetAllPatientAppointmentsList(SearchType) {
     // console.log('GetAllPatientAppointmentsList.SearchType:', SearchType);

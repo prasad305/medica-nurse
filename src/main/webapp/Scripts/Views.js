@@ -1490,11 +1490,10 @@ function Session() {
                     0 Total doctors
                 </div>
                 <div class="d-flex">
-                    <input class="form form-control form-control-rounded col" id="doctor-search-text" style="width:250px" placeholder="Search by doctor name" onkeyup="handleOnChangeDoctorSearch()"/>
-                    <select  class="form form-control form-control-rounded  ml-2 col">
-                        <option>All doctors</option>
-                        <option>Now Available</option>
-                        <option>Sessions Available</option>
+                    <input class="form form-control form-control-rounded col" id="doctor-search-text" style="width:250px" placeholder="Search by doctor name" onkeyup="filterDoctorAndSessionTable()"/>
+                    <select id="filter-doctors-by" class="form form-control form-control-rounded  ml-2 col" onchange="filterDoctorAndSessionTable()">
+                        <option value="ALL_DOCTORS">All doctors</option>
+                        <option value="SESSIONS_AVAILABLE">Sessions Available</option>
                     </select>
                 </div>
             </div>
@@ -1606,8 +1605,8 @@ function showViewMoreSessionsModal(index) {
                     <td class="text-center">${session.RoomNumber}</td>
                     <td>${date}</td>
                     <td>${startTime}</td>
-                    <td class="text-center">${session.AppointmentLimit}</td>
-                     <td class="text-center">${session.AppointmentReserved}</td>
+                    <td class="text-center">${session?.AppointmentLimit ? session.AppointmentLimit : "-"}</td>
+                     <td class="text-center">${session?.AppointmentReserved ? session.AppointmentReserved : "-" }</td>
                     <td class="text-center">
                         <button class="btn btn-outline-danger p-1  ml-2" onclick="onCLickContinueQuickSuggestedSession(${index}, ${innerIndex})">Appointment</button>
                     </td>
