@@ -55,6 +55,14 @@ async function Login_Success(Response) {
                     _NurseId = allocatedDoctorsForNurse.Data[0].NurseId;
                     NurseGet();
                 }
+
+                const getNurseInstituteBranchResponse = await PostAsyncV2({
+                    serviceUrl: ServiceMethods.InstituteBranch,
+                    requestBody:{}
+                })
+                GetNurseBranches_Success(getNurseInstituteBranchResponse);
+
+
                 const doctorGetPromises = []
                 for (Count = 0; Count < DataLength; Count++) {
                     doctorGetPromises.push(GetAsyncV2({
@@ -76,12 +84,10 @@ async function Login_Success(Response) {
 
         } catch (e) {
             console.log(e)
-        } finally {
-
         }
         // GetSessionDoctorId();
-        GetNurseBranches();
-        NurseGet();
+        // GetNurseBranches();
+        // NurseGet();
         // new PatientSearch().Render(Containers.MainContent);
 
 
@@ -480,6 +486,7 @@ async function SetDoctorData(Id) {
             serviceUrl: ServiceMethods.SessionsGet,
             requestBody: {
                 "DoctorId": doctorId,
+                "InstituteBranchId":_NurseBranch.Id
             }
         })));
 

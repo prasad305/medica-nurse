@@ -511,8 +511,8 @@ function GetDoctorSessionDataForAppoinment(CardType) {
 }
 
 function GetDoctorAllSessionDataByDoctor(doctorId) {
-
-    _Request.Post(ServiceMethods.SessionsGet, new GetSessions(doctorId, '', null), GetDoctorSessionDataForAppoinment_Success);
+    console.log(doctorId,_NurseBranch.Id);
+    _Request.Post(ServiceMethods.SessionsGet, new Doctor(doctorId,_NurseBranch.Id ), GetDoctorSessionDataForAppoinment_Success);
 }
 
 function GetDoctorsSessionsForAppointmentUpdate() {
