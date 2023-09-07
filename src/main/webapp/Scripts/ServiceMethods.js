@@ -1372,15 +1372,8 @@ async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
                     disabled: true,
                     saved: true,
                     hasChanges: false
-                },
-                {
-                    itemName: 'Service charges',
-                    feeType: FeeTypes.BookingFee,
-                    feeAmount: '250',
-                    disabled: true,
-                    saved: true,
-                    hasChanges: false
                 }
+
             ]
             RerenderMedicalBillTable();
             medicalBillTableTotalSumGet();
@@ -1542,14 +1535,6 @@ function medicalBillTableAllRowsRemove() {
             itemName: 'Doctor charges',
             feeType: FeeTypes.DoctorFee,
             feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee + _MedicalBillDoctor?.fees?.HospitalFee + _MedicalBillDoctor?.fees?.OtherFee).toFixed(2),
-            disabled: true,
-            saved: true,
-            hasChanges: false
-        },
-        {
-            itemName: 'Service charges',
-            feeType: FeeTypes.BookingFee,
-            feeAmount: '250',
             disabled: true,
             saved: true,
             hasChanges: false
