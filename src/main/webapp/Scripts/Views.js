@@ -3306,7 +3306,7 @@ function AppointmentDetailsEditModal() {
       [
         new Attribute(_AttributeType, "text"),
         new Attribute("disabled", "true"),
-        new Attribute("value", parseFloat(250).toFixed(2)),
+        new Attribute("value", parseFloat(0).toFixed(2)),
       ]
     );
 
@@ -3318,7 +3318,7 @@ function AppointmentDetailsEditModal() {
       doctor?.fees?.DoctorFee +
         doctor?.fees?.HospitalFee +
         doctor?.fees?.OtherFee +
-        250
+        0
     ).toFixed(2);
     // Total fees
     const ColumnTotalFee = new Div(
