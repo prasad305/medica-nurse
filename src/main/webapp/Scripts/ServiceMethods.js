@@ -1368,7 +1368,15 @@ async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
                 {
                     itemName: 'Doctor charges',
                     feeType: FeeTypes.DoctorFee,
-                    feeAmount: parseFloat(doctor?.fees?.DoctorFee + doctor?.fees?.HospitalFee + doctor?.fees?.OtherFee).toFixed(2),
+                    feeAmount: parseFloat(doctor?.fees?.DoctorFee).toFixed(2),
+                    disabled: true,
+                    saved: true,
+                    hasChanges: false
+                },
+                {
+                    itemName: 'Hospital charges',
+                    feeType: FeeTypes.HospitalFee,
+                    feeAmount: parseFloat(doctor?.fees?.HospitalFee).toFixed(2),
                     disabled: true,
                     saved: true,
                     hasChanges: false
@@ -1534,7 +1542,15 @@ function medicalBillTableAllRowsRemove() {
         {
             itemName: 'Doctor charges',
             feeType: FeeTypes.DoctorFee,
-            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee + _MedicalBillDoctor?.fees?.HospitalFee + _MedicalBillDoctor?.fees?.OtherFee).toFixed(2),
+            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee).toFixed(2),
+            disabled: true,
+            saved: true,
+            hasChanges: false
+        },
+        {
+            itemName: 'Hospital charges',
+            feeType: FeeTypes.HospitalFee,
+            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.HospitalFee).toFixed(2),
             disabled: true,
             saved: true,
             hasChanges: false
