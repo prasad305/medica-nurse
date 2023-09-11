@@ -1302,9 +1302,6 @@ function AppointmentChannelingStatusUpdate(AppointmentId, AppointmentNumber, Ses
 function AppointmentChannelingStatusUpdate_success(Response) {
     if (Response.Status === 1000) {
         $('#ModalForAppointmentChannelingStatusEdit').modal('hide');
-        // AllBranchesOfTheInstituteGet();
-        // _AddressId = 0;
-        CmdAppoinments_Click('AppoinmentsCard');
         Appointments_Search();
         return ShowMessage("Channeling Status Updated!", MessageTypes.Success, "Success!");
     } else {
@@ -1724,7 +1721,7 @@ function medicalBillTableSavedResponseAppend(Response) {
     //just renders the received data. must contain the hospital charges and doctor charges
     for (let i = 0; i < data.length; i++) {
         let billItem = data[i];
-        let isDisabled = billItem.ItemName === 'Doctor charges' || billItem.ItemName === 'Service charges';
+        let isDisabled = billItem.ItemName === 'Doctor fee' || billItem.ItemName === 'Hospital fee';
         MedicalBillData.push({
             itemName: billItem.ItemName,
             feeType: billItem.FeeType,
