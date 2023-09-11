@@ -2726,7 +2726,6 @@ function TablePatientAppointment() {
     Object.values(
       document.getElementById("TableAppointedPatient").rows
     ).forEach(function (row, index) {
-      row.cells[1].classList.add("text-center");
       row.cells[2].classList.add("text-center");
       row.cells[3].classList.add("text-center");
       row.cells[4].classList.add("text-center");
