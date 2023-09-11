@@ -2358,7 +2358,7 @@ function ShowPatientsModal(propName) {
                     </td>
                     <td class="d-flex justify-content-center">
                         <button class="btn btn-outline-warning p-1" onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
-                        <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${appointment?.Id},0,${appointment?.DoctorId})">View bill</button>
+                        <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${appointment?.Id},${appointment.Number},${appointment?.DoctorId})">View bill</button>
                     </td>
           </tr>`;
   });

@@ -1570,19 +1570,19 @@ function medicalBillTableRowDelete(TableRowElement) {
 function medicalBillTableTotalSumGet() {
     let Sum = 0;
     MedicalBillData.forEach((item) => {
-        const feeAmount = parseInt(item.feeAmount);
+        const feeAmount = parseFloat(item.feeAmount);
         if (!isNaN(feeAmount)) {
             Sum += feeAmount;
         }
     });
-    let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseInt($('#TxtDiscount').val()) : 0;
+    let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseFloat($('#TxtDiscount').val()) : 0;
     let Total = Sum - Discount;
     if (Total < 0) {
         Total = 0;
     } else {
         Total = Sum - Discount;
     }
-    $('#TxtTotal').text(Total);
+    $('#TxtTotal').text(parseFloat(`${Total}`).toFixed(2));
     $('#TxtDiscount').attr('max', (Sum));
 }
 

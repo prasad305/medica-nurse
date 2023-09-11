@@ -55,7 +55,7 @@
 
     <div class="row my-3">
         <div class="col-sm-12 text-center">
-            <img id="letterImg" src="https://docnote.medica.lk/Nurse/images/6_UserId.png" class="img-fluid" alt="#">
+            <img id="letterImg" src="https://docnote.medica.lk/Nurse/images/6_UserId.png" class="img-fluid" alt="">
         </div>
         <div class="col-sm-12">
             <h2 class="text-center mb-4">Medical Bill</h2>
@@ -128,7 +128,7 @@
                         <th>#</th>
                         <th>Item</th>
                         <th>Fee Type</th>
-                        <th>Amount (Rs.)</th>
+                        <th class="text-right" style="width: 24%">Amount (Rs.)</th>
                     </tr>
                     </thead>
 
@@ -196,7 +196,7 @@
                 '<td class="w-5"><label>' + (i + 1) + '</label></td>' +
                 '<td class=""><label>' + BillItem.Item + '</label></td>' +
                 '<td class="w-20"><label>' + BillItem.FeeType + '</label></td>' +
-                '<td class="w-15"><label>' + BillItem.FeeAmount + '</label></td>' +
+                '<td class="w-15 text-right"><label>' + BillItem.FeeAmount + '</label></td>' +
                 '</tr>';
             $('#TblPatientInvoiceTableBody').append(TableRow);
         }
@@ -204,12 +204,12 @@
         const TableDiscountRow = '<tr>' +
             '<td colspan="2">&nbsp;</td>' +
             '<td><label class="font-weight-bold">Discount (Rs.):</label></td>' +
-            '<td><label class="font-weight-bold">' + Bill.Discount + '</label></td>' +
+            '<td class="text-right"><label class="font-weight-bold ">' + parseFloat(`${Bill.Discount}`).toFixed(2) + '</label></td>' +
             '</tr>';
         const TableTotalFeeRow = '<tr>' +
             '<td colspan="2">&nbsp;</td>' +
             '<td><label class="font-weight-bold">Total (Rs.):</label></td>' +
-            '<td><label class="font-weight-bold">' + Bill.Total + '</label></td>' +
+            '<td class="text-right"><label class="font-weight-bold ">' + parseFloat(`${Bill.Total}`).toFixed(2) + '</label></td>' +
             '</tr>';
 
         $('#TblPatientInvoiceTableBody').append(TableDiscountRow);
