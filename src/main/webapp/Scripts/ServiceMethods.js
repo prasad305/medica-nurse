@@ -902,9 +902,11 @@ function SaveAppointment_Success(Response) {
 
 
         // $('#AppoinmentsCard').click();
+        CmdBtnColorRemove_Click();
 
         $('#AppoinmentsCard').attr('disabled', true);
         $('#AppoinmentsCard').css('cursor', 'auto');
+        document.getElementById('AppoinmentsCard').style.backgroundColor = "#BDC3C7";
         CmdCardClicked = 'AppoinmentsCard';
         _CardClicked = 'Appointments';
         // console.log('_CardClicked:', _CardClicked);
