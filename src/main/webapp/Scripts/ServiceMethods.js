@@ -494,7 +494,10 @@ async function SetDoctorData(Id) {
         for (let i = 0; i < getSessionsResponse.length; i++) {
             if (getSessionsResponse[i]?.Data?.length > 0) {
                 getSessionsResponse[i]?.Data?.forEach((session) => {
-                    doctors[session.DoctorId].sessions.push(session);
+                    const expired = new Date(session.TimeEnd) < new Date();
+                    if(!expired){
+                        doctors[session.DoctorId].sessions.push(session);
+                    }
                 });
             }
         }
@@ -515,7 +518,8 @@ async function SetDoctorData(Id) {
                     timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
                 });
             }
-            const doctorObjString = JSON.stringify(doctor);
+            const doctorName = doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName
+            const sessionsAvailable = doctor?.sessions?.length > 0;
 
             return {
                 "No": index + 1,
@@ -523,9 +527,9 @@ async function SetDoctorData(Id) {
                 "NearestSession": StartingDateTime,
                 "NoOfSessions": doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
                 "Actions": `
-                    <button title='View available sessions of ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
-                    <button title="Place new appointment for ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
-                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+                    <button title="View available sessions of ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button title="Place new appointment for ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
+                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
             }
         });
 
