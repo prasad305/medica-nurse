@@ -2357,7 +2357,7 @@ function ShowPatientsModal(propName) {
                       : `<button class="btn btn-outline-primary p-1" disabled >${appointment.ChannelingStatus}</button>`}
                     </td>
                     <td class="d-flex justify-content-center">
-                        <button class="btn btn-outline-warning p-1" onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
+                        <button class="btn btn-outline-warning p-1" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
                         <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${appointment?.Id},${appointment.Number},${appointment?.DoctorId})">View bill</button>
                     </td>
           </tr>`;
