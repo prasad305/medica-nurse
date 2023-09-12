@@ -1366,7 +1366,7 @@ async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
                     itemName: 'Doctor fee',
                     feeType: FeeTypes.DoctorFee,
                     feeAmount: parseFloat(doctor?.fees?.DoctorFee).toFixed(2),
-                    disabled: true,
+                    disabled: false,
                     saved: true,
                     hasChanges: false
                 },
@@ -1374,7 +1374,7 @@ async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
                     itemName: 'Hospital fee',
                     feeType: FeeTypes.HospitalFee,
                     feeAmount: parseFloat(doctor?.fees?.HospitalFee).toFixed(2),
-                    disabled: true,
+                    disabled: false,
                     saved: true,
                     hasChanges: false
                 }
@@ -1540,7 +1540,7 @@ function medicalBillTableAllRowsRemove() {
             itemName: 'Doctor fee',
             feeType: FeeTypes.DoctorFee,
             feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee).toFixed(2),
-            disabled: true,
+            disabled: false,
             saved: true,
             hasChanges: false
         },
@@ -1548,7 +1548,7 @@ function medicalBillTableAllRowsRemove() {
             itemName: 'Hospital fee',
             feeType: FeeTypes.HospitalFee,
             feeAmount: parseFloat(_MedicalBillDoctor?.fees?.HospitalFee).toFixed(2),
-            disabled: true,
+            disabled: false,
             saved: true,
             hasChanges: false
         }
@@ -1721,12 +1721,12 @@ function medicalBillTableSavedResponseAppend(Response) {
     //just renders the received data. must contain the hospital charges and doctor charges
     for (let i = 0; i < data.length; i++) {
         let billItem = data[i];
-        let isDisabled = billItem.ItemName === 'Doctor fee' || billItem.ItemName === 'Hospital fee';
+
         MedicalBillData.push({
             itemName: billItem.ItemName,
             feeType: billItem.FeeType,
             feeAmount: billItem.Amount,
-            disabled: isDisabled,
+            disabled: false,
             saved: true,
             hasChanges: false,
         });

@@ -1672,7 +1672,7 @@ function AddNewSession() {
 
     let DivFormGroupRowRoom = new Div(undefined, "form-group row");
 
-    let DivFormGroupRowRoomNumber = new Div(undefined, "col-lg-2 col-2");
+    let DivFormGroupRowRoomNumber = new Div(undefined, "col-lg-3 col-2");
     DivFormGroupRowRoomNumber.appendChild(
       new Label(undefined, "Room No *", [
         new Attribute(_AttributeClass, "col-form-label"),
@@ -1690,7 +1690,7 @@ function AddNewSession() {
     );
     DivFormGroupRowRoom.appendChild(DivFormGroupRowRoomNumber);
 
-    let DivFormGroupRowInstitute = new Div(undefined, "col-lg-3 col-3");
+    let DivFormGroupRowInstitute = new Div(undefined, "col-lg-4 col-3");
     DivFormGroupRowInstitute.appendChild(
       new Label(undefined, "Branch Name *", [
         new Attribute(_AttributeClass, "col-form-label"),
@@ -1708,7 +1708,7 @@ function AddNewSession() {
     DivFormGroupRowInstitute.appendChild(DrpSessionInstituteBranch);
     DivFormGroupRowRoom.appendChild(DivFormGroupRowInstitute);
 
-    let DivFormGroupRowSessionDate = new Div(undefined, "col-lg-4 col-4");
+    let DivFormGroupRowSessionDate = new Div(undefined, "col-lg-5 col-4");
     DivFormGroupRowSessionDate.appendChild(
       new Label(undefined, "Session Date *", [
         new Attribute(_AttributeClass, "col-form-label"),
@@ -1724,34 +1724,74 @@ function AddNewSession() {
     );
     DivFormGroupRowRoom.appendChild(DivFormGroupRowSessionDate);
 
-    let DivFormGroupRowSessionType = new Div(undefined, "col-lg-3 col-3");
+
+    FormAddSession.appendChild(DivFormGroupRowRoom);
+
+
+    let DivFormGroupRowSessionType = new Div(undefined, "col-lg-6 col-3");
     DivFormGroupRowSessionType.appendChild(
-      new Label(undefined, "Session Type *", [
-        new Attribute(_AttributeClass, "col-form-label"),
-        new Attribute(_AttributeFor, "TxtSessionType"),
-      ])
+        new Label(undefined, "Session Type *", [
+          new Attribute(_AttributeClass, "col-form-label"),
+          new Attribute(_AttributeFor, "TxtSessionType"),
+        ])
     );
     let DrpSessionType = new Select("DrpSessionType", [
       new Attribute(_AttributeClass, "form-control form-control-rounded"),
     ]);
     DrpSessionType.appendChild(
-      new SelectItem("Physical", "2", [
-        new Attribute(_AttributeClass, "form-control form-control-rounded"),
-      ])
+        new SelectItem("Physical", "2", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     DrpSessionType.appendChild(
-      new SelectItem("Virtual", "1", [
-        new Attribute(_AttributeClass, "form-control form-control-rounded"),
-      ])
+        new SelectItem("Virtual", "1", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     DrpSessionType.appendChild(
-      new SelectItem("Both", "3", [
-        new Attribute(_AttributeClass, "form-control form-control-rounded"),
-      ])
+        new SelectItem("Both", "3", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     DivFormGroupRowSessionType.appendChild(DrpSessionType);
-    DivFormGroupRowRoom.appendChild(DivFormGroupRowSessionType);
-    FormAddSession.appendChild(DivFormGroupRowRoom);
+
+
+    let DivFormGroupRowSessionCategory = new Div(undefined, "col-lg-6 col-3");
+    DivFormGroupRowSessionCategory.appendChild(
+        new Label(undefined, "Session Category *", [
+          new Attribute(_AttributeClass, "col-form-label"),
+          new Attribute(_AttributeFor, "TxtSessionCategory"),
+        ])
+    );
+    let DrpSessionCategory = new Select("DrpSessionCategory", [
+      new Attribute(_AttributeClass, "form-control form-control-rounded"),
+    ]);
+    DrpSessionCategory.appendChild(
+        new SelectItem("Counselling", "COUNSELLING", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    DrpSessionCategory.appendChild(
+        new SelectItem("General Health & Wellness Clinic", "GENERAL_CLINIC", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    DrpSessionCategory.appendChild(
+        new SelectItem("Diabetic Foot & Wound Care Center", "DIABETIC_FOOT_WOUND_CARE", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    DrpSessionCategory.appendChild(
+        new SelectItem("Online Video Consultation", "ONLINE_CONSULTATION", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    DivFormGroupRowSessionCategory.appendChild(DrpSessionCategory);
+
+    let DivFormGroupSessionInfo= new Div(undefined, "form-group row");
+    DivFormGroupSessionInfo.appendChild(DivFormGroupRowSessionType);
+    DivFormGroupSessionInfo.appendChild(DivFormGroupRowSessionCategory);
+    FormAddSession.appendChild(DivFormGroupSessionInfo);
 
     let DivFormGroupRowStart = new Div(undefined, "form-group row");
     let DivFormGroupRowStartTime = new Div(undefined, "col-lg-6 col-6");
@@ -2855,7 +2895,7 @@ function MedicalBillTableWithDynamicRowsGet() {
   ParentRowColumnOne.appendChild(
     new Button(
       undefined,
-      "Remove All Rows",
+      "Reset To Default",
       "btn btn-danger btn-sm float-right mb-3",
       [new Attribute(_AttributeOnClick, "medicalBillTableAllRowsRemove()")]
     )
