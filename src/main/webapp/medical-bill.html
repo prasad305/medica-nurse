@@ -55,7 +55,7 @@
 
     <div class="row my-3">
         <div class="col-sm-12 text-center">
-            <img id="letterImg" src="https://docnote.medica.lk/Nurse/images/6_UserId.png" class="img-fluid" alt="">
+            <img id="letterImg" src="https://live.medica.lk/Images/27112.png" class="img-fluid" alt="">
         </div>
         <div class="col-sm-12">
             <h2 class="text-center mb-4">Medical Bill</h2>
@@ -181,12 +181,13 @@
     function medicalBillCreate(JsonString) {
         // console.log('medicalBillCreate.JsonString:', JsonString);
         const JsonObject = JSON.parse(JsonString);
+        console.log(JsonObject);
         // console.log('medicalBillCreate.JsonObject:', JsonObject);
         const Patient = JsonObject.Patient;
         const Bill = JsonObject.Bill;
         let BillItem = '';
         let TableRow = '';
-        document.getElementById("letterImg").src = "https://docnote.medica.lk/Nurse/images/"+JsonObject.UserId+".png";
+        document.getElementById("letterImg").src = "https://live.medica.lk/Images/"+JsonObject?.doctorId+".png";
         $('#TblPatientInvoiceTableBody').html('');
 
         for (let i = 0; i < Bill.Items.length; i++) {
