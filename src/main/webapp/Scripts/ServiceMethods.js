@@ -1632,6 +1632,8 @@ function medicalBillSave(PatientId, appId) {
         }
     });
 
+
+
     if (hasUnsavedChanges) {
         return ShowMessage(Messages.UnsavedChanges, MessageTypes.Warning, "Warning!");
     }
@@ -1670,10 +1672,11 @@ function medicalBillSave(PatientId, appId) {
         'Total': $('#TxtTotal').text(),
         'AppDate': DateTime,
         'AppNumber': appId,
-        'BillNumber': 'SO/SC/57333',
+        'BillNumber': 'SO/SC/',
         'BillDate': DateTime.split(' ')[0],
         'BillUser': 'Margery',
         'BillTime': billTime,
+        'AppointmentDateTime': generateAppointmentDateTimeString(PatientMatched.TimeStart)
     };
     const JsonObjectToSave = {
         'Patient': Patient, 'Bill': MedicalBill, 'UserId': _UserId,
