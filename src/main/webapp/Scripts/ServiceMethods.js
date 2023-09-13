@@ -1661,6 +1661,9 @@ function medicalBillSave(PatientId, appId) {
         'Age': PatientsAge,
         'TelephoneNumber': PatientMatched.Mobile
     };
+
+    let billTime = (new Date()).toLocaleTimeString();
+
     const MedicalBill = {
         'Items': MedicalBillItems,
         'Discount': $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0,
@@ -1670,7 +1673,7 @@ function medicalBillSave(PatientId, appId) {
         'BillNumber': 'SO/SC/57333',
         'BillDate': DateTime.split(' ')[0],
         'BillUser': 'Margery',
-        'BillTime': DateTime.split(' ')[1]
+        'BillTime': billTime,
     };
     const JsonObjectToSave = {
         'Patient': Patient, 'Bill': MedicalBill, 'UserId': _UserId,
