@@ -1607,7 +1607,8 @@ function showViewMoreSessionsModal(index) {
                     <td>${startTime}</td>
                     <td class="text-center">${session?.AppointmentLimit ? session.AppointmentLimit : "-"}</td>
                      <td class="text-center">${session?.AppointmentReserved ? session.AppointmentReserved : "-" }</td>
-                    <td class="text-center">
+                    <td class="text-center d-flex">
+                        <button class="btn btn-outline-warning p-1  ml-2" onclick="LoadSessionData(${session.Id})">Edit</button>
                         <button class="btn btn-outline-danger p-1  ml-2" onclick="onCLickContinueQuickSuggestedSession(${index}, ${innerIndex})">Appointment</button>
                     </td>
           </tr>`;
@@ -2303,7 +2304,9 @@ function NewAppoinment() {
       "AppointmentsSearchButton",
       "Search",
       "btn btn-primary btn-rounded w-100 mt-auto",
-      [new Attribute(_AttributeOnClick, "Appointments_Search()")]
+      [
+          new Attribute(_AttributeOnClick, "Appointments_Search()"),
+      ]
     );
 
     DivFormRowSearch.appendChild(ButtonPatientSearch);
@@ -2324,6 +2327,8 @@ function NewAppoinment() {
     CardAddAppoinment.appendChild(CardBodyAddAppoinment);
 
     BindView(Container, CardAddAppoinment);
+
+
     const ContainerEl = document.getElementById(Container);
     ContainerEl.innerHTML += `<div class='modal' id='show-patients-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
@@ -2343,6 +2348,7 @@ function NewAppoinment() {
     }
 
     $("#TxtAppointmentSearchDate").prop("type", "date");
+
   };
 }
 

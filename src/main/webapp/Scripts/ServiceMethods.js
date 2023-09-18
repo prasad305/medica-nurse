@@ -551,10 +551,12 @@ function seeOtherSessions(index) {
 }
 
 function onCLickContinueQuickSuggestedSession(index, sessionIndex) {
+    _IsAppointmentsActionBtnDisabled = true;
     const doctor = _DoctorsAndSessions[index]?.doctor;
     _AppointmentDoctorName = doctor.FirstName + " " + doctor.LastName;
     const session = _DoctorsAndSessions[index]?.sessions[sessionIndex];
     const sessionDate = new Date(session.TimeStart).toISOString().split('T')[0];
+
 
     const timeStart = session.TimeStart
     let TimeStartSplit = timeStart.split("T")[1].split(":");
@@ -731,6 +733,7 @@ function FilterDoctorSessionData(Data) {
 
 function LoadSessionData(Id) {
     _UpdateSession = true;
+    $('#session-select-modal').modal('hide');
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
     DatePicker();

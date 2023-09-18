@@ -89,6 +89,7 @@ let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
 let _ArrayAppointmentsLoaded = [];
 let _AppointmentSelected = {};
+let _IsAppointmentsActionBtnDisabled = false;
 
 var _NurseId;
 var _NurseNIC;
