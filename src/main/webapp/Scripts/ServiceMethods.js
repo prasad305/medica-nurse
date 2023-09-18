@@ -393,17 +393,32 @@ async function SetReservedAppointmentCount(sessionId) {
     if (numberOfReservedAppointments !== "" && numberOfReservedAppointments !== "0") {
         try {
             numberOfReservedAppointments = parseInt(numberOfReservedAppointments);
-            let blockedAppointments = await PostAsync({
-                serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
-                    "SessionId": sessionId,
-                    "PatientId": 635918339075,
-                    "Id": 0,
-                    "Description": null,
-                    "Status": 10,
-                    "Number": numberOfReservedAppointments,
-                    "UserId": _UserId,
-                }
-            })
+            const blockedAppointments = [];
+            for(let i=0; i<numberOfReservedAppointments; i++){
+                blockedAppointments.push(PostAsync({
+                    serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
+                        "SessionId": sessionId,
+                        "PatientId": 635918339075,
+                        "Id": 0,
+                        "Description": null,
+                        "Status": 10,
+                        "Number": i+1,
+                        "UserId": _UserId,
+                    }
+                }))
+            }
+            await Promise.all(blockedAppointments);
+            // let blockedAppointments = await PostAsync({
+            //     serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
+            //         "SessionId": sessionId,
+            //         "PatientId": 635918339075,
+            //         "Id": 0,
+            //         "Description": null,
+            //         "Status": 10,
+            //         "Number": numberOfReservedAppointments,
+            //         "UserId": _UserId,
+            //     }
+            // })
 
         } catch (e) {
 
