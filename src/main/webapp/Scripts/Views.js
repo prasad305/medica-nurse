@@ -2264,7 +2264,9 @@ function NewAppoinment() {
       "AppointmentsSearchButton",
       "Search",
       "btn btn-primary btn-rounded w-100 mt-auto",
-      [new Attribute(_AttributeOnClick, "Appointments_Search()")]
+      [
+          new Attribute(_AttributeOnClick, "Appointments_Search()"),
+      ]
     );
 
     DivFormRowSearch.appendChild(ButtonPatientSearch);
@@ -2285,6 +2287,8 @@ function NewAppoinment() {
     CardAddAppoinment.appendChild(CardBodyAddAppoinment);
 
     BindView(Container, CardAddAppoinment);
+
+
     const ContainerEl = document.getElementById(Container);
     ContainerEl.innerHTML += `<div class='modal' id='show-patients-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
@@ -2304,6 +2308,7 @@ function NewAppoinment() {
     }
 
     $("#TxtAppointmentSearchDate").prop("type", "date");
+
   };
 }
 
