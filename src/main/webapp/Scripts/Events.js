@@ -363,6 +363,8 @@ function SaveBillData(printData) {
 
     _Request.Post(ServiceMethods.BillSave, allData, function (res) {
         printData.Bill.BillNumber = 'SO/SC/' + String(res.Data.Id).padStart(5, '0');
+        printData.doctorId = selectedDoctorId;
+        console.log(printData)
         medicalBillSaveInLocalStorage(JSON.stringify(printData));
     });
 }

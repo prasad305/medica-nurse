@@ -1342,6 +1342,7 @@ async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
     // console.log(appId)
     selectedAppId = appId;
     selectedAppointmentId = AppointmentId;
+    selectedDoctorId = doctorId;
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === AppointmentId)[0];
 
     var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId, undefined, undefined, selectedAppId, undefined, AppointmentId);
@@ -1661,7 +1662,7 @@ function medicalBillSave(PatientId, appId) {
     const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
 
     const Patient = {
-        'Doctor': 'Dr. Maester Luwin',
+        'Doctor': '',
         'PatientName': PatientMatched.Title + ' ' + PatientMatched.FirstName + ' ' + PatientMatched.LastName,
         'Age': PatientsAge,
         'TelephoneNumber': PatientMatched.Mobile
