@@ -1607,7 +1607,7 @@ function showViewMoreSessionsModal(index) {
                     <td>${startTime}</td>
                     <td class="text-center">${session?.AppointmentLimit ? session.AppointmentLimit : "-"}</td>
                      <td class="text-center">${session?.AppointmentReserved ? session.AppointmentReserved : "-" }</td>
-                    <td class="text-center">
+                    <td class="text-center d-flex">
                         <button class="btn btn-outline-warning p-1  ml-2" onclick="LoadSessionData(${session.Id})">Edit</button>
                         <button class="btn btn-outline-danger p-1  ml-2" onclick="onCLickContinueQuickSuggestedSession(${index}, ${innerIndex})">Appointment</button>
                     </td>
