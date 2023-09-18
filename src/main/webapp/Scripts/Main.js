@@ -477,3 +477,19 @@ const _MedicaBillTableReadOnlyRowBuilder = ({
             </td> 
         </tr> `
 }
+
+
+function generateAppointmentDateTimeString(time){
+
+    let StartingDateTime = new Date(time).toISOString().split('T')[0] + " @ ";
+    let TimeStartSplit = time.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    return StartingDateTime;
+}
+
+
+//comment
