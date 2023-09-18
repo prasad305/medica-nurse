@@ -61,7 +61,7 @@ function PatientReminder(PatientId, Subject, ReminderType, Description, Date, Ti
     this.Status = Status;
 }
 
-function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved,AppointmentReserved) {
+function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved,AppointmentReserved, Category) {
     this.AppointmentLimit = AppointmentLimit;
     this.AppointmentReserved = AppointmentReserved;
     this.DoctorId = DoctorId;
@@ -74,6 +74,7 @@ function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumb
     this.TimeStart = TimeStart;
     this.UserSaved = UserSaved;
     this.SelectedDate = Date;
+    this.Category = Category
 }
 
 function Nurse(UserId) {

@@ -427,6 +427,7 @@ function CmdSaveSession_Click() {
     let SessionDate = document.getElementById('TxtSessionDate').value;
     let StartTime = document.getElementById('TxtSessionStart').value;
     let EndTime = document.getElementById('TxtSessionEnd').value;
+    let SessionCategory = document.getElementById('DrpSessionCategory').value;
     let BranchId = document.getElementById('DrpSessionInstituteBranchId').value;
     let SessionType = document.getElementById('DrpSessionType').value;
     let MaxNoOfAppointments = document.getElementById('TxtSessionMaxNumberOfAppointments').value;
@@ -440,7 +441,7 @@ function CmdSaveSession_Click() {
     if (RoomNumber === "" || SessionDate === "" || StartTime === "" || EndTime === "" || BranchId === 0 || SessionType === 0)
         return ShowMessage(Messages.SearchFieldValidate, MessageTypes.Warning, "Warning!");
 
-    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId,AppointmentReserved), SaveSession_Success);
+    _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId,AppointmentReserved, SessionCategory), SaveSession_Success);
 }
 
 function CmdSessionSearch_Click(_DoctorId) {
