@@ -1207,6 +1207,7 @@ function GetAllPatientAppointmentsList(SearchType) {
 
 async function GetAllPatientAppointmentsForTodayList_Success(Response) {
     console.log(Response);
+    _ArrayAppointmentsForToday = [];
     $('#AppointmentsSearchButton').prop('disabled', false);
 
     if (Response.Status !== 1000) {
