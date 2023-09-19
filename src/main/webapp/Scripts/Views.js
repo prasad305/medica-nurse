@@ -2351,17 +2351,8 @@ function ShowPatientsModal(propName) {
     let allocateOrEditButton = ''
     const decodedPatientId = appointment.PatientId.toString().substring(4 , appointment.PatientId.toString().length - 2);
     if(decodedPatientId === '183390'){
-      let numbering = ''
-      if(appointment.Number === 1){
-        numbering = 'st';
-      }else if(appointment.Number === 2){
-        numbering = 'nd';
-      }else if(appointment.Number === 3){
-        numbering = 'rd';
-      }else{
-        numbering = 'th';
-      }
-      allocateOrEditButton = `<button class="btn btn-outline-warning p-1" title="Allocate ${appointment.Number}${numbering} appointment to a patient" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="ReAssignReservedAppointment(${appointment.Number},${appointment.SessionId},'${propName}')">Allocate</button>`
+
+      allocateOrEditButton = `<button class="btn btn-outline-warning p-1" title="Allocate appointment no ${appointment.Number} to a patient" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="ReAssignReservedAppointment(${appointment.Number},${appointment.SessionId},'${propName}')">Allocate</button>`
     }else{
       allocateOrEditButton = `<button class="btn btn-outline-warning p-1" title="Edit appointment details" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit Apt.</button>`
     }
