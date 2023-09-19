@@ -1763,6 +1763,12 @@ function LoadAppointmentedPatientList() {
     if (_ViewedDoctorSessionName !== "" && !_ReAssigningAppointmentNumber) {
         ShowPatientsModal(_ViewedDoctorSessionName);
     }
+    if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined){
+        document.getElementById('DrpAppoinmentDoctor').setAttribute('disabled', 'true');
+        document.getElementById('TxtAppointmentSearchDate').setAttribute('disabled', 'true');
+        document.getElementById('AppointmentsSearchButton').setAttribute('disabled', 'true');
+
+    }
 }
 
 function UploadPatientReport() {
