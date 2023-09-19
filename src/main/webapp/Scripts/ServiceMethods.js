@@ -408,17 +408,6 @@ async function SetReservedAppointmentCount(sessionId) {
                 }))
             }
             await Promise.all(blockedAppointments);
-            // let blockedAppointments = await PostAsync({
-            //     serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
-            //         "SessionId": sessionId,
-            //         "PatientId": 635918339075,
-            //         "Id": 0,
-            //         "Description": null,
-            //         "Status": 10,
-            //         "Number": numberOfReservedAppointments,
-            //         "UserId": _UserId,
-            //     }
-            // })
 
         } catch (e) {
 
@@ -604,6 +593,7 @@ function onCLickContinueQuickSuggestedSession(index, sessionIndex) {
 }
 
 function PlaceQuickAppointment(propName) {
+
     const appointments = groupedData[propName];
     if (!appointments) return;
     const appointment = appointments[0];
@@ -635,6 +625,7 @@ function PlaceQuickAppointment(propName) {
 }
 
 function showNearestDoctorSession(index) {
+    _ReAssigningAppointmentNumber = undefined;
     const doctorAndSession = _DoctorsAndSessions[index];
     const doctor = doctorAndSession.doctor;
     const selectSessionElement = document.getElementById('session-select');
@@ -868,12 +859,6 @@ function GetDoctorsSessionsForAppointmentUpdate_Success(Response) {
 
 function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     new NewAppoinment().Render(Containers.MainContent);
-    // if (_IsSetAppointmentToDoctorClicked) {
-    //     new Appoinments().Render(Containers.MainContent);
-    //     _IsSetAppointmentToDoctorClicked = false;
-    // } else {
-    //     new NewAppoinment().Render(Containers.MainContent);
-    // }
     _AppointmentSessionId = Id;
     if (_PatientId !== null && _PatientId !== undefined) {
         document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : " + DoctorName;
@@ -886,13 +871,16 @@ function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
         // document.getElementById("BtnNewAppointment").style.display = "block";
     } else {
         document.getElementById('TxtAppointmentsDetails').innerHTML = " " + DoctorName + "<br>" + SessionDetails;
-
         _ApoointmentHeadingTitle = "Dr." + DoctorName + "/" + SessionDetails;
         $("#BtnSaveAppointment").hide();
-        // document.getElementById("BtnNewAppointment").style.display = "block";
-
     }
-    _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
+    if(_ReAssigningAppointmentNumber){
+        document.getElementById('TxtAppoinmentNumber').value = _ReAssigningAppointmentNumber
+    }else{
+        _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
+    }
+    document.getElementById('TxtAppoinmentNumber').setAttribute('disabled', 'true');
+
 }
 
 function GetNextAppoinmentNumber_Sucess(Response) {
@@ -907,6 +895,7 @@ function SaveAppointment_Success(Response) {
         let doctorName = Response.Data.DoctorName;
         let startingDateTime = Response.Data.TimeStart;
         let patientMobileNo = Response.Data.Mobile;
+        _ReAssigningAppointmentNumber = undefined;
 
         shareAppointmentDetailsWithPatient({
             messageTitle: 'New Appointment Placed!',
@@ -1020,25 +1009,9 @@ function FilterAppointedPatientData(Data) {
 
     for (let Count = 0; Count < DataLength; Count++) {
 
-        // let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
-        // let PaymentPaid = " <span style='background-color:green; color:white; padding:5px;'><i class='i-Yes'></i></span>";
-        // let PaymentUnpaid = " <span style='background-color:red; color:white; padding:5px;'><i class='i-Close'></i></span>";
 
         let PaymentStatus = Data[Count].Status;
-        // console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
 
-        // switch (Data[Count].Status) {
-        //     case 2:
-        //         PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
-        //         break;
-        //     case 3:
-        //         PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
-        //         break;
-        // }
-
-        // if (Count % 2 === 0) {
-        //     PaymentStatus = 5;
-        // }
 
         let PaymentTypeIcon = '';
         let PaidButton = '<span class="btn" style="background-color:Green; color:white; cursor: default; padding:2px; text-left">Paid</span>';
@@ -1117,7 +1090,6 @@ function FilterAppointedPatientData(Data) {
             Type = "Both";
         }
 
-        // console.log(ChannelingStatusOriginal, ChannelingStatus);
 
         const GenderOriginal = Data[Count].Gender != null ? Data[Count].Gender.toLowerCase() : '-';
         let Gender = '-';
@@ -1155,7 +1127,7 @@ function FilterAppointedPatientData(Data) {
             "Session Start": isNull(StartingDateTime),
             "No of Appointments": isNull(groupedData[propName]?.length),
             "Action": `<button class='btn btn-outline-primary p-1' title='View appointments' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
-                       <button class='btn btn-outline-primary p-1' ${isExpired ? 'disabled' : ''} ${isExpired ? `title='Expired session!. Cannot place new appointments'` : `title='Place new appointment'`} style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
+                       <button class='btn btn-outline-primary p-1' ${isExpired ? 'disabled' : ''} ${isExpired ? `title='Expired session!. Cannot place new appointments'` : `title='Place new appointment'`} style='font-size: 0.7rem' onclick="_ReAssigningAppointmentNumber=undefined;PlaceQuickAppointment('${propName}')">New Apt.</button>`
         });
 
     });
@@ -1274,6 +1246,7 @@ function LoadVitals(Id) {
 }
 
 async function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType, Status, DoctorId, propName = '') {
+
     // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
@@ -1305,6 +1278,16 @@ async function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionI
     AppointmentsMatchingDropdownItemsSetSelected();
     //auto set selected doctor's session
     GetDoctorsSessionsForAppointmentUpdate();
+}
+
+function ReAssignReservedAppointment(AppointmentNumber, SessionId, propName) {
+    _ReAssigningAppointmentNumber = AppointmentNumber;
+    $('#show-patients-modal').modal('hide');
+    _ViewedDoctorSessionName= propName;
+    $('.modal-backdrop').hide();
+    PlaceQuickAppointment(propName);
+
+
 }
 
 function AppointmentsMatchingDropdownItemsSetSelected() {
@@ -1777,7 +1760,7 @@ function LoadAppointmentedPatientList() {
     if (_PatientId !== null && _PatientId !== undefined) {
         $(".pres-img").hide();
     }
-    if (_ViewedDoctorSessionName !== "") {
+    if (_ViewedDoctorSessionName !== "" && !_ReAssigningAppointmentNumber) {
         ShowPatientsModal(_ViewedDoctorSessionName);
     }
 }
