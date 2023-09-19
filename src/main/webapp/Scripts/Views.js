@@ -1603,6 +1603,7 @@ function showViewMoreSessionsModal(index) {
                     <td>${innerIndex + 1}</td>
                     <td>${doctorName}</td>
                     <td class="text-center">${session.RoomNumber}</td>
+                    <td>${ session?.Category ? SESSION_CATEGORIES[session?.Category] : SESSION_CATEGORIES.GENERAL_SESSION}</td>
                     <td>${date}</td>
                     <td>${startTime}</td>
                     <td class="text-center">${session?.AppointmentLimit ? session.AppointmentLimit : "-"}</td>
@@ -1623,7 +1624,7 @@ function showViewMoreSessionsModal(index) {
     </div>
       
         <div
-            style="overflow:auto; height:350px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 660px"
+            style="overflow:auto; height:350px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 700px"
           >
             <table class="patient-table">
               <thead>
@@ -1631,10 +1632,11 @@ function showViewMoreSessionsModal(index) {
                   <th>#A</th>
                   <th>Doctor</th>
                   <th>Room</th>
+                  <th>Category</th>
                   <th>Date</th>
                   <th>Time</th>
-                  <th>A. Limit</th>
-                  <th>A. Reserved</th>
+                  <th>A.Limit</th>
+                  <th>A.Reserved</th>
                   <th class="text-center">Action</th>
                 </tr>
               </thead>
@@ -2738,6 +2740,7 @@ function TablePatientAppointment() {
       "A#",
       "Doctor",
       "Session Start",
+      "Category",
       "No of Appointments",
       "Action",
     ];

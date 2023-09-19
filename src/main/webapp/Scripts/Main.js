@@ -52,6 +52,13 @@ let _DoctorSearchBy = 'Doctor Name';
 const ArrayDoctorSearchResultsData = [];
 let groupedData = {}
 let _ViewedDoctorSessionName = '';
+const SESSION_CATEGORIES = {
+    COUNSELLING:"Counselling",
+    GENERAL_CLINIC:"General Health & Wellness Clinic",
+    DIABETIC_FOOT_WOUND_CARE:"Diabetic Foot & Wound Care Center",
+    ONLINE_CONSULTATION:"Online Video Consultation",
+    GENERAL_SESSION:"General"
+}
 
 
 var _PaymentCheck = "LKR2000";

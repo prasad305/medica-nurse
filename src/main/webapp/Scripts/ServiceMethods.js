@@ -750,6 +750,7 @@ function LoadSessionData_Success(Response) {
         document.getElementById('TxtSessionStart').value = Response.Data.TimeStart.split("T")[1];
         document.getElementById('TxtSessionEnd').value = Response.Data.TimeEnd.split("T")[1];
         document.getElementById('DrpSessionInstituteBranchId').value = Response.Data.InstituteBranchId;
+        document.getElementById('DrpSessionCategory').value = Response.Data.Category;
         document.getElementById('TxtSessionMaxNumberOfAppointments').value = Response.Data.AppointmentLimit;
         document.getElementById('TxtSessionNumberOfReservedAppointments').value = Response.Data.AppointmentReserved;
     }
@@ -1138,6 +1139,7 @@ function FilterAppointedPatientData(Data) {
             "A#": isNull(index + 1),
             "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
             "Session Start": isNull(StartingDateTime),
+            "Category":groupedData[propName]?.[0]?.Description ? SESSION_CATEGORIES[groupedData[propName]?.[0]?.Description] : SESSION_CATEGORIES.GENERAL_SESSION,
             "No of Appointments": isNull(groupedData[propName]?.length),
             "Action": `<button class='btn btn-outline-primary p-1' title='View appointments' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
                        <button class='btn btn-outline-primary p-1' ${isExpired ? 'disabled' : ''} ${isExpired ? `title='Expired session!. Cannot place new appointments'` : `title='Place new appointment'`} style='font-size: 0.7rem' onclick="PlaceQuickAppointment('${propName}')">New Apt.</button>`
