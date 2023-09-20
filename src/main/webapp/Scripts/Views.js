@@ -2390,6 +2390,14 @@ function ShowPatientsModal(propName) {
   const tableContent = appointments.map((appointment, index) => {
     const paymentStatus = appointment?.IsPaid ? "Paid" : "Unpaid";
     const patientAge = calculateAge(new Date(appointment?.DateOfBirth));
+    let allocateOrEditButton = ''
+    const decodedPatientId = appointment.PatientId.toString().substring(4 , appointment.PatientId.toString().length - 2);
+    if(decodedPatientId === '183390'){
+
+      allocateOrEditButton = `<button class="btn btn-outline-warning p-1" title="Allocate appointment no ${appointment.Number} to a patient" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="ReAssignReservedAppointment(${appointment.Number},${appointment.SessionId},'${propName}')">Allocate</button>`
+    }else{
+      allocateOrEditButton = `<button class="btn btn-outline-warning p-1" title="Edit appointment details" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit Apt.</button>`
+    }
 
     return ` <tr>
                     <td>${appointment.Number}</td>
@@ -2405,7 +2413,7 @@ function ShowPatientsModal(propName) {
                       : `<button class="btn btn-outline-primary p-1" disabled >${appointment.ChannelingStatus}</button>`}
                     </td>
                     <td class="d-flex justify-content-center">
-                        <button class="btn btn-outline-warning p-1" ${appointment?.ChannelingStatus === "Pending" ? '' : 'disabled'} onclick="AppointmentDetailsEdit(${appointment?.Id},${appointment.Number},${appointment.SessionId},${appointment.PatientId},0, ${appointment.Status},${appointment.DoctorId})">Edit</button>
+                        ${allocateOrEditButton}
                         <button class="btn btn-outline-danger p-1  ml-2" onclick="MedicalBillDisplay(${appointment?.Id},${appointment.Number},${appointment?.DoctorId})">View bill</button>
                     </td>
           </tr>`;

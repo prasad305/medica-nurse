@@ -77,6 +77,7 @@ var _AppointmentSessionId;
 let StoredSessionId = '';
 var _AppointmentPatientId;
 var _AppointmentDoctorName;
+let _ReAssigningAppointmentNumber = undefined;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
 var _UpdateSession = false;
