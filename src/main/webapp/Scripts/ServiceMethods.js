@@ -416,6 +416,35 @@ async function SetReservedAppointmentCount(sessionId) {
 
 }
 
+
+// async function SetReservedAppointmentCountCustom(sessionId, numberOfReservedAppointments) {
+//     if (numberOfReservedAppointments !== "" && numberOfReservedAppointments !== "0") {
+//         try {
+//             numberOfReservedAppointments = parseInt(numberOfReservedAppointments);
+//             const blockedAppointments = [];
+//             for(let i=0; i<numberOfReservedAppointments; i++){
+//                 blockedAppointments.push(PostAsync({
+//                     serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
+//                         "SessionId": sessionId,
+//                         "PatientId": 635918339075,
+//                         "Id": 0,
+//                         "Description": null,
+//                         "Status": 10,
+//                         "Number": i+1,
+//                         "UserId": _UserId,
+//                     }
+//                 }))
+//             }
+//             await Promise.all(blockedAppointments);
+//
+//         } catch (e) {
+//
+//         }
+//     }
+//
+// }
+
+
 function GetSessionDoctorId() {
     _Request.Get(ServiceMethods.NurseDoctor, _UserId, GetSessionDoctorId_Success);
 }
