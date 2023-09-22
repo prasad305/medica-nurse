@@ -540,8 +540,8 @@ function SetAppoinmentDoctorDetails(_AppointmentDoctorName,_SessionDetails) {
 function Appointments_Search() {
     groupedData = {};
     _ArrayAppointedPatientData = [];
+    _AppointmentSessionId = undefined;
 
-    _AppointmentSessionId = 0;
     // _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
     // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();

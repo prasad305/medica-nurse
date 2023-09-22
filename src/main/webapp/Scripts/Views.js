@@ -2869,7 +2869,7 @@ function MedicalBillTableWithDynamicRowsGet() {
   ParentRowColumnOne.appendChild(
     new Button(
       undefined,
-      "Remove All Rows",
+      "Load Defaults",
       "btn btn-danger btn-sm float-right mb-3",
       [new Attribute(_AttributeOnClick, "medicalBillTableAllRowsRemove()")]
     )
