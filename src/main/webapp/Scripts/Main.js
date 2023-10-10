@@ -6,6 +6,7 @@ const _GasEnabled = true;
 const _LiveEnabled = true;
 
 //LIVE
+const _NotificationBaseUrl = _GasEnabled ? "https://testapi.doctoronline.qa/medica/clinic/api/v2" : "http://api.medica.gq";
 const _ServiceURL = _GasEnabled ? "https://api.medica.qa" : "http://api.medica.gq";
 
 //TEST
@@ -46,6 +47,12 @@ var _PatientName;
 var _LayoutCommon;
 var _PatientMobile;
 var _RequestUpload;
+let _DoctorSearchKeyword = '';
+let _DoctorSearchBy = 'Doctor Name';
+const ArrayDoctorSearchResultsData = [];
+let groupedData = {}
+let _ViewedDoctorSessionName = '';
+
 
 var _PaymentCheck = "LKR2000";
 
@@ -60,17 +67,20 @@ var _AppointmentUser;
 var _AppointmentNumber;
 var _AppointmentDetails;
 var _AppointmentSessionId;
+let StoredSessionId = '';
 var _AppointmentPatientId;
 var _AppointmentDoctorName;
+let _ReAssigningAppointmentNumber = undefined;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
-var _UpdateSession=false;
+var _UpdateSession = false;
+var _IsFullScreen = false;
 
 var _ArrayDrugData = [];
 var _DoctorSessionData = [];
 var _BranchData = [];
 var _ArrayPrescriptionData = [];
-var _ArrayAppointedPatientData = [];
+let _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
@@ -78,8 +88,11 @@ var _ArrayPrescriptionSearchResultsData = [];
 
 let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
+let _ArrayAppointmentsLoaded = [];
 let _AppointmentSelected = {};
+let _IsAppointmentsActionBtnDisabled = false;
 
+var _NurseId;
 var _NurseNIC;
 var _NurseLastName;
 var _NurseFirstName;
@@ -87,6 +100,8 @@ let _NurseLoggedIn = {};
 let _NurseBranch = {};
 let _NurseInstitute = {};
 let _ArrayAllInstitutes = [];
+let _DoctorsAndSessionsWithoutFiltering = []
+let _DoctorsAndSessions = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
@@ -136,9 +151,9 @@ const ServiceMethods =
         AddressPost: "Address/POST",
         ChanalingStatusSave: "DoctorChanalingStatus/Save",
         GetInstituteBranchDoctor: "DoctorBranch/GetInstituteBranchDoctor",
-        BillSave:"Bill/Post",
-        BillGet:"Bill/Get",
-        SENDSMS: "/Schedule/Save",
+        BillSave: "Bill/Post",
+        BillGet: "Bill/Get",
+        SENDSMS: "Schedule/Save",
     };
 
 const MessageTypes =
@@ -177,7 +192,9 @@ const Messages =
         NofileChoosen: "No file chosen, yet.",
         FileUploadFailed: "Upload Information Failed",
         NoDataToDisplay: "No data to display",
-        BranchSaveSuccess: "Branch Saved Successfully!"
+        BranchSaveSuccess: "Branch Saved Successfully!",
+        UnsavedChanges: "You have unsaved changes. Save changes to continue",
+        InvalidAmount: "You have entered an invalid amount",
     };
 
 const Images =
@@ -203,6 +220,22 @@ const Containers =
         AdContent: "DivContentAd",
         Footer: "Divfooter"
     };
+// ConsultationFee:"Doctor Fee",
+// ServiceFee:"Hospital Fee",
+
+const FeeTypes = createEnum({
+    HospitalFee:"Hospital Fee",
+    DoctorFee:"Doctor Fee",
+    BookingFee:"Booking Fee",
+    OtherFee:"Other Fee"
+});
+
+let MedicalBillData = [];
+
+function createEnum(obj) {
+    return Object.freeze(obj);
+}
+
 
 /*========================
      Request Handler
@@ -213,8 +246,6 @@ var GlobalFail = function (Response) {
     else
         alert("Global Fail : " + JSON.stringify(Response));
 };
-
-
 
 
 var ShowLoader = function () {
@@ -258,9 +289,9 @@ function InitRequestHandler() {
 		Methods
 ===========================*/
 
-function makeCustomHeader(userId){
+function makeCustomHeader(userId) {
     let Headers = [];
-        Headers.push(new HttpHeader("UserId", userId));
+    Headers.push(new HttpHeader("UserId", userId));
     _Request = GetRequest(_ServiceURL, Headers);
 }
 
@@ -272,9 +303,11 @@ function Wait(FnCondition, FncSuccess) {
 }
 
 function BindView(Container, View) {
-    let Element = document.getElementById(Container);
-    Element.innerHTML = "";
-    Element.appendChild(View);
+    if(Element){
+        let Element = document.getElementById(Container);
+        Element.innerHTML = "";
+        Element.appendChild(View);
+    }
 }
 
 function ValidateFields(Selector) {
@@ -317,6 +350,7 @@ function ShowMessage(Message, Type, Title) {
     }
 }
 
+
 function ShowImagePopup(Url) {
     swal(
         {
@@ -349,9 +383,9 @@ function Page_Load() {
 		Nurse > Appointments > Table > Rows > 'Bill' Button > Dynamic Table > Constants
 ===============================================================================================*/
 
-const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)">Delete</button>';
+const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)"><i class="fa-trash"></i></button>';
 const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()"><i class="i-Add"></i></button>';
-
+let _MedicalBillDoctor = {}
 const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td>1</td>' +
     '<td> ' +
@@ -368,9 +402,95 @@ const _MedicalBillTableRow = '<tr class="TblRow">' +
     '</select> ' +
     '</td> ' +
     '<td> ' +
-    '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" onchange="medicalBillTableTotalSumGet()"> ' +
+    '<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount" class="form-control form-control-sm" type="number" > ' +
     '</td> ' +
     '<td class="ButtonHolderColumn d-flex justify-content-end"> ' +
-    _MedicalBillTableButtonAddRow +
+    _MedicalBillTableButtonAddRow + _MedicalBillTableButtonDelete +
     '</td> ' +
     '</tr> ';
+
+const _MedicaBillTableRowBuilder = ({
+    itemName,
+    feeType = FeeTypes.OtherFee,
+    feeAmount,
+    disabled = false,
+    actionButtons = [],
+    saved = false,
+    index,
+    hasChanges
+}) => {
+return `<tr class="TblRow">
+            <td>1</td>
+            <td> 
+            ${
+                saved ? 
+                    `${itemName}` : `<input name="TxtItem" id="TxtItem${index}" class="form-control form-control-sm" style="width:auto" type="text" value="${itemName ? itemName : ''}" ${disabled?'disabled':''} ${hasChanges?'':'onkeyup="handleBillTextItemChange('+index+')"'}>`
+             }
+            </td> 
+            <td> 
+             ${
+                saved ?`${feeType}`:
+                           `<select class="form-control form-control-sm" name="TxtFeeType" style="width:auto" id="TxtFeeType${index}" ${disabled?'disabled':''} ${hasChanges?'':'onchange="handleBillFeeTypeChange('+index+')"'}> 
+                                <option value="" >Select A Fee Type</option> 
+                                ${
+                                Object.keys(FeeTypes).map(key => {
+                                return `<option value="${FeeTypes[key]}" ${feeType === FeeTypes[key] ? 'selected' : ''}>${FeeTypes[key]}</option>`
+                                }).join('')
+                                }
+                            </select>`
+            }
+            </td> 
+            <td> 
+            ${
+                saved ?`${feeAmount}`:`<input min="1" max="" name="TxtFeeAmount" id="TxtFeeAmount${index}" class="form-control form-control-sm" style="width:auto"  value="${feeAmount ? feeAmount : ''}" ${disabled?'disabled':''} ${hasChanges ? '' :'onkeyup="handleBillFeeAmountChange('+index+')"'}> `
+             }
+            </td> 
+            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0"> 
+            ${
+                saved ?
+                    `<button class="btn bg-transparent" title="Edit fee" onclick="editFee(${index})"><i class="i-Pen-2"></i></button>
+                    <button class="btn bg-transparent" title="Remove fee" onclick="deleteFee(${index})"><i class="i-Close-Window"></i></button>`
+                    :`<button class="btn bg-transparent" title="${hasChanges ?'Discard changes':'Remove fee'}" onclick="${hasChanges ? `discardChanges(${index})` : `deleteFee(${index})`}"><i class="${hasChanges ? 'i-Back1':'i-Close-Window'}"></i></button>
+                     <button class="btn bg-transparent" title="${hasChanges ?'Save changes':'Add fee to list'}" onclick="${hasChanges ? `saveChanges(${index})` : `saveFeeToList(${index})`}"><i class="i-Yes"></i></button>`}
+            </td> 
+        </tr> `
+}
+
+const _MedicaBillTableReadOnlyRowBuilder = ({
+    itemName,
+    feeType = FeeTypes.OtherFee,
+    feeAmount,
+})=>{
+    return `<tr class="TblRow">
+            <td>1</td>
+            <td> 
+             ${itemName}
+            </td> 
+            <td> 
+             ${feeType}
+            </td> 
+            <td> 
+             ${feeAmount}
+            </td> 
+            <td class="ButtonHolderColumn d-flex justify-content-end gap-1 pr-0" > 
+                <button class="btn bg-transparent disabled" title="Cannot edit this fee"><i class="i-Pen-2"></i></button>
+                <button class="btn bg-transparent disabled" title="Cannot delete this fee"><i class="i-Close-Window"></i></button>
+            </td> 
+        </tr> `
+}
+
+
+function generateAppointmentDateTimeString(time){
+
+    let StartingDateTime = new Date(time).toISOString().split('T')[0] + " @ ";
+    let TimeStartSplit = time.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    return StartingDateTime;
+}
+
+
+//comment

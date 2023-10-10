@@ -43,6 +43,8 @@ function FileChoosenValidate(Id) {
 
 
 function CreateDataTable(Id) {
+    console.log(Id);
+    console.log($('#' + Id));
     $('#' + Id).DataTable(
         {
             dom: 'Bfrtip',

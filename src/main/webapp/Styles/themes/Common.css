@@ -296,6 +296,11 @@ input[type=number]
     font-family: Source Sans Pro, sans-serif;
 }
 
+.ColorBlue{
+    color : #1759a7 !important;
+}
+
+
 .j-c
 {
  justify-content : center;

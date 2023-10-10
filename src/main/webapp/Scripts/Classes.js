@@ -61,8 +61,9 @@ function PatientReminder(PatientId, Subject, ReminderType, Description, Date, Ti
     this.Status = Status;
 }
 
-function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved) {
+function SessionSave(Id, AppointmentLimit, DoctorId, InstituteBranchId, RoomNumber, Status, Type, Date, TimeEnd, TimeStart, UserSaved,AppointmentReserved) {
     this.AppointmentLimit = AppointmentLimit;
+    this.AppointmentReserved = AppointmentReserved;
     this.DoctorId = DoctorId;
     this.Id = Id;
     this.InstituteBranchId = InstituteBranchId;
@@ -98,11 +99,29 @@ function SaveAppointment(Id, Number, SessionId, PatientId, Description, Status, 
     this.UserId = UserId;
 }
 
+function ChannelingStatus(AppointmentId, SessionId, PatientId, DoctorStatus, ChannelingStatus, Id) {
+    this.AppointmentId = AppointmentId;
+    this.SessionId = SessionId;
+    this.PatientId = PatientId;
+    this.DoctorStatus = DoctorStatus;
+    this.ChanalingStatus = ChannelingStatus;
+    this.Id = Id;
+}
+
 function AppointmentList(Id, UserId, Number, SessionId) {
     this.Id = Id;
     this.UserId = UserId;
     this.Number = Number;
     this.SessionId = SessionId;
+}
+
+function AppointmentListAllSessions(Id, UserId, Number, SessionId, PatientMobile, PatientId) {
+    this.Id = Id;
+    this.UserId = UserId;
+    this.Number = Number;
+    this.SessionId = SessionId;
+    this.PatientMobile = PatientMobile;
+    this.PatientId = PatientId;
 }
 
 function UserPatient(UserId, PatientId, UserSaved) {
@@ -294,7 +313,8 @@ function DoctorQualification(Id, DoctorId, QualificationId, Status, UserSaved) {
     this.UserSaved = UserSaved;
 }
 
-function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers) {
+function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers,
+                    DoctorFee, HospitalFee, OtherFee) {
     this.Id = Id;
     this.Title = Title;
     this.FirstName = FirstName;
@@ -308,6 +328,10 @@ function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Stat
     this.DateOfBirth = DateOfBirth;
     this.Addresses = Addresses;
     this.ContactNumbers = ContactNumbers;
+    this.DoctorFee = DoctorFee;
+    this.HospitalFee = HospitalFee;
+    this.OtherFee = OtherFee;
+    this.BranchId = _UserBranchId;
 }
 
 function DoctorBranch(InstituteBranchId, DoctorId, Status, UserSaved) {
