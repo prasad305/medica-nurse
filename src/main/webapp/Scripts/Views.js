@@ -2601,6 +2601,7 @@ function Doctors() {
         new DoctorSearch().Render(Containers.MainContent)
     }
 }
+
 function DoctorSearch() {
     this.Render = function (Container) {
         let CardAddAppoinment = new Div(undefined, "card text-left");
@@ -2912,7 +2913,7 @@ function ReportSearch() {
 function ReportSearchResultsTable() {
     this.Render = function (Container, Data) {
 
-        let Headers = ["No","Date & Time","Appointment No","Patient Name","Patient Mobile"];
+        let Headers = ["No", "Date & Time", "Appointment No", "Patient Name", "Patient Mobile"];
         let ParentRow = new Div(undefined, "row");
 
         let ColumnTableTitle = new Div(undefined, "col-md-12");
