@@ -6,7 +6,7 @@ const _GasEnabled = true;
 const _LiveEnabled = true;
 
 //LIVE
-const _NotificationBaseUrl = _GasEnabled ? "https://testapi.doctoronline.qa/medica/clinic/api/v2" : "http://api.medica.gq";
+const _NotificationBaseUrl = _GasEnabled ? "https://extapi.medica.qa/medica/clinic/api/v2" : "http://api.medica.gq";
 const _ServiceURL = _GasEnabled ? "https://api.medica.qa" : "http://api.medica.gq";
 
 //TEST
