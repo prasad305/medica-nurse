@@ -423,7 +423,6 @@ function CmdSaveSession_Click() {
     let MaxNoOfAppointments = document.getElementById('TxtSessionMaxNumberOfAppointments').value;
     let AppointmentReserved = document.getElementById('TxtSessionNumberOfReservedAppointments').value;
     let appointmentLimit = null;
-
     if(MaxNoOfAppointments !== ""){
         appointmentLimit = parseInt(MaxNoOfAppointments);
     }

@@ -1501,9 +1501,9 @@ function Session() {
             </div>
                 <div class='modal' id='session-select-modal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                 <div style="height:100vh; width:100vw;" class="d-flex justify-content-center align-items-center">
-                <div id="session-select" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
+                  <div id="session-select" style="background-color:white; border-radius:10px;" class="  align-items-center p-3">
+                  </div>
                 </div>
-            </div>
             </div>
         </div>`;
   };
@@ -1554,7 +1554,7 @@ function DoctorAndSessionsTable() {
                   <td>${item.DoctorName}</td>
                   <td class="text-center">${item.NearestSession}</td>
                   <td class="text-center">${item.NoOfSessions}</td>
-                  <td class="d-flex text-center">
+                  <td class="d-flex justify-content-center">
                   ${item.Actions}
                   </td>
                </tr>`
@@ -1643,6 +1643,24 @@ function showViewMoreSessionsModal(index) {
               </tbody>
             </table>
           </div>
+    `;
+
+  modalContentElement.innerHTML = element;
+
+  $("#session-select-modal").modal("show");
+}
+
+function CmdAddSession_BulkClick(doctorId){
+  const modalContentElement = document.getElementById('session-select');
+
+  const element = `
+    <div class="d-flex justify-content-between">
+      <h3>Bulk Session Upload</h3>
+       <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#session-select-modal').modal('hide')">X</button>
+    </div>
+        <div style="overflow:auto; height:350px; scrollbarWidth:thin;marginTop:1rem;marginBottom:1rem; width: 300px">
+            content goes here
+        </div>
     `;
 
   modalContentElement.innerHTML = element;

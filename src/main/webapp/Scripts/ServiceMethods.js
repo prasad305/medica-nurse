@@ -294,6 +294,7 @@ async function SaveSession_Success(Response) {
     } else {
         let sessionId = Response.Data.Id
         let appointments = [];
+        _DoctorId = undefined;
         console.log(Response)
         if (_UpdateSession) {
             try {
@@ -533,7 +534,8 @@ async function SetDoctorData(Id) {
                 "Actions": `
                     <button title="View available sessions of ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
                     <button title="Place new appointment for ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
-                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>
+                    <button title="Bulk session upload to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_BulkClick(${doctor.doctor.Id})'>B. Session Upload</button>`
             }
         });
 
@@ -751,6 +753,7 @@ function LoadSessionData(Id) {
 function LoadSessionData_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _SessionId = Response.Data.Id;
+        _DoctorId = Response.Data.DoctorId;
         document.getElementById('TxtSessionRoomNumber').value = Response.Data.RoomNumber;
         document.getElementById('TxtSessionDate').value = Response.Data.TimeStart.split("T")[0];
         document.getElementById('TxtSessionStart').value = Response.Data.TimeStart.split("T")[1];
@@ -1175,7 +1178,8 @@ function filterDoctorAndSessionTable(){
             "Actions": `
                     <button title='View available sessions of ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
                     <button title="Place new appointment for ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
-                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>
+                    <button title="Bulk session upload to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_BulkClick(${doctor.doctor.Id})'>B. Session Upload</button>`
         }
     });
 
