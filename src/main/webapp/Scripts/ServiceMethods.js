@@ -772,7 +772,9 @@ function GetInstituteBranches_Success(Response) {
     let DataLength = Response.Data.length;
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpSessionInstituteBranchId').append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
-        $('#DrpSessionInstituteBranchId').val(1);
+    }
+    if(Array.isArray(Response.Data) && Response.Data.length > 0){
+        $('#DrpSessionInstituteBranchId').val(Response.Data[0].Id);
     }
 }
 
