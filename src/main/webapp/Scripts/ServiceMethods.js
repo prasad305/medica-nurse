@@ -534,8 +534,7 @@ async function SetDoctorData(Id) {
                 "Actions": `
                     <button title="View available sessions of ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
                     <button title="Place new appointment for ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
-                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>
-                    <button title="Bulk session upload to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_BulkClick(${doctor.doctor.Id})'>B. Session Upload</button>`
+                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
             }
         });
 
@@ -1178,8 +1177,7 @@ function filterDoctorAndSessionTable(){
             "Actions": `
                     <button title='View available sessions of ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
                     <button title="Place new appointment for ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
-                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>
-                    <button title="Bulk session upload to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_BulkClick(${doctor.doctor.Id})'>B. Session Upload</button>`
+                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
         }
     });
 
@@ -1627,7 +1625,7 @@ function medicalBillTableButtonsReset() {
     }
 }
 
-function medicalBillSave(PatientId, appId) {
+async function medicalBillSave(PatientId, appId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === PatientId)[0];
     let MedicalBillItems = [];
@@ -1662,11 +1660,32 @@ function medicalBillSave(PatientId, appId) {
     const DateTime = date.getFullYear() + '-' + ("0" + month).slice(-2) + '-' + ("0" + date.getDate()).slice(-2) + ' ' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2);
 
     const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
+    let doctor = {};
+    let doctorSpecialization = {};
+
+    try{
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${PatientMatched.DoctorId}`,
+            }
+        );
+        const specializationResponse = await PostAsync({
+                serviceMethod: ServiceMethods.GetDoctorSpecialization,
+                requestBody:{
+                    DoctorId:PatientMatched.DoctorId
+                }
+            }
+        );
+        doctor = response?.Data;
+        doctorSpecialization = specializationResponse?.Data;
+    }catch (e){
+        console.log(e);
+    }
 
     const Patient = {
-        'Doctor': 'Dr. Maester Luwin',
         'PatientName': PatientMatched.Title + ' ' + PatientMatched.FirstName + ' ' + PatientMatched.LastName,
         'Age': PatientsAge,
+        'Address':PatientMatched.Address,
         'TelephoneNumber': PatientMatched.Mobile
     };
 
@@ -1684,8 +1703,11 @@ function medicalBillSave(PatientId, appId) {
         'BillTime': billTime,
         'AppointmentDateTime': generateAppointmentDateTimeString(PatientMatched.TimeStart)
     };
+    console.log(doctor);
     const JsonObjectToSave = {
         'Patient': Patient, 'Bill': MedicalBill, 'UserId': _UserId,
+        "Doctor":doctor,
+        "Specialization":doctorSpecialization
     }
 
     SaveBillData(JsonObjectToSave);
@@ -1707,7 +1729,13 @@ function medicalBillPrint() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
 
     $('#ModalForMedicalBillIframe .modal-body').html('');
-    const Iframe = '<iframe height="650px" src="medical-bill.html?v1=1" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
+
+    let medicalBillTemplate = "medical-bill.html?v1=1";
+
+    if(_NurseBranch?.Id === 30031 || _NurseBranch?.Id === 1){
+        medicalBillTemplate = "medical-bill-genius.html?v1=1";
+    }
+    const Iframe = '<iframe height="650px" src="'+medicalBillTemplate+'" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
 }

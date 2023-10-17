@@ -154,6 +154,7 @@ const ServiceMethods =
         BillSave: "Bill/Post",
         BillGet: "Bill/Get",
         SENDSMS: "Schedule/Save",
+        GetDoctorSpecialization:'DoctorSpecialization/GetDoctorSpecialization'
     };
 
 const MessageTypes =
