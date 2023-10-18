@@ -40,7 +40,7 @@ function LayoutCommon() {
 
     new Login().Render(this.IdHolder);
     let DivContentLoader = `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                        <div style="height:100vh; width:100vw;background: rgba(255, 255, 255, 0.74);" class="d-flex justify-content-center align-items-center">
+                                        <div style="height:100vh; width:100vw;background: rgba(107,107,107,0.3); backdrop-filter: blur(5px);" class="d-flex justify-content-center align-items-center">
                                             <div style="background-color:transparent; width:150px; height:150px; border-radius:10px;position: relative;
                                                         " class="d-flex flex-column  align-items-center
                                                                  ">
@@ -4179,7 +4179,7 @@ function Footer() {
     CardBodyFooter.appendChild(RowFooter);
     CardFooter.appendChild(CardBodyFooter);
     CardFooter.innerHTML += `<div class='modal' id='loading' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                        <div style="height:100vh; width:100vw;background: rgba(255, 255, 255, 0.74);" class="d-flex justify-content-center align-items-center">
+                                        <div style="height:100vh; width:100vw; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(2px);" class="d-flex justify-content-center align-items-center">
                                             <div style="background-color:transparent; width:150px; height:150px; border-radius:10px;position: relative;
                                                         " class="d-flex flex-column  align-items-center
                                                                  ">

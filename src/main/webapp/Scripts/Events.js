@@ -1166,7 +1166,7 @@ function Doctors_Click(CardElement) {
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
         new Doctors().Render(Containers.MainContent);
-        SetBranchData('DrpBranch');
+        SetBranchData('DrpBranch', 'doctors');
     }
 }
 
@@ -1180,7 +1180,7 @@ function Reports_Click(CardElement) {
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
         new Reports().Render(Containers.MainContent);
-        SetBranchData('DrpBranch');
+        SetBranchData('DrpBranch', 'reports');
     }
 }
 
@@ -1217,6 +1217,7 @@ function DoctorBranch_Search() {
 
 function GetDoctorByBranch() {
 
+    $('#loading').modal('show');
     // DrpDoctor
     let id = $('#DrpBranch').val();
     let Payload = new GetDoctorsByInstituteBranchId(id);
@@ -1230,13 +1231,16 @@ function GetDoctorByBranch() {
             if (ttlDoctors == 0) {
                 doctorDrpData(AllDoctor);
             }
-            Response.Data.forEach(function (Doctor) {
+            Response.Data.forEach(function (Doctor, index) {
                 _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, function (Res) {
                     curDoctor++;
                     AllDoctor.push(Res.Data);
                     if (curDoctor === ttlDoctors) {
                         // console.log(AllDoctor);
                         doctorDrpData(AllDoctor);
+                    }
+                    if(index === Response?.Data?.length - 1){
+                        $('#loading').modal('hide');
                     }
                 });
             });
@@ -1248,14 +1252,18 @@ function GetDoctorByBranch() {
 
 function LoadAllDoctorsForBranch(Branch) {
     let Payload = new GetDoctorsByInstituteBranchId(Branch);
+    $('#loading').modal('show');
     _Request.Post(ServiceMethods.GetInstituteBranchDoctor, {InstituteBranchId:Branch}, SuccessLoadDoctors);
 }
 
 let ttlDoctors = 0;
 let curDoctor = 0;
 let AllDoctor = [];
+let lastDoctorElement = false;
 
 function SuccessLoadDoctors(Response) {
+
+    lastDoctorElement = false;
     ttlDoctors = 0;
     curDoctor = 0;
     AllDoctor = [];
@@ -1264,10 +1272,14 @@ function SuccessLoadDoctors(Response) {
         if (ttlDoctors == 0) {
             doctorTblData(AllDoctor);
         }
-        Response.Data.forEach(function (Doctor) {
+        Response.Data.forEach(function (Doctor, index) {
             _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, LoadDoctorToTable);
+            if(index === Response?.Data?.length - 1){
+                lastDoctorElement = true;
+            }
         });
     }
+
 
 }
 
@@ -1281,6 +1293,9 @@ function LoadDoctorToTable(Res) {
     }
     document.getElementById('DoctorBranchSearchButton').value = 'Search';
     document.getElementById('DoctorBranchSearchButton').removeAttribute('disabled');
+    if(lastDoctorElement){
+        $('#loading').modal('hide');
+    }
 }
 
 function doctorDrpData(Res) {
@@ -1324,13 +1339,22 @@ function doctorTblData(Response) {
 }
 
 
-function SetBranchData(Id) {
+function SetBranchData(Id, activeCard) {
     // console.log('SetDoctorData.Id:', Id);
     let Count;
     let DataLength = _ArrayAllBranchesOfTheInstituteResultsData.length;
     //all doctors - as the first option
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Id + '">' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Name + '</option>');
+    }
+    if(DataLength === 1){
+        $('#' + Id).val(_ArrayAllBranchesOfTheInstituteResultsData[0].Id);
+        if(activeCard === "doctors"){
+            $('#DoctorBranchSearchButton').click();
+        }else if(activeCard === "reports"){
+            //reports section
+            GetDoctorByBranch();
+        }
     }
 }
 

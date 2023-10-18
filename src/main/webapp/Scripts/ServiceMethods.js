@@ -2195,6 +2195,7 @@ function Admin_View() {
  =================================*/
 
 function AllBranchesOfTheInstituteGet() {
+    $('#loading').modal('show');
     _ArrayAllBranchesOfTheInstituteResultsData = [];
     //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
     _IsAdminUserIdRequired = true;
@@ -2228,6 +2229,7 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
 
     new BranchesSearchResultsTable().Render('BranchesSearchResults', TableData);
     CreateDataTable('TableBranchesSearchResults');
+    $('#loading').modal('hide');
 
 }
 
