@@ -377,6 +377,41 @@ function Page_Load() {
             InitRequestHandler();
             _LayoutCommon = new LayoutCommon();
             _LayoutCommon.Render();
+
+            window.onbeforeunload = (Args) =>
+            {
+                Args = Args || window.event;
+
+                if (Args)
+                    Args.returnValue = 'Sure';
+                return Args.returnValue;
+            };
+
+            let LinkDummy = document.createElement("button");
+            LinkDummy.onclick = () => { history.pushState('Forward', document.title, '#') };
+            LinkDummy.className = "hidden";
+            document.body.appendChild(LinkDummy);
+
+            let Clicker = () => LinkDummy.click();
+            setTimeout(Clicker, 1000);
+
+            $(document).ready(function ()
+            {
+                if (window.history && window.history.pushState)
+                {
+                    $(window).on('popstate', function ()
+                    {
+                        const Confirm = confirm("Are you sure you want to leave this page? Changes will be discarded.");
+
+                        if (Confirm)
+                        {
+                            history.back();
+                        }
+                        else
+                            history.pushState(null, document.title, location.href);
+                    });
+                }
+            })
         });
 }
 

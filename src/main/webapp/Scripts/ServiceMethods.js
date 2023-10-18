@@ -773,7 +773,7 @@ function GetInstituteBranches_Success(Response) {
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpSessionInstituteBranchId').append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
     }
-    if(Array.isArray(Response.Data) && Response.Data.length > 0){
+    if(Array.isArray(Response.Data) && Response.Data.length === 1){
         $('#DrpSessionInstituteBranchId').val(Response.Data[0].Id);
     }
 }
