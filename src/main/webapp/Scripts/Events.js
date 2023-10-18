@@ -1373,10 +1373,11 @@ function DoctorAddOrUpdateModalView(index, id) {
         });
         _Request.Post("DoctorContactNumber/GetContactNumber", Payload, function (Response) {
             if (Response.Status === 1000) {
-                if (Response.Data.length == 2) {
-                    DoctorContactIdArr = [Response.Data[0].Id, Response.Data[1].Id]
-                    $("#TxtDoctorContact_No").val(Response.Data[0].ContactNumber);
-                    $("#TxtDoctorPhone_No").val(Response.Data[1].ContactNumber);
+                if (Response.Data.length >= 2) {
+                    let contactNumbersLength = Response.Data.length
+                    DoctorContactIdArr = [Response.Data[contactNumbersLength-1].Id, Response.Data[contactNumbersLength-2].Id]
+                    $("#TxtDoctorContact_No").val(Response.Data[contactNumbersLength-1].ContactNumber);
+                    $("#TxtDoctorPhone_No").val(Response.Data[contactNumbersLength-2].ContactNumber);
                 }
             }
         });
