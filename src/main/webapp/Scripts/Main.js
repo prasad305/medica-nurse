@@ -8,6 +8,7 @@ const _LiveEnabled = true;
 //LIVE
 const _ServiceURL = _GasEnabled ? "https://clinic.medica.lk/API" : "http://api.medica.gq";
 
+
 //TEST
 // const _ServiceURL = _LiveEnabled ? "https://ayu-api.medica.lk" : "http://api.medica.gq";
 
