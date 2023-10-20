@@ -55,72 +55,80 @@
 
     <div class="row my-3">
         <div class="col-sm-12 text-center">
-            <img id="letterImg" src="https://docnote.medica.lk/Nurse/images/6_UserId.png" class="img-fluid" alt="#">
+            <img id="letterImg" src="https://docnote.medica.lk/Nurse/images/6_UserId.png" class="img-fluid" alt="">
         </div>
         <div class="col-sm-12">
             <h2 class="text-center mb-4">Medical Bill</h2>
         </div>
     </div>
 
-    <div class="row my-3">
-        <div class="col-sm-2">
-            <label>Bill No:</label>
+    <div class="d-flex justify-content-between my-4 mr-3">
+        <div class="col">
+            <div class="d-flex">
+                <div class="col-4">
+                    <label>Patient:</label>
+                </div>
+                <div class="col">
+                    <label class="font-weight-bold" id="TxtPatientName">-</label>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="col-4">
+                    <label>Age:</label>
+                </div>
+                <div class="col">
+                    <label class="font-weight-bold" id="TxtPatientAge">-</label>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="col-4">
+                    <label>Tel. No:</label>
+                </div>
+                <div class="col">
+                    <label class="font-weight-bold" id="TxtTelephoneNumber">-</label>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="col-4">
+                    <label>Appointment Date & Time:</label>
+                </div>
+                <div class="col">
+                    <label class="font-weight-bold" id="TxtAppDate">-</label>
+                </div>
+            </div>
+
+            <div class="d-flex">
+                <div class="col-4">
+                    <label>Appointment No:</label>
+                </div>
+                <div class="col">
+                    <label class="font-weight-bold" id="TxtAppNumber">-</label>
+                </div>
+            </div>
+
         </div>
-        <div class="col-sm-4">
-            <label id="TxtBillNo">-</label>
-        </div>
-        <div class="col-sm-2">
-            <label>Date:</label>
-        </div>
-        <div class="col-sm-4">
-            <label id="TxtBillDate">-</label>
-        </div>
-        <div class="col-sm-2">
-            <label>Time:</label>
-        </div>
-        <div class="col-sm-4">
-            <label id="TxtBillTime">-</label>
+        <div>
+
+            <div class="d-flex ">
+                <label>Bill No: <span id="TxtBillNo">-</span></label>
+            </div>
+
+            <div class="d-flex ">
+                <label>Date: <span id="TxtBillDate">-</span></label>
+            </div>
+
+            <div class="d-flex ">
+                <label>Time: <span id="TxtBillTime">-</span></label>
+            </div>
+
         </div>
     </div>
 
-    <hr class="border">
-
-    <div class="row my-4">
-        <div class="col-sm-3">
-            <label>Patient:</label>
-        </div>
-        <div class="col-sm-9">
-            <label class="font-weight-bold" id="TxtPatientName">-</label>
-        </div>
-        <div class="col-sm-3">
-            <label>Age:</label>
-        </div>
-        <div class="col-sm-9">
-            <label class="font-weight-bold" id="TxtPatientAge">-</label>
-        </div>
-        <div class="col-sm-3">
-            <label>Tel. No:</label>
-        </div>
-        <div class="col-sm-9">
-            <label class="font-weight-bold" id="TxtTelephoneNumber">-</label>
-        </div>
-        <div class="col-sm-3">
-            <label>Appointment Date & Time:</label>
-        </div>
-        <div class="col-sm-9">
-            <label class="font-weight-bold" id="TxtAppDate">-</label>
-        </div>
-        <div class="col-sm-3">
-            <label>Appointment No:</label>
-        </div>
-        <div class="col-sm-9">
-            <label class="font-weight-bold" id="TxtAppNumber">-</label>
-        </div>
-    </div>
-
-    <div class="row my-3">
+    <div class="my-3">
         <div class="col-md-12">
-
             <div class="table-responsive">
                 <table class="table" id="TblPatientInvoice">
                     <thead>
@@ -128,7 +136,7 @@
                         <th>#</th>
                         <th>Item</th>
                         <th>Fee Type</th>
-                        <th>Amount (Rs.)</th>
+                        <th class="text-right" style="width: 24%">Amount (Rs.)</th>
                     </tr>
                     </thead>
 
@@ -140,16 +148,6 @@
                         <td><label class="my-1">1000</label></td>
                     </tr>
                     </tbody>
-
-                    <!-- <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>Item</th>
-                            <th>Fee Type</th>
-                            <th>Fee Amount (Rs.)</th>
-                        </tr>
-                    </tfoot> -->
-
                 </table>
             </div>
 
@@ -196,7 +194,7 @@
                 '<td class="w-5"><label>' + (i + 1) + '</label></td>' +
                 '<td class=""><label>' + BillItem.Item + '</label></td>' +
                 '<td class="w-20"><label>' + BillItem.FeeType + '</label></td>' +
-                '<td class="w-15"><label>' + BillItem.FeeAmount + '</label></td>' +
+                '<td class="w-15 text-right"><label>' + BillItem.FeeAmount + '</label></td>' +
                 '</tr>';
             $('#TblPatientInvoiceTableBody').append(TableRow);
         }
@@ -204,12 +202,12 @@
         const TableDiscountRow = '<tr>' +
             '<td colspan="2">&nbsp;</td>' +
             '<td><label class="font-weight-bold">Discount (Rs.):</label></td>' +
-            '<td><label class="font-weight-bold">' + Bill.Discount + '</label></td>' +
+            '<td class="text-right"><label class="font-weight-bold ">' + parseFloat(`${Bill.Discount}`).toFixed(2) + '</label></td>' +
             '</tr>';
         const TableTotalFeeRow = '<tr>' +
             '<td colspan="2">&nbsp;</td>' +
             '<td><label class="font-weight-bold">Total (Rs.):</label></td>' +
-            '<td><label class="font-weight-bold">' + Bill.Total + '</label></td>' +
+            '<td class="text-right"><label class="font-weight-bold ">' + parseFloat(`${Bill.Total}`).toFixed(2) + '</label></td>' +
             '</tr>';
 
         $('#TblPatientInvoiceTableBody').append(TableDiscountRow);
@@ -218,7 +216,7 @@
         $('#TxtPatientName').text(Patient.PatientName);
         $('#TxtPatientAge').text(Patient.Age);
         $('#TxtTelephoneNumber').text(Patient.TelephoneNumber);
-        $('#TxtAppDate').text(Bill.AppDate);
+        $('#TxtAppDate').text(Bill.AppointmentDateTime);
         $('#TxtAppNumber').text(Bill.AppNumber);
 
         $('#TxtBillNo').text(Bill.BillNumber);

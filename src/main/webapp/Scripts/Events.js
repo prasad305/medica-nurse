@@ -274,11 +274,11 @@ function SetAppointmentPatient(Object, PatientId) {
 
 function ViewAppointmentedPatientList() {
     if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
-        new NewAppoinment().Render(Containers.MainContent);
-        // CmdBtnColorRemove_Click();
-        // $('#AppoinmentsCard').css('background-color', '#BDC3C7');
-        // GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+        groupedData = {};
+        GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
         GetDoctorAppoinmentList();
+        document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+        document.getElementById('NewAppointmentAddRow').style.display = '';
     } else {
         new Appoinments().Render(Containers.MainContent);
         GetSessionDoctorId('DrpAppoinmentDoctor');
@@ -403,18 +403,14 @@ function CmdSession_Click(CardElement) {
 
 }
 
-function CmdAddSession_Click() {
-    _UpdateSession = false;
-    if (document.getElementById('DrpSessionDoctor').value === '0')
-        return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
-    else {
+function CmdAddSession_Click(doctorId) {
+        _UpdateSession = false;
         _SessionId = 0;
-        _DoctorId = document.getElementById('DrpSessionDoctor').value;
+        _DoctorId = doctorId;
         new AddNewSession().Render(Containers.MainContent);
         GetInstituteBranches();
         DatePicker();
         TimePicker();
-    }
 }
 
 function CmdSaveSession_Click() {
@@ -427,7 +423,6 @@ function CmdSaveSession_Click() {
     let MaxNoOfAppointments = document.getElementById('TxtSessionMaxNumberOfAppointments').value;
     let AppointmentReserved = document.getElementById('TxtSessionNumberOfReservedAppointments').value;
     let appointmentLimit = null;
-
     if(MaxNoOfAppointments !== ""){
         appointmentLimit = parseInt(MaxNoOfAppointments);
     }
@@ -438,18 +433,10 @@ function CmdSaveSession_Click() {
     _Request.Post(ServiceMethods.SaveSession, new SessionSave(_SessionId, appointmentLimit, _DoctorId, BranchId, RoomNumber, 1, SessionType, SessionDate, EndTime, StartTime, _UserId,AppointmentReserved), SaveSession_Success);
 }
 
-function CmdSessionSearch_Click() {
-    _DoctorId = document.getElementById('DrpSessionDoctor').value;
-    _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
-    // _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    // selectedDoctorId = $("#DrpAppoinmentDoctor option:selected")[0].value;
-    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
-    // selectedSessionId = $("#DrpSessionDateDoctor option:selected")[0].value;
-
-    if (document.getElementById('DrpSessionDoctor').value === '0')
-        return ShowMessage(Messages.SelectDoctor, MessageTypes.Warning, "Warning!");
-
-    _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
+function CmdSessionSearch_Click(_DoctorId) {
+    // _DoctorId = document.getElementById('DrpSessionDoctor').value;
+    // _AppointmentDoctorName = $("#DrpSessionDoctor option:selected").text();
+    _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId,_NurseBranch.Id ), GetDoctorSessionData_Success);
 }
 
 function CmdCancelSession_Click() {
@@ -459,11 +446,13 @@ function CmdCancelSession_Click() {
     // document.getElementById('DrpSessionDoctor').value = _DoctorId;
     // _Request.Post(ServiceMethods.SessionsGet, new Doctor(_DoctorId, null), GetDoctorSessionData_Success);
     new Session().Render(Containers.MainContent);
+    // SetDoctorData('DrpSessionDoctor');
+    // if(_DoctorId !== "" && _DoctorId !== undefined){
+    //     document.getElementById('DrpSessionDoctor').value = _DoctorId;
+    //     CmdSessionSearch_Click();
+    // }
+    _AppointmentSessionId = undefined;
     SetDoctorData('DrpSessionDoctor');
-    if(_DoctorId !== "" && _DoctorId !== undefined){
-        document.getElementById('DrpSessionDoctor').value = _DoctorId;
-        CmdSessionSearch_Click();
-    }
 }
 
 
@@ -472,6 +461,7 @@ function CmdCancelSession_Click() {
  =================================*/
 
 function CmdAppoinments_Click(CardElement) {
+    console.log('CmdAppoinments_Click.CardElement:', CardElement);
     if (CmdCardClicked !== CardElement.id) {
         $('#' + CardElement.id).attr('disabled', true);
         $('#' + CardElement.id).css('cursor', 'auto');
@@ -484,7 +474,8 @@ function CmdAppoinments_Click(CardElement) {
         // new Appoinments().Render(Containers.MainContent);
         new NewAppoinment().Render(Containers.MainContent);
         GetAllPatientAppointmentsList('all');
-        SetDoctorData('DrpAppoinmentDoctor');
+        setDoctorDropDown('DrpAppoinmentDoctor');
+        // SetDoctorData('DrpAppoinmentDoctor');
     }
 }
 
@@ -502,13 +493,16 @@ function GetDoctorSessionDataForAppoinment(CardType) {
     else {
         const AppointmentSearchDate = $('#TxtAppointmentSearchDate').val();
         // console.log('GetDoctorSessionDataForAppoinment:', document.getElementById('DrpAppoinmentDoctor').value, AppointmentSearchDate);
-        _Request.Post(ServiceMethods.SessionGetByDate, new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null), GetDoctorSessionDataForAppoinment_Success);
+        _Request.Post(ServiceMethods.SessionGetByDate,
+            AppointmentDoctorId === " " ? new AllAppointmentsForToday(_UserId, AppointmentSearchDate) :
+            new GetSessions(AppointmentDoctorId, AppointmentSearchDate, null),
+            GetDoctorSessionDataForAppoinment_Success);
     }
 }
 
 function GetDoctorAllSessionDataByDoctor(doctorId) {
-
-    _Request.Post(ServiceMethods.SessionsGet, new GetSessions(doctorId, '', null), GetDoctorSessionDataForAppoinment_Success);
+    console.log(doctorId,_NurseBranch.Id);
+    _Request.Post(ServiceMethods.SessionsGet, new Doctor(doctorId,_NurseBranch.Id ), GetDoctorSessionDataForAppoinment_Success);
 }
 
 function GetDoctorsSessionsForAppointmentUpdate() {
@@ -533,31 +527,52 @@ function SetAppoinmentToDoctor_Click() {
     }
 }
 
+function SetAppoinmentDoctorDetails(_AppointmentDoctorName,_SessionDetails) {
+    _AppointmentSessionId = StoredSessionId;
+    _IsSetAppointmentToDoctorClicked = true;
+    // console.log('SetAppoinmentToDoctor_Click._AppointmentSessionId:', _AppointmentSessionId);
+    GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+    GetDoctorAppoinmentList();
+    document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+}
+
 function Appointments_Search() {
-    _AppointmentSessionId = parseInt(document.getElementById('DrpSessionDateDoctor').value);
-    _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
-    _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
+    groupedData = {};
+    _ArrayAppointedPatientData = [];
+    _AppointmentSessionId = undefined;
+
+    // _AppointmentDoctorName = $("#DrpAppoinmentDoctor option:selected").text();
+    // _SessionDetails = $("#DrpSessionDateDoctor option:selected").text();
     const AppointmentDate = $('#TxtAppointmentSearchDate').val();
 
     $('#AppointmentsSearchButton').prop('disabled', true);
 
-    if (document.getElementById('DrpAppoinmentDoctor').value.trim() !== "" &&
-        document.getElementById('DrpSessionDateDoctor').value === "0") {
+    const drpAppointmentDoctor = document.getElementById('DrpAppoinmentDoctor').value;
+    const txtAppointmentSearchDate = document.getElementById('TxtAppointmentSearchDate').value;
+    const today = new Date().toISOString().split('T')[0];
+
+    // if(drpAppointmentDoctor === " " && txtAppointmentSearchDate !== today){
+    //     GetAllPatientAppointmentsList('sessions');
+    // }else if(drpAppointmentDoctor !== " " && txtAppointmentSearchDate !== today){
+    //     GetAllPatientAppointmentsList('search');
+    // }else if (drpAppointmentDoctor === " " && txtAppointmentSearchDate === today) {
+    //     GetAllPatientAppointmentsList('all');
+    // }
+
+    if (drpAppointmentDoctor === " ") {
+
+        GetAllPatientAppointmentsList('all');
+
+    } else if (drpAppointmentDoctor !== " ") {
 
         GetAllPatientAppointmentsList('sessions');
 
-    } else if (document.getElementById('DrpSessionDateDoctor').value === "0" &&
-               document.getElementById('DrpAppoinmentDoctor').value === "0") {
+    }else if (drpAppointmentDoctor === " " && txtAppointmentSearchDate !== "") {
 
         GetAllPatientAppointmentsList('search');
 
-    } else if (document.getElementById('DrpSessionDateDoctor').value != " " &&
-               document.getElementById('DrpAppoinmentDoctor').value != " " &&
-                (AppointmentDate !== "" && AppointmentDate != NaN)) {
-
-        GetDoctorAppoinmentList();
-
-    } else {
+    }
+    else {
         $('#AppointmentsSearchButton').prop('disabled', false);
         return ShowMessage(Messages.SelectDrp, MessageTypes.Warning, "Warning!");
     }
@@ -701,7 +716,9 @@ function AppointmentUpdate() {
 }
 
 function SaveAppointment_Success_Update(Response) {
-    if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
+    if (Response.Status !== 1000) {
+        return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+    } else {
         CmdAppoinments_Click('AppoinmentsCard');
         // send sms to patient
         let appointmentNumber = Response.Data.Number;
@@ -720,7 +737,21 @@ function SaveAppointment_Success_Update(Response) {
             startingDateTime: startingDateTime
         })
 
-        return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
+
+        return swal({
+                type: 'success',
+                title: "Success!",
+                text: Messages.ApoointmentSaveSuccess,
+                buttonsStyling: false,
+                confirmButtonText: 'OK',
+                confirmButtonClass:  'btn btn-success btn-lg',
+            }).then(()=>{
+                $('.modal-backdrop').remove();
+                $('#show-patients-modal').modal('hide');
+                $('#BtnCloseModal').click();
+                $('#AppoinmentsCard').click();
+        });
+
     }
 }
 
@@ -747,8 +778,22 @@ function AppointmentPaymentTypeUpdate_Success(Response) {
     if (Response.Status != 1000)
         return ShowMessage(Response.message.split("-")[1].trim(), MessageTypes.Warning, "Warning!");
     else {
-        CmdAppoinments_Click('AppoinmentsCard');
-        return ShowMessage("Payment Type Updated!", MessageTypes.Success, "Success!");
+
+        return swal(
+            {
+                type: 'success',
+                title: "Success!",
+                text: "Payment Type Updated!",
+                buttonsStyling: true,
+                confirmButtonText: 'OK',
+                confirmButtonClass: 'btn btn-success btn-lg',
+            }).then(()=>{
+                $('.modal-backdrop').remove();
+                $('#show-patients-modal').modal('hide');
+                $('#BtnCloseModal').click();
+                $('#AppoinmentsCard').click();
+            })
+
     }
 }
 
@@ -1121,7 +1166,7 @@ function Doctors_Click(CardElement) {
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
         new Doctors().Render(Containers.MainContent);
-        SetBranchData('DrpBranch');
+        SetBranchData('DrpBranch', 'doctors');
     }
 }
 
@@ -1135,7 +1180,7 @@ function Reports_Click(CardElement) {
         $('#' + CardElement.id).css('cursor', 'auto');
         CmdCardClicked = CardElement.id;
         new Reports().Render(Containers.MainContent);
-        SetBranchData('DrpBranch');
+        SetBranchData('DrpBranch', 'reports');
     }
 }
 
@@ -1156,8 +1201,14 @@ function Misc_Click(CardElement) {
 //doctor
 
 function DoctorBranch_Search() {
+    //set loader from here
+    document.getElementById('DoctorBranchSearchButton').value = 'Searching...';
+    document.getElementById('DoctorBranchSearchButton').setAttribute('disabled', true);
+
     let id = $('#DrpBranch').val();
     if (id == "0") {
+        document.getElementById('DoctorBranchSearchButton').value = 'Search';
+        document.getElementById('DoctorBranchSearchButton').removeAttribute('disabled');
         return ShowMessage("Please Select Branch", MessageTypes.Warning, "Warning!");
     }
     LoadAllDoctorsForBranch(id);
@@ -1166,6 +1217,7 @@ function DoctorBranch_Search() {
 
 function GetDoctorByBranch() {
 
+    $('#loading').modal('show');
     // DrpDoctor
     let id = $('#DrpBranch').val();
     let Payload = new GetDoctorsByInstituteBranchId(id);
@@ -1179,13 +1231,16 @@ function GetDoctorByBranch() {
             if (ttlDoctors == 0) {
                 doctorDrpData(AllDoctor);
             }
-            Response.Data.forEach(function (Doctor) {
+            Response.Data.forEach(function (Doctor, index) {
                 _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, function (Res) {
                     curDoctor++;
                     AllDoctor.push(Res.Data);
                     if (curDoctor === ttlDoctors) {
                         // console.log(AllDoctor);
                         doctorDrpData(AllDoctor);
+                    }
+                    if(index === Response?.Data?.length - 1){
+                        $('#loading').modal('hide');
                     }
                 });
             });
@@ -1197,14 +1252,18 @@ function GetDoctorByBranch() {
 
 function LoadAllDoctorsForBranch(Branch) {
     let Payload = new GetDoctorsByInstituteBranchId(Branch);
+    $('#loading').modal('show');
     _Request.Post(ServiceMethods.GetInstituteBranchDoctor, {InstituteBranchId:Branch}, SuccessLoadDoctors);
 }
 
 let ttlDoctors = 0;
 let curDoctor = 0;
 let AllDoctor = [];
+let lastDoctorElement = false;
 
 function SuccessLoadDoctors(Response) {
+
+    lastDoctorElement = false;
     ttlDoctors = 0;
     curDoctor = 0;
     AllDoctor = [];
@@ -1213,10 +1272,14 @@ function SuccessLoadDoctors(Response) {
         if (ttlDoctors == 0) {
             doctorTblData(AllDoctor);
         }
-        Response.Data.forEach(function (Doctor) {
+        Response.Data.forEach(function (Doctor, index) {
             _Request.Get("Doctor/GET/" + Doctor.DoctorId, Doctor.DoctorId, LoadDoctorToTable);
+            if(index === Response?.Data?.length - 1){
+                lastDoctorElement = true;
+            }
         });
     }
+
 
 }
 
@@ -1227,6 +1290,11 @@ function LoadDoctorToTable(Res) {
     if (curDoctor === ttlDoctors) {
         // console.log(AllDoctor);
         doctorTblData(AllDoctor);
+    }
+    document.getElementById('DoctorBranchSearchButton').value = 'Search';
+    document.getElementById('DoctorBranchSearchButton').removeAttribute('disabled');
+    if(lastDoctorElement){
+        $('#loading').modal('hide');
     }
 }
 
@@ -1248,12 +1316,13 @@ function doctorTblData(Response) {
         let Doctor = {};
         for (let Count = 0; Count < Response.length; Count++) {
             Doctor = Response[Count];
+            if(Doctor?.Title && Doctor?.FirstName){
             ArrayDoctorSearchResultsData.push({
-                "Doctor Name": Doctor.Title + ' ' + Doctor.FirstName + ' ' + Doctor.LastName,
-                "Email": Doctor.Email,
-                "NIC": isNull(Doctor.NIC),
-                "Registration Number": isNull(Doctor.RegistrationNumber),
-                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor.Id + ')">' +
+                "Doctor Name": Doctor?.Title + ' ' + Doctor?.FirstName + ' ' + Doctor?.LastName,
+                "Email": Doctor?.Email,
+                "NIC": isNull(Doctor?.NIC),
+                "Registration Number": isNull(Doctor?.RegistrationNumber),
+                "Action": '<button class="btn btn-info btn-icon custom-btn" type="button" onclick="DoctorAddOrUpdateModalView(' + Count + ',' + Doctor?.Id + ')">' +
                     '<span class="ul-btn__icon"><i class="i-Pen-2"></i></span>' +
                     '</button>'
                     // '<button class="btn btn-danger" style="margin-left: 1rem" type="button" id="6">' +
@@ -1261,6 +1330,7 @@ function doctorTblData(Response) {
                     // '<button class="btn btn-primary" style="margin-left: 0.5rem" type="button" id="6" data-toggle="modal" ' +
                     // 'onclick="DoctorLoginModalShow(' + Doctor.Id + ')">Login</button>'
             });
+            }
         }
     }
 
@@ -1269,13 +1339,22 @@ function doctorTblData(Response) {
 }
 
 
-function SetBranchData(Id) {
+function SetBranchData(Id, activeCard) {
     // console.log('SetDoctorData.Id:', Id);
     let Count;
     let DataLength = _ArrayAllBranchesOfTheInstituteResultsData.length;
     //all doctors - as the first option
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Id + '">' + _ArrayAllBranchesOfTheInstituteResultsData[Count].Name + '</option>');
+    }
+    if(DataLength === 1){
+        $('#' + Id).val(_ArrayAllBranchesOfTheInstituteResultsData[0].Id);
+        if(activeCard === "doctors"){
+            $('#DoctorBranchSearchButton').click();
+        }else if(activeCard === "reports"){
+            //reports section
+            GetDoctorByBranch();
+        }
     }
 }
 
@@ -1289,6 +1368,8 @@ let _SelectedDoctor;
 function DoctorAddOrUpdateModalView(index, id) {
     if (id) {
         _SelectedDoctor = AllDoctor[index];
+        const doctorFees = JSON.parse(_SelectedDoctor.ZoomEmail);
+
         new DoctorsAddOrUpdateModal().Render(Containers.Footer, id, 'Update');
 
         $("#DrpTitle").val(_SelectedDoctor.Title);
@@ -1299,23 +1380,28 @@ function DoctorAddOrUpdateModalView(index, id) {
         $("#TxtDoctorNIC").val(_SelectedDoctor.NIC);
         $("#TxtDoctorRegistration_Number").val(_SelectedDoctor.RegistrationNumber);
         $("#TxtDoctorDate_Of_Birth").val((_SelectedDoctor.DateOfBirth).substring(0, 10));
+        $("#TxtDoctorPayable").val(doctorFees.DoctorFee);
+        $("#TxtHospitalFee").val(doctorFees.HospitalFee);
+        $("#TxtOtherFee").val(doctorFees.OtherFee);
+        $("#TxtMedicaId").val(doctorFees.Id);
 
         let Payload = new DoctorSpecialization(undefined, _SelectedDoctor.Id, undefined, undefined, _UserId);
         _Request.Post("DoctorSpecialization/GetDoctorSpecialization", Payload, function (ResponseSp) {
-            DoctorSpecializationId = ResponseSp.Data[0].Id
-            DoctorSpecializationDrpId = ResponseSp.Data[0].SpecializationId
+            DoctorSpecializationId = ResponseSp?.Data[0]?.Id
+            DoctorSpecializationDrpId = ResponseSp?.Data[0]?.SpecializationId
             _Request.Get("Specialization/Get", undefined, SpecializationGetSuccess);
         });
         _Request.Post("DoctorQualification/Get", Payload, function (ResponseQa) {
-            DoctorQualificationId = ResponseQa.Data[0].Id
+            DoctorQualificationId = ResponseQa?.Data ? ResponseQa?.Data[0]?.Id : undefined
             _Request.Get("Qualification/Get", undefined, QualificationGetSuccess);
         });
         _Request.Post("DoctorContactNumber/GetContactNumber", Payload, function (Response) {
             if (Response.Status === 1000) {
-                if (Response.Data.length == 2) {
-                    DoctorContactIdArr = [Response.Data[0].Id, Response.Data[1].Id]
-                    $("#TxtDoctorContact_No").val(Response.Data[0].ContactNumber);
-                    $("#TxtDoctorPhone_No").val(Response.Data[1].ContactNumber);
+                if (Response.Data.length >= 2) {
+                    let contactNumbersLength = Response.Data.length
+                    DoctorContactIdArr = [Response.Data[contactNumbersLength-1].Id, Response.Data[contactNumbersLength-2].Id]
+                    $("#TxtDoctorContact_No").val(Response.Data[contactNumbersLength-1].ContactNumber);
+                    $("#TxtDoctorPhone_No").val(Response.Data[contactNumbersLength-2].ContactNumber);
                 }
             }
         });
@@ -1357,7 +1443,10 @@ function AddOrUpdateDoctor(id) {
     let DOB = $("#TxtDoctorDate_Of_Birth").val().trim();
     let Specialization = $("#DrpSpecialization").val();
     let Qualification = $("#DrpQualifications").val();
-    // console.log('AddOrUpdateDoctor:', Specialization, Qualification);
+    let DoctorPayable = $("#TxtDoctorPayable").val().trim();
+    let HospitalFee = $("#TxtHospitalFee").val().trim();
+    let OtherFee = $("#TxtOtherFee").val().trim();
+
 
     //validation
     if (Title === "")
@@ -1396,7 +1485,7 @@ function AddOrUpdateDoctor(id) {
 
 
     let Payload = new DoctorSave(id, Title, FirstName, MiddleName, LastName, Email, NIC, 1,
-        _UserIdAdmin, RegNumber, DOB, undefined, ContactList);
+        _UserIdAdmin, RegNumber, DOB, undefined, ContactList, DoctorPayable, HospitalFee, OtherFee);
 
     _Request.Post("doctor/post", Payload, SuccessSaveDoctorDetails);
 
@@ -1441,8 +1530,8 @@ function SuccessSaveDoctorDetails(Response) {
 
     } else {
         let PayLoad = new DoctorBranch($('#DrpBranch').val(), Response.Data.Id, 1, _UserIdAdmin);
-        _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
-        });
+        // _Request.Post("DoctorBranch/POST", PayLoad, function (res) {
+        // });
 
         //create Doctor Specialization object
         let selectedSpecialization = $("#DrpSpecialization").val();

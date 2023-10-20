@@ -20,7 +20,7 @@ var selectedAppointmentId;
 var selectedPatientId;
 var billId = 0;
 
-function Login_Success(Response) {
+async function Login_Success(Response) {
     if (Response.Status != 1000 || Response.Data.UserTypeId != 4) {
         return ShowMessage(Messages.LoginInvalid, MessageTypes.Warning, "Warning!");
     } else {
@@ -32,13 +32,64 @@ function Login_Success(Response) {
         InitRequestHandler();
 
         new LayoutMain().Render();
-        new PatientSearch().Render(Containers.MainContent);
-        document.getElementById("PatientCard").style.backgroundColor = "#BDC3C7";
+        document.getElementById("SessionCard").style.backgroundColor = "#BDC3C7";
+        new Session().Render(Containers.MainContent);
+        _AppointmentSessionId = undefined;
+
+        try {
+            $('#loading').modal('show');
+            const allocatedDoctorsForNurse = await GetAsyncV2(
+                {
+                    serviceUrl: ServiceMethods.NurseDoctor,
+                    searchParam: _UserId
+                }
+            )
+            console.log(allocatedDoctorsForNurse);
+            _DoctorSessionData = [];
+            if (allocatedDoctorsForNurse.Data === 0 || allocatedDoctorsForNurse.Status !== 1000) {
+                return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
+            } else {
+                let Count;
+                let DataLength = allocatedDoctorsForNurse.Data.length;
+                if (DataLength !== 0) {
+                    _NurseId = allocatedDoctorsForNurse.Data[0].NurseId;
+                    NurseGet();
+                }
+
+                const getNurseInstituteBranchResponse = await PostAsyncV2({
+                    serviceUrl: ServiceMethods.InstituteBranch,
+                    requestBody:{}
+                })
+                GetNurseBranches_Success(getNurseInstituteBranchResponse);
+
+                const doctorGetPromises = []
+                for (Count = 0; Count < DataLength; Count++) {
+                    doctorGetPromises.push(GetAsyncV2({
+                        serviceUrl: ServiceMethods.DoctorGet + allocatedDoctorsForNurse.Data[Count].DoctorId,
+                        searchParam: undefined
+                    }))
+                }
+                const doctorGetResponses = await Promise.all(doctorGetPromises)
+                doctorGetResponses.forEach(doctor => GetDoctorData_Success(doctor))
+                console.log(doctorGetResponses);
+                if (_DoctorId !== "" && _DoctorId !== undefined) {
+                    console.log(_DoctorId);
+                    document.getElementById('DrpAppoinmentDoctor').value = _DoctorId;
+                    GetDoctorAllSessionDataByDoctor(_DoctorId);
+                }
+            }
+
+            SetDoctorData('DrpSessionDoctor');
+
+        } catch (e) {
+            console.log(e)
+        }
+        // GetSessionDoctorId();
+        // GetNurseBranches();
+        // NurseGet();
+        // new PatientSearch().Render(Containers.MainContent);
 
 
-        GetSessionDoctorId();
-        GetNurseBranches();
-        NurseGet();
     }
 }
 
@@ -53,9 +104,18 @@ function SaveDetails_Success(Response) {
         if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined) {
             _PatientId = Response.Data.Id;
             _AppointmentPatientName = Response.Data.FirstName;
-            new NewAppoinment().Render(Containers.MainContent);
-            GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-            GetDoctorAppoinmentList();
+            if (StoredSessionId !== '') {
+                _ArrayPatientSearchResultsData.push(Response.Data);
+                GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+                GetDoctorAppoinmentList();
+                document.getElementById('BtnSaveAppointment').setAttribute('disabled', 'disabled');
+            } else {
+                _ArrayPatientSearchResultsData.push(Response.Data);
+                new NewAppoinment().Render(Containers.MainContent);
+                GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
+                GetDoctorAppoinmentList();
+            }
+
         }
 
         _PatientDetails = Response.Data;
@@ -68,7 +128,7 @@ function SaveDetails_Success(Response) {
 }
 
 function NurseGet() {
-    if(_NurseId === null || _NurseId === undefined || _NurseId === '') return;
+    if (_NurseId === null || _NurseId === undefined || _NurseId === '') return;
     _Request.Get(`${ServiceMethods.GetNurse}/${_NurseId}`, null, NurseGet_Success);
 }
 
@@ -231,10 +291,10 @@ function PatientMedicalBillModalDisplay(PatientId) {
 async function SaveSession_Success(Response) {
     if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
-    }
-    else {
+    } else {
         let sessionId = Response.Data.Id
         let appointments = [];
+        _DoctorId = undefined;
         console.log(Response)
         if (_UpdateSession) {
             try {
@@ -331,22 +391,26 @@ async function shareSessionUpdateWithPatients(appointments = [], {
 
 async function SetReservedAppointmentCount(sessionId) {
     let numberOfReservedAppointments = document.getElementById('TxtSessionNumberOfReservedAppointments').value;
-    if(numberOfReservedAppointments !== "" && numberOfReservedAppointments !== "0"){
-        try{
+    if (numberOfReservedAppointments !== "" && numberOfReservedAppointments !== "0") {
+        try {
             numberOfReservedAppointments = parseInt(numberOfReservedAppointments);
-            let blockedAppointments = await PostAsync({
-                serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
-                    "SessionId": sessionId,
-                    "PatientId": 635918339075,
-                    "Id": 0,
-                    "Description": null,
-                    "Status":10,
-                    "Number": numberOfReservedAppointments,
-                    "UserId": _UserId,
-                }
-            })
+            const blockedAppointments = [];
+            for(let i=0; i<numberOfReservedAppointments; i++){
+                blockedAppointments.push(PostAsync({
+                    serviceMethod: ServiceMethods.SaveAppoinmnet, requestBody: {
+                        "SessionId": sessionId,
+                        "PatientId": 635918339075,
+                        "Id": 0,
+                        "Description": null,
+                        "Status": 10,
+                        "Number": i+1,
+                        "UserId": _UserId,
+                    }
+                }))
+            }
+            await Promise.all(blockedAppointments);
 
-        }catch (e) {
+        } catch (e) {
 
         }
     }
@@ -362,7 +426,7 @@ function GetSessionDoctorId_Success(Response) {
     if (Response.Data === 0 || Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         let Count;
         let DataLength = Response.Data.length;
-        if(DataLength !== 0){
+        if (DataLength !== 0) {
             _NurseId = Response.Data[0].NurseId;
             NurseGet();
         }
@@ -375,6 +439,7 @@ function GetSessionDoctorId_Success(Response) {
             GetDoctorAllSessionDataByDoctor(_DoctorId);
         }
     }
+
 }
 
 function GetDoctorData_Success(Response) {
@@ -382,15 +447,228 @@ function GetDoctorData_Success(Response) {
     _DoctorSessionData.push(Response.Data);
 }
 
-function SetDoctorData(Id) {
+
+function setDoctorDropDown(Id) {
+    let Count;
+    const _DoctorSessionDataWithAllDoctorsOption = [{
+        Id: " ",
+        FirstName: "All",
+        LastName: "Doctors"
+    }, ..._DoctorSessionData]
+    $('#' + Id).empty();
+
+    //all doctors - as the first option
+    // $('#' + Id).append('<option value="all">All Doctors</option>');
+    for (Count = 0; Count < _DoctorSessionDataWithAllDoctorsOption.length; Count++) {
+        $('#' + Id).append('<option value="' + _DoctorSessionDataWithAllDoctorsOption[Count].Id + '">' + _DoctorSessionDataWithAllDoctorsOption[Count].FirstName + " " + _DoctorSessionDataWithAllDoctorsOption[Count].LastName + '</option>');
+    }
+}
+
+
+async function SetDoctorData(Id) {
     let Count;
     let DataLength = _DoctorSessionData.length;
+    console.log(_DoctorSessionData)
     //all doctors - as the first option
     // $('#' + Id).append('<option value="all">All Doctors</option>');
     for (Count = 0; Count < DataLength; Count++) {
         $('#' + Id).append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
     }
+    console.log(_DoctorSessionData);
+
+
+    let doctors = {};
+
+    _DoctorSessionData.forEach((doctor) => {
+        doctors[doctor.Id] = {doctor, sessions: []};
+    });
+
+    //get all sessions for doctor list
+    try {
+        $('#loading').modal('show');
+        const getSessionsResponse = await Promise.all(Object.keys(doctors).map((doctorId) => PostAsyncV2({
+            serviceUrl: ServiceMethods.SessionsGet,
+            requestBody: {
+                "DoctorId": doctorId,
+                "InstituteBranchId":_NurseBranch.Id
+            }
+        })));
+
+        console.log("session response", getSessionsResponse);
+
+        for (let i = 0; i < getSessionsResponse.length; i++) {
+            if (getSessionsResponse[i]?.Data?.length > 0) {
+                getSessionsResponse[i]?.Data?.forEach((session) => {
+                    const expired = new Date(session.TimeEnd) < new Date();
+                    if(!expired){
+                        doctors[session.DoctorId].sessions.push(session);
+                    }
+                });
+            }
+        }
+
+        doctors = Object.values(doctors);
+        _DoctorsAndSessions = doctors;
+        _DoctorsAndSessionsWithoutFiltering = doctors;
+
+
+        let tableData = doctors.map((doctor, index) => {
+            let StartingDateTime = "No sessions";
+            if (doctor?.sessions?.length > 0) {
+                const timeStart = doctor.sessions[0]?.TimeStart
+                StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + " @ ";
+                let TimeStartSplit = timeStart.split("T")[1].split(":");
+                let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+                StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+                    timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+                });
+            }
+            const doctorName = doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName
+            const sessionsAvailable = doctor?.sessions?.length > 0;
+
+            return {
+                "No": index + 1,
+                "DoctorName": doctor.doctor.FirstName + " " + doctor.doctor.LastName,
+                "NearestSession": StartingDateTime,
+                "NoOfSessions": doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
+                "Actions": `
+                    <button title="View available sessions of ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button title="Place new appointment for ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${sessionsAvailable ? '' : `disabled`} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
+                    <button title="Add new session to ${doctorName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+            }
+        });
+
+        new DoctorAndSessionsTable().Render('DivDoctorsAndSessionTable', tableData);
+        CreateDataTable('TableDoctorAndSessions');
+        document.getElementById('doctor-count').innerHTML = `${doctors.length} Total doctors`;
+
+    } catch (e) {
+        console.log(e)
+    } finally {
+        $('#loading').modal('hide');
+    }
+
 }
+
+function seeOtherSessions(index) {
+    $('#session-select-modal').modal('hide');
+    showViewMoreSessionsModal(index);
+}
+
+function onCLickContinueQuickSuggestedSession(index, sessionIndex) {
+    _IsAppointmentsActionBtnDisabled = true;
+    const doctor = _DoctorsAndSessions[index]?.doctor;
+    _AppointmentDoctorName = doctor.FirstName + " " + doctor.LastName;
+    const session = _DoctorsAndSessions[index]?.sessions[sessionIndex];
+    const sessionDate = new Date(session.TimeStart).toISOString().split('T')[0];
+
+
+    const timeStart = session.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const StartingDateTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    const timeEnd = session.TimeEnd
+    let TimeEndSplit = timeEnd.split("T")[1].split(":");
+    let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+    const EndingDateTime = new Date(TimeFormat.DateFormat + TimeEnd + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    let Type = "";
+    if (session.Type === 1) Type = "Virtual"; else if (session.Type === 2) Type = "Physical"; else Type = "Both";
+    _SessionDetails = `Session : Room No ${session.RoomNumber}/ ${sessionDate} / ${StartingDateTime}-${EndingDateTime} / ${Type}`
+    $('#session-select-modal').modal('hide');
+
+    _AppointmentSessionId = session?.Id;
+    StoredSessionId = session?.Id;
+    _IsSetAppointmentToDoctorClicked = true;
+    LoadSessionViceAppointments(undefined, session?.Id);
+
+    // new PatientSearch().Render(Containers.MainContent);
+    // LoadSessionViceAppointments(undefined,session?.Id);
+    // SetAppoinmentDoctorDetails(doctorName, sessionDetails);
+
+}
+
+function PlaceQuickAppointment(propName) {
+
+    const appointments = groupedData[propName];
+    if (!appointments) return;
+    const appointment = appointments[0];
+
+    _AppointmentDoctorName = appointment.DoctorName;
+    const sessionDate = new Date(appointment.TimeStart).toISOString().split('T')[0];
+
+    const timeStart = appointment.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const StartingDateTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    const timeEnd = appointment.TimeEnd
+    let TimeEndSplit = timeEnd.split("T")[1].split(":");
+    let TimeEnd = TimeEndSplit[0] + ":" + TimeEndSplit[1];
+    const EndingDateTime = new Date(TimeFormat.DateFormat + TimeEnd + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    _SessionDetails = `Session : Room No ${appointment.RoomNumber}/ ${sessionDate} / ${StartingDateTime}-${EndingDateTime} / ${appointment.Type}`
+
+    _AppointmentSessionId = appointment?.SessionId;
+    StoredSessionId = appointment?.SessionId;
+    _IsSetAppointmentToDoctorClicked = true;
+    LoadSessionViceAppointments(undefined, appointment?.SessionId);
+
+}
+
+function showNearestDoctorSession(index) {
+    _ReAssigningAppointmentNumber = undefined;
+    const doctorAndSession = _DoctorsAndSessions[index];
+    const doctor = doctorAndSession.doctor;
+    const selectSessionElement = document.getElementById('session-select');
+    const availableDate = new Date(doctorAndSession.sessions?.[0].TimeStart).toISOString().split('T')[0];
+
+    const timeStart = doctorAndSession.sessions[0]?.TimeStart
+    let TimeStartSplit = timeStart.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    const startTime = new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    selectSessionElement.innerHTML = `  
+          <div class="d-flex justify-content-between ">  
+          <h3>Place appointment </h3>
+            <button class="btn btn-light bg-transparent ml-4 p-1 py-0 mb-1 border-0" onclick="$('#session-select-modal').modal('hide')">X</button>
+          </div>
+          <p style="color:green">Session available on ${availableDate} </p>
+          <div class="row">
+            <div class="col-6">
+            Doctor name
+            </div>  
+            <div class="col">
+           ${doctor.Title} ${doctor.FirstName} ${doctor.LastName}
+            </div>
+          </div><div class="row">
+            <div class="col-6">
+            Start time
+            </div>  
+            <div class="col">
+            ${startTime}
+            </div>
+          </div>
+         
+        
+          <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-outline-primary"  onclick='seeOtherSessions(${index})'>See other sessions</button>
+            <button class="btn btn-primary bg-transparent" onclick='onCLickContinueQuickSuggestedSession(${index},0)'>Continue</button>
+          </div>`
+    $('#session-select-modal').modal('show');
+}
+
 
 function GetDoctorSessionData_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
@@ -398,6 +676,23 @@ function GetDoctorSessionData_Success(Response) {
 }
 
 function FilterDoctorSessionData(Data) {
+
+    console.log(Data);
+
+    const filteredData = {};
+
+    Data?.forEach((item) => {
+        let DoctorId = item?.Title + item?.FirstName + item?.LastName;
+        if (filteredData[DoctorId]) {
+            filteredData[DoctorId].push(item);
+        } else {
+            filteredData[DoctorId] = [item];
+        }
+    });
+
+    console.log(filteredData);
+
+
     let DataLength = Data.length;
     let Count = 0;
     let Type;
@@ -445,6 +740,7 @@ function FilterDoctorSessionData(Data) {
 
 function LoadSessionData(Id) {
     _UpdateSession = true;
+    $('#session-select-modal').modal('hide');
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
     DatePicker();
@@ -456,6 +752,7 @@ function LoadSessionData(Id) {
 function LoadSessionData_Success(Response) {
     if (Response.Status != 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _SessionId = Response.Data.Id;
+        _DoctorId = Response.Data.DoctorId;
         document.getElementById('TxtSessionRoomNumber').value = Response.Data.RoomNumber;
         document.getElementById('TxtSessionDate').value = Response.Data.TimeStart.split("T")[0];
         document.getElementById('TxtSessionStart').value = Response.Data.TimeStart.split("T")[1];
@@ -475,7 +772,9 @@ function GetInstituteBranches_Success(Response) {
     let DataLength = Response.Data.length;
     for (Count = 0; Count < DataLength; Count++) {
         $('#DrpSessionInstituteBranchId').append('<option value="' + Response.Data[Count].Id + '">' + Response.Data[Count].Name + '</option>');
-        $('#DrpSessionInstituteBranchId').val(1);
+    }
+    if(Array.isArray(Response.Data) && Response.Data.length === 1){
+        $('#DrpSessionInstituteBranchId').val(Response.Data[0].Id);
     }
 }
 
@@ -522,8 +821,8 @@ function GetDoctorSessionDataForAppoinment_Success(Response) {
         }
     }
     //if session is set load it
-    if(StoredSessionId !== undefined && StoredSessionId !== ""){
-        document.getElementById('DrpSessionDateDoctor').value = StoredSessionId;
+    if (StoredSessionId !== undefined && StoredSessionId !== "") {
+        // document.getElementById('TxtAppointmentSearchDate').value = StoredSessionId;
     }
 }
 
@@ -564,30 +863,28 @@ function GetDoctorsSessionsForAppointmentUpdate_Success(Response) {
 
 function GetNextAppoinmentNumber(Id, DoctorName, SessionDetails) {
     new NewAppoinment().Render(Containers.MainContent);
-    // if (_IsSetAppointmentToDoctorClicked) {
-    //     new Appoinments().Render(Containers.MainContent);
-    //     _IsSetAppointmentToDoctorClicked = false;
-    // } else {
-    //     new NewAppoinment().Render(Containers.MainContent);
-    // }
     _AppointmentSessionId = Id;
     if (_PatientId !== null && _PatientId !== undefined) {
-        document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : Dr." + DoctorName;
+        document.getElementById('TxtAppointmentsDetails').innerHTML = "Doctor : " + DoctorName;
         document.getElementById('TxtAppointmentsDetailsSession').innerHTML = "Session : " + SessionDetails;
         // document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + _AppointmentPatientName;
         const PatientMatched = _ArrayPatientSearchResultsData.filter((Patient) => Patient.Id === _PatientId)[0];
         document.getElementById('TxtAppointmentsDetailsPatient').innerHTML = "Patient : " + PatientMatched.FirstName + ' ' + PatientMatched.LastName;
         //document.getElementById('TxtAppointPaymentCheck').innerHTML = "Total Amount : " + _PaymentCheck;
         $(".pres-img").hide();
+        // document.getElementById("BtnNewAppointment").style.display = "block";
     } else {
-        document.getElementById('TxtAppointmentsDetails').innerHTML = "Dr." + "  " + DoctorName + "<br>" + SessionDetails;
-
+        document.getElementById('TxtAppointmentsDetails').innerHTML = " " + DoctorName + "<br>" + SessionDetails;
         _ApoointmentHeadingTitle = "Dr." + DoctorName + "/" + SessionDetails;
         $("#BtnSaveAppointment").hide();
-        document.getElementById("BtnNewAppointment").style.display = "block";
-
     }
-    _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
+    if(_ReAssigningAppointmentNumber){
+        document.getElementById('TxtAppoinmentNumber').value = _ReAssigningAppointmentNumber
+    }else{
+        _Request.Post(ServiceMethods.NextAppoinment, new SessionId(Id), GetNextAppoinmentNumber_Sucess);
+    }
+    document.getElementById('TxtAppoinmentNumber').setAttribute('disabled', 'true');
+
 }
 
 function GetNextAppoinmentNumber_Sucess(Response) {
@@ -602,6 +899,7 @@ function SaveAppointment_Success(Response) {
         let doctorName = Response.Data.DoctorName;
         let startingDateTime = Response.Data.TimeStart;
         let patientMobileNo = Response.Data.Mobile;
+        _ReAssigningAppointmentNumber = undefined;
 
         shareAppointmentDetailsWithPatient({
             messageTitle: 'New Appointment Placed!',
@@ -614,8 +912,27 @@ function SaveAppointment_Success(Response) {
 
 
         _PatientId = null;
-        GetNextAppoinmentNumber(_AppointmentSessionId, _AppointmentDoctorName, _SessionDetails);
-        GetDoctorAppoinmentList();
+        _AppointmentSessionId = null;
+        StoredSessionId = null;
+
+
+        // $('#AppoinmentsCard').click();
+        CmdBtnColorRemove_Click();
+
+        $('#AppoinmentsCard').attr('disabled', true);
+        $('#AppoinmentsCard').css('cursor', 'auto');
+        document.getElementById('AppoinmentsCard').style.backgroundColor = "#BDC3C7";
+        CmdCardClicked = 'AppoinmentsCard';
+        _CardClicked = 'Appointments';
+        // console.log('_CardClicked:', _CardClicked);
+        _PatientId = undefined;
+        InitRequestHandler();
+        _AppointmentPatientName = undefined;
+        // new Appoinments().Render(Containers.MainContent);
+        new NewAppoinment().Render(Containers.MainContent);
+        GetAllPatientAppointmentsList('all');
+        setDoctorDropDown('DrpAppoinmentDoctor');
+        // SetDoctorData('DrpAppoinmentDoctor');
 
         //SavePatientAnalytics(Response.Data);
         return ShowMessage(Messages.ApoointmentSaveSuccess, MessageTypes.Success, "Success!");
@@ -630,8 +947,6 @@ function SaveAppointment_Success(Response) {
  * @param {string} appointmentId - Appointment id
  * @param {string} doctorName - Name of the doctor
  * @param {string} startingDateTime - Starting date and time of the appointment
- * @param {string} doctorName - Name of the doctor
- * @param {string} startingDateTime - Starting date and time of the appointment
  * @param {function} onSuccess - Callback function
  * */
 function shareAppointmentDetailsWithPatient({
@@ -642,19 +957,25 @@ function shareAppointmentDetailsWithPatient({
                                                 doctorName,
                                                 startingDateTime
                                             }, onSuccess = null) {
-    _Request.Post(ServiceMethods.SENDSMS, {
-        "ScheduleMedium": [{
-            "MediumId": 1, "Destination": mobileNumber, "Status": 0
-        }],
-        "ScheduleMediumType": [{
-            "MediumId": 1, "Destination": mobileNumber, "Status": 0
-        }],
-        "NotifactionType": 1,
-        "Message": `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-            hour: 'numeric', minute: 'numeric', hour12: true
-        })}`,
-        "Status": 0
-    }, onSuccess);
+    const message = `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+        hour: 'numeric', minute: 'numeric', hour12: true
+    })}`;
+    const data = `${_NurseBranch.InstituteId}||${mobileNumber}||${message}`
+    const encoded = enMsg(data);
+
+    fetch(`${_NotificationBaseUrl}/notification`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify({data: encoded}),
+    })
+    .then((res) => res.json())
+    .then((response) => {
+        if(onSuccess){
+            onSuccess(response);
+        }
+    })
 }
 
 
@@ -664,6 +985,7 @@ function GetDoctorAppoinmentList() {
 }
 
 function GetDoctorAppoinmentList_Success(Response) {
+    console.log("sermehod 965");
     if ($('#AppointmentsSearchButton').prop('disabled', true)) {
         $('#AppointmentsSearchButton').prop('disabled', false);
     }
@@ -674,40 +996,26 @@ function GetDoctorAppoinmentList_Success(Response) {
         //GetAppointedPatients(Response.Data);
 
         if (Response.Data.length > 0) {
-            _ArrayAppointmentsForToday = [..._ArrayAppointmentsForToday, ...Response.Data];
+            _ArrayAppointmentsForToday = [ ..._ArrayAppointmentsForToday, ...Response.Data];
         }
+        $('#loading').modal('hide');
 
         //*******new
         FilterAppointedPatientData(Response.Data);
-        LoadAppointmentedPatientList();
+
     }
 }
 
 function FilterAppointedPatientData(Data) {
 
     let DataLength = Data.length;
+    console.log(Data)
 
     for (let Count = 0; Count < DataLength; Count++) {
 
-        // let PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
-        // let PaymentPaid = " <span style='background-color:green; color:white; padding:5px;'><i class='i-Yes'></i></span>";
-        // let PaymentUnpaid = " <span style='background-color:red; color:white; padding:5px;'><i class='i-Close'></i></span>";
 
         let PaymentStatus = Data[Count].Status;
-        // console.log('PaymentStatus:', Data[Count].Id, PaymentStatus);
 
-        // switch (Data[Count].Status) {
-        //     case 2:
-        //         PaymentStatus = "<span style='background-color:Green; color:white; padding:5px; text-left'>Paid</span>";
-        //         break;
-        //     case 3:
-        //         PaymentStatus = "<span style='background-color:Red; color:white; padding:5px;'>Pending</span>";
-        //         break;
-        // }
-
-        // if (Count % 2 === 0) {
-        //     PaymentStatus = 5;
-        // }
 
         let PaymentTypeIcon = '';
         let PaidButton = '<span class="btn" style="background-color:Green; color:white; cursor: default; padding:2px; text-left">Paid</span>';
@@ -722,7 +1030,7 @@ function FilterAppointedPatientData(Data) {
             PaymentTypeIcon = `<img src="dist-assets/images/Nurse/coupon.png" alt="Payment Status Image" style="max-height: 25px;"> ${PaidButton}`;
         }
 
-        let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ')">' + 'Unpaid' + '</button>'
+        let PaymentTypeEditButton = '<button class="btn btn-danger btn-icon custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',1,' + Data[Count].Status + ',' + Data[Count].DoctorId + ')">' + 'Unpaid' + '</button>'
 
         let IsPaid = false;
         let PaymentStatusColumn = '';
@@ -744,26 +1052,16 @@ function FilterAppointedPatientData(Data) {
         if (IsPaid) {
             isDisable = '';
             if (ChannelingStatusOriginal.includes('refund')) {
-                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
-                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
-                    'Refund' + '</button>';
+                ChannelingStatus = 'Refund';
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
-                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
-                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
-                    'Rescheduling' + '</button>';
+                ChannelingStatus = 'Rescheduled';
             } else if (ChannelingStatusOriginal.includes('successful')) {
-                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
-                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
-                    'Successful' + '</button>';
+                ChannelingStatus = 'Successful';
             } else if (ChannelingStatusOriginal.includes('pending')) {
-                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
-                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
-                    'Pending' + '</button>';
+                ChannelingStatus = 'Pending';
             } else if (ChannelingStatusOriginal.includes('show')) {
-                ChannelingStatus = '<button class="btn btn-info btn-icon custom-btn" type="button"' +
-                    ' onclick="AppointmentChannelingStatusEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ')">' +
-                    'No Show' + '</button>';
-            } else if(ChannelingStatusOriginal.includes('cancelled')){
+                ChannelingStatus = 'No Show';
+            } else if (ChannelingStatusOriginal.includes('cancelled')) {
                 isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
@@ -779,13 +1077,23 @@ function FilterAppointedPatientData(Data) {
                 ChannelingStatus = 'Refunded';
             } else if (ChannelingStatusOriginal.includes('rescheduling')) {
                 ChannelingStatus = 'Rescheduled';
-            } else if(ChannelingStatusOriginal.includes('cancelled')){
+            } else if (ChannelingStatusOriginal.includes('cancelled')) {
                 isDisable = 'disabled';
                 ChannelingStatus = 'Cancelled';
             }
         }
 
-        // console.log(ChannelingStatusOriginal, ChannelingStatus);
+        let Type = '';
+
+        if (Data[Count].Type === "offline") {
+            Type = "Physical";
+        } else if (Data[Count] === "online") {
+            Type = "Virtual";
+
+        } else {
+            Type = "Both";
+        }
+
 
         const GenderOriginal = Data[Count].Gender != null ? Data[Count].Gender.toLowerCase() : '-';
         let Gender = '-';
@@ -797,22 +1105,93 @@ function FilterAppointedPatientData(Data) {
             Gender = 'M';
         }
 
+        const propName = Data[Count]?.DoctorId + Data[Count]?.TimeStart;
+        if (!groupedData[propName]) {
+            groupedData[propName] = [{...Data[Count], Gender, ChannelingStatus, Type, IsPaid, PaymentTypeIcon}];
+        } else {
+            groupedData[propName].push({...Data[Count], Gender, ChannelingStatus, Type, IsPaid, PaymentTypeIcon});
+        }
+
+    }
+    _ArrayAppointedPatientData = [];
+
+    Object.keys(groupedData).forEach((propName, index) => {
+        const timeStart = groupedData[propName]?.[0]?.TimeStart
+        const timeEnd = groupedData[propName]?.[0]?.TimeEnd
+        let StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + "@";
+        let TimeStartSplit = timeStart.split("T")[1].split(":");
+        let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+        StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+            timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+        });
+        const isExpired = new Date(timeEnd) < new Date();
         _ArrayAppointedPatientData.push({
-            "A#": isNull(Data[Count].Number),
-            "Doctor": isNull(Data[Count].DoctorName),
-            "Patient": isNull(Data[Count].Title) + " " + isNull(Data[Count].FirstName) + " " + isNull(Data[Count].LastName),
-            "Mobile": isNull(Data[Count].Mobile),
-            "M/F": Gender,
-            "Payment": PaymentStatusColumn,
-            "Status": ChannelingStatus,
-            "Action": '<button '+isDisable+' class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="AppointmentDetailsEdit(' + Data[Count].Id + ',' + Data[Count].Number + ',' + Data[Count].SessionId + ',' + Data[Count].PatientId + ',0,' + Data[Count].Status + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Pen-2"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn mx-2" type="button" onclick="UploadFile(' + Data[Count].Id + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Upload"></i></span>' + '</button>' + '<button class="btn btn-info btn-icon w-25 custom-btn" type="button" onclick="MedicalBillDisplay(' + Data[Count].Id + ',' + Data[Count].Number + ')">' + '<span class="ul-btn__icon"><i style="margin-left: -5;" class="i-Billing"></i></span>' + '</button>'
+            "A#": isNull(index + 1),
+            "Doctor": isNull(groupedData[propName]?.[0]?.DoctorName),
+            "Session Start": isNull(StartingDateTime),
+            "No of Appointments": isNull(groupedData[propName]?.length),
+            "Action": `<button class='btn btn-outline-primary p-1' title='View appointments' style='font-size: 0.7rem' onclick="ShowPatientsModal('${propName}')">View Apts.</button>
+                       <button class='btn btn-outline-primary p-1' ${isExpired ? 'disabled' : ''} ${isExpired ? `title='Expired session!. Cannot place new appointments'` : `title='Place new appointment'`} style='font-size: 0.7rem' onclick="_ReAssigningAppointmentNumber=undefined;PlaceQuickAppointment('${propName}')">New Apt.</button>`
         });
 
+    });
+    LoadAppointmentedPatientList();
+
+}
+
+function filterDoctorsBySearchKeyword(doctorsAndSessions) {
+
+    const keyword = document.getElementById('doctor-search-text').value;
+    return doctorsAndSessions.filter(doctorAndSession => (doctorAndSession.doctor.Title + doctorAndSession.doctor.FirstName + doctorAndSession.doctor.LastName).toLowerCase().includes(keyword.toLowerCase()));
+
+}
+
+
+function filterDoctorsBySessionAvailability(doctorsAndSessions){
+    const filterBy = document.getElementById('filter-doctors-by').value;
+    if(filterBy === 'ALL_DOCTORS'){
+        return doctorsAndSessions;
+    }else if(filterBy === 'SESSIONS_AVAILABLE'){
+        return doctorsAndSessions.filter(doctorAndSession => doctorAndSession.sessions.length > 0);
     }
 }
 
+function filterDoctorAndSessionTable(){
+    const doctorsFilterBySearchKeyword = filterDoctorsBySearchKeyword([..._DoctorsAndSessionsWithoutFiltering])
+    _DoctorsAndSessions = filterDoctorsBySessionAvailability(doctorsFilterBySearchKeyword);
+    let tableData = _DoctorsAndSessions.map((doctor, index) => {
+        let StartingDateTime = "No sessions";
+        if (doctor?.sessions?.length > 0) {
+            const timeStart = doctor.sessions[0]?.TimeStart
+            StartingDateTime = new Date(timeStart).toISOString().split('T')[0] + " @ ";
+            let TimeStartSplit = timeStart.split("T")[1].split(":");
+            let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+            StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+                timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+            });
+        }
+
+        return {
+            "No": index + 1,
+            "DoctorName": doctor.doctor.FirstName + " " + doctor.doctor.LastName,
+            "NearestSession": StartingDateTime,
+            "NoOfSessions": doctor?.sessions?.length > 0 ? doctor.sessions.length : "N/A",
+            "Actions": `
+                    <button title='View available sessions of ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}' class='btn btn-outline-primary btn-sm p-1 ' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showViewMoreSessionsModal(${index})'>View Sessions</button>
+                    <button title="Place new appointment for ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' ${doctor?.sessions?.length > 0 ? '' : "disabled"} style='font-size: 0.7rem' onclick='showNearestDoctorSession(${index})'>New Apt.</button>
+                    <button title="Add new session to ${doctor.doctor.Title + ' ' + doctor.doctor.FirstName + ' ' + doctor.doctor.LastName}" class='btn btn-outline-primary btn-sm p-1 ml-2' style='font-size: 0.7rem' onclick='CmdAddSession_Click(${doctor.doctor.Id})'>Add Session</button>`
+        }
+    });
+
+    new DoctorAndSessionsTable().Render('DivDoctorsAndSessionTable', tableData);
+    CreateDataTable('TableDoctorAndSessions');
+    document.getElementById('doctor-count').innerHTML = `${_DoctorsAndSessions.length} Total doctors`;
+}
+
+
 function GetAllPatientAppointmentsList(SearchType) {
     // console.log('GetAllPatientAppointmentsList.SearchType:', SearchType);
+    $('#loading').modal('show');
     _ArrayAppointedPatientData = [];
 
     // _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, undefined), GetAllPatientAppointmentsList_Success);
@@ -826,32 +1205,39 @@ function GetAllPatientAppointmentsList(SearchType) {
     } else if (SearchType === 'search') {
         _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     } else if (SearchType === 'all') {
-        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, GetTodayDate), GetAllPatientAppointmentsForTodayList_Success);
+        _Request.Post(ServiceMethods.SessionGetByDate, new AllAppointmentsForToday(_UserId, AppointmentDate), GetAllPatientAppointmentsForTodayList_Success);
     }
 }
 
-function GetAllPatientAppointmentsForTodayList_Success(Response) {
+async function GetAllPatientAppointmentsForTodayList_Success(Response) {
+    console.log(Response);
+    _ArrayAppointmentsForToday = [];
     $('#AppointmentsSearchButton').prop('disabled', false);
 
     if (Response.Status !== 1000) {
         return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!");
     } else {
         const AppointmentsForToday = Response.Data;
-        // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday:', AppointmentsForToday);
-        _ArrayAppointmentsForToday = [];
-        // _AppointmentsForToday = Response.Data;
-        for (let i = 0; i < AppointmentsForToday.length; i++) {
-            // console.log('GetAllPatientAppointmentsForTodayList_Success.AppointmentsForToday[i].Id:', AppointmentsForToday[i].Id);
-            _Request.Post(ServiceMethods.GetAppoinment, new AppointmentList(undefined, undefined, undefined, AppointmentsForToday[i].Id), GetDoctorAppoinmentList_Success);
-        }
+        _ArrayAppointedPatientData = []
+        groupedData = {}
+
+        const getAppointmentsResponses = await Promise.all(AppointmentsForToday.map(appointment => PostAsyncV2({
+            serviceUrl: ServiceMethods.GetAppoinment,
+            requestBody: new AppointmentList(undefined, undefined, undefined, appointment.Id)
+        })));
+        $('#loading').modal('hide');
+        getAppointmentsResponses.forEach((response,) => {
+            _ArrayAppointmentsForToday = [..._ArrayAppointmentsForToday, ...response?.Data];
+            FilterAppointedPatientData(response?.Data);
+        });
     }
 }
 
 function GetAllPatientAppointmentsList_Success(Response) {
     if (Response.Status !== 1000) return ShowMessage(Response.Message, MessageTypes.Warning, "Warning!"); else {
         _AppointmentDetails = Response.Data;
-        FilterAppointedPatientData(Response.Data);
-        LoadAppointmentedPatientList();
+        // FilterAppointedPatientData(Response.Data);
+        // LoadAppointmentedPatientList();
     }
 }
 
@@ -864,14 +1250,31 @@ function LoadVitals(Id) {
     new AddVitals().Render(Containers.MainContent);
 }
 
-function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType,Status) {
+async function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, PatientId, ViewType, Status, DoctorId, propName = '') {
+
     // console.log('AppointmentDetailsEdit.ViewType', ViewType);
     _AppointmentSelected = {};
     selectedRowSessionId = SessionId;
     selectedRowAppointmentId = AppointmentId;
     selectedRowPatientId = PatientId;
     selectedRowStatus = Status;
-    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber);
+    let doctor = {};
+    //get doctor to fetch the fees
+    try {
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${DoctorId}`,
+            }
+        );
+
+        doctor = response?.Data;
+        doctor.fees = JSON.parse(doctor?.ZoomEmail);
+        console.log(doctor);
+    } catch (e) {
+        console.log(e)
+    }
+
+    new AppointmentDetailsEditModal().Render(Containers.Footer, AppointmentId, ViewType, AppointmentNumber, doctor, propName);
     $('#TxtAppointmentUpdateDoctor').empty();
     for (let Count = 0; Count < _DoctorSessionData.length; Count++) {
         $('#TxtAppointmentUpdateDoctor').append('<option value="' + _DoctorSessionData[Count].Id + '">' + _DoctorSessionData[Count].FirstName + " " + _DoctorSessionData[Count].LastName + '</option>');
@@ -880,6 +1283,16 @@ function AppointmentDetailsEdit(AppointmentId, AppointmentNumber, SessionId, Pat
     AppointmentsMatchingDropdownItemsSetSelected();
     //auto set selected doctor's session
     GetDoctorsSessionsForAppointmentUpdate();
+}
+
+function ReAssignReservedAppointment(AppointmentNumber, SessionId, propName) {
+    _ReAssigningAppointmentNumber = AppointmentNumber;
+    $('#show-patients-modal').modal('hide');
+    _ViewedDoctorSessionName= propName;
+    $('.modal-backdrop').hide();
+    PlaceQuickAppointment(propName);
+
+
 }
 
 function AppointmentsMatchingDropdownItemsSetSelected() {
@@ -901,9 +1314,6 @@ function AppointmentChannelingStatusUpdate(AppointmentId, AppointmentNumber, Ses
 function AppointmentChannelingStatusUpdate_success(Response) {
     if (Response.Status === 1000) {
         $('#ModalForAppointmentChannelingStatusEdit').modal('hide');
-        // AllBranchesOfTheInstituteGet();
-        // _AddressId = 0;
-        CmdAppoinments_Click('AppoinmentsCard');
         Appointments_Search();
         return ShowMessage("Channeling Status Updated!", MessageTypes.Success, "Success!");
     } else {
@@ -931,7 +1341,7 @@ function UploadFile(PatientId) {
     _PatientId = PatientId;
 }
 
-function MedicalBillDisplay(AppointmentId, appId) {
+async function MedicalBillDisplay(AppointmentId, appId, doctorId) {
     // console.log(appId)
     selectedAppId = appId;
     selectedAppointmentId = AppointmentId;
@@ -939,7 +1349,22 @@ function MedicalBillDisplay(AppointmentId, appId) {
 
     var allData = new Bill(undefined, selectedSessionId, selectedDoctorId, selectedPatientId, undefined, undefined, selectedAppId, undefined, AppointmentId);
 
-    _Request.Post(ServiceMethods.BillGet, allData, function (res) {
+    let doctor = {};
+    try {
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${doctorId}`,
+            }
+        );
+
+        doctor = response?.Data;
+        doctor.fees = JSON.parse(doctor?.ZoomEmail);
+        _MedicalBillDoctor = doctor;
+    } catch (e) {
+        console.log(e)
+    }
+
+    _Request.Post(ServiceMethods.BillGet, allData, async function (res) {
         // console.log(res);
         if (res.Data) {
             billId = res.Data.Id;
@@ -947,23 +1372,25 @@ function MedicalBillDisplay(AppointmentId, appId) {
             medicalBillTableSavedResponseAppend(res);
         } else {
             billId = 0;
+
             MedicalBillData = [
                 {
-                    itemName: 'Doctor charges',
+                    itemName: 'Doctor fee',
                     feeType: FeeTypes.DoctorFee,
-                    feeAmount: '500',
-                    disabled: true,
+                    feeAmount: parseFloat(doctor?.fees?.DoctorFee).toFixed(2),
+                    disabled: false,
                     saved: true,
                     hasChanges: false
                 },
                 {
-                    itemName: 'Service charges',
+                    itemName: 'Hospital fee',
                     feeType: FeeTypes.HospitalFee,
-                    feeAmount: '250',
-                    disabled: true,
+                    feeAmount: parseFloat(doctor?.fees?.HospitalFee).toFixed(2),
+                    disabled: false,
                     saved: true,
                     hasChanges: false
                 }
+
             ]
             RerenderMedicalBillTable();
             medicalBillTableTotalSumGet();
@@ -999,27 +1426,27 @@ function addNewFee() {
         feeType: "",
         feeAmount: "",
         disabled: false,
-        saved:false,
-        hasChanges:false
+        saved: false,
+        hasChanges: false
     });
     RerenderMedicalBillTable();
     medicalBillTableTotalSumGet();
 }
 
-function discardFeeChanges(index){
-   //remove element at index from array
-    MedicalBillData.splice(index,1);
+function discardFeeChanges(index) {
+    //remove element at index from array
+    MedicalBillData.splice(index, 1);
     RerenderMedicalBillTable();
 }
 
-function deleteFee(index){
-    MedicalBillData.splice(index,1);
+function deleteFee(index) {
+    MedicalBillData.splice(index, 1);
     RerenderMedicalBillTable();
     medicalBillTableRowCountReset();
     medicalBillTableTotalSumGet();
 }
 
-function editFee(index){
+function editFee(index) {
     MedicalBillData[index].saved = false;
     MedicalBillData[index].hasChanges = true;
     RerenderMedicalBillTable();
@@ -1027,7 +1454,7 @@ function editFee(index){
     medicalBillTableTotalSumGet();
 }
 
-function discardChanges(index){
+function discardChanges(index) {
     MedicalBillData[index].saved = true;
     MedicalBillData[index].hasChanges = false;
     RerenderMedicalBillTable();
@@ -1035,16 +1462,16 @@ function discardChanges(index){
     medicalBillTableTotalSumGet();
 }
 
-function saveChanges(index){
-    const itemName = $('#TxtItem'+index).val();
-    const feeType = $('#TxtFeeType'+index).val();
-    let feeAmount = $('#TxtFeeAmount'+index).val();
-    if(itemName === '' || feeType === '' || feeAmount === ''){
+function saveChanges(index) {
+    const itemName = $('#TxtItem' + index).val();
+    const feeType = $('#TxtFeeType' + index).val();
+    let feeAmount = $('#TxtFeeAmount' + index).val();
+    if (itemName === '' || feeType === '' || feeAmount === '') {
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
     feeAmount = parseFloat(feeAmount);
 
-    if(isNaN(feeAmount) || feeAmount < 0){
+    if (isNaN(feeAmount) || feeAmount < 0) {
         return ShowMessage(Messages.InvalidAmount, MessageTypes.Warning, "Warning!");
     }
     MedicalBillData[index].itemName = itemName;
@@ -1057,18 +1484,18 @@ function saveChanges(index){
     medicalBillTableTotalSumGet();
 }
 
-function  saveFeeToList(index){
-    const itemName = $('#TxtItem'+index).val();
-    const feeType = $('#TxtFeeType'+index).val();
-    let feeAmount = $('#TxtFeeAmount'+index).val();
+function saveFeeToList(index) {
+    const itemName = $('#TxtItem' + index).val();
+    const feeType = $('#TxtFeeType' + index).val();
+    let feeAmount = $('#TxtFeeAmount' + index).val();
 
-    if(itemName === '' || feeType === '' || feeAmount === ''){
+    if (itemName === '' || feeType === '' || feeAmount === '') {
         return ShowMessage(Messages.EmptyFields, MessageTypes.Warning, "Warning!");
     }
 
     feeAmount = parseFloat(feeAmount);
 
-    if(isNaN(feeAmount) || feeAmount < 0){
+    if (isNaN(feeAmount) || feeAmount < 0) {
         return ShowMessage(Messages.InvalidAmount, MessageTypes.Warning, "Warning!");
     }
 
@@ -1080,22 +1507,21 @@ function  saveFeeToList(index){
 }
 
 function handleBillTextItemChange(index) {
-    const content = $('#TxtItem'+index).val();
+    const content = $('#TxtItem' + index).val();
     console.log(content, index);
     MedicalBillData[index].itemName = content;
 
 }
 
 function handleBillFeeTypeChange(index) {
-    const content = $('#TxtFeeType'+index).val();
+    const content = $('#TxtFeeType' + index).val();
     MedicalBillData[index].feeType = content;
 }
 
 function handleBillFeeAmountChange(index) {
-    const content = $('#TxtFeeAmount'+index).val();
+    const content = $('#TxtFeeAmount' + index).val();
     MedicalBillData[index].feeAmount = content;
 }
-
 
 
 function medicalBillTableRowAdd() {
@@ -1110,7 +1536,7 @@ function medicalBillTableRowAdd() {
 }
 
 function medicalBillInputsAreAllValid() {
-   let isAllValid = true;
+    let isAllValid = true;
     MedicalBillData.forEach((item) => {
         const feeAmount = parseInt(item.feeAmount);
         if (item.itemName === "" || item.feeType === "" || item.feeAmount === "" || isNaN(feeAmount)) {
@@ -1123,20 +1549,20 @@ function medicalBillInputsAreAllValid() {
 function medicalBillTableAllRowsRemove() {
     MedicalBillData = [
         {
-            itemName: 'Doctor charges',
+            itemName: 'Doctor fee',
             feeType: FeeTypes.DoctorFee,
-            feeAmount: '500',
-            disabled: true,
-            saved:true,
-            hasChanges:false
+            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.DoctorFee).toFixed(2),
+            disabled: false,
+            saved: true,
+            hasChanges: false
         },
         {
-            itemName: 'Service charges',
+            itemName: 'Hospital fee',
             feeType: FeeTypes.HospitalFee,
-            feeAmount: '250',
-            disabled: true,
-            saved:true,
-            hasChanges:false
+            feeAmount: parseFloat(_MedicalBillDoctor?.fees?.HospitalFee).toFixed(2),
+            disabled: false,
+            saved: true,
+            hasChanges: false
         }
     ]
     RerenderMedicalBillTable();
@@ -1153,19 +1579,19 @@ function medicalBillTableRowDelete(TableRowElement) {
 function medicalBillTableTotalSumGet() {
     let Sum = 0;
     MedicalBillData.forEach((item) => {
-        const feeAmount = parseInt(item.feeAmount);
-        if(!isNaN(feeAmount)){
+        const feeAmount = parseFloat(item.feeAmount);
+        if (!isNaN(feeAmount)) {
             Sum += feeAmount;
         }
     });
-    let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseInt($('#TxtDiscount').val()) : 0;
+    let Discount = $('#TxtDiscount').val() != NaN && $('#TxtDiscount').val() != '' ? parseFloat($('#TxtDiscount').val()) : 0;
     let Total = Sum - Discount;
     if (Total < 0) {
         Total = 0;
     } else {
         Total = Sum - Discount;
     }
-    $('#TxtTotal').text(Total);
+    $('#TxtTotal').text(parseFloat(`${Total}`).toFixed(2));
     $('#TxtDiscount').attr('max', (Sum));
 }
 
@@ -1193,15 +1619,15 @@ function medicalBillTableButtonsReset() {
                 $(Column).html(_MedicalBillTableButtonDelete);
             }
         }
-        if(Columns.length === 2){
+        if (Columns.length === 2) {
             $(Columns[1]).html(_MedicalBillTableButtonAddRow);
-        }else{
+        } else {
             $(Columns[1]).html('');
         }
     }
 }
 
-function medicalBillSave(PatientId, appId) {
+async function medicalBillSave(PatientId, appId) {
     // console.log('medicalBillSave.PatientId:', PatientId);
     const PatientMatched = _ArrayAppointmentsForToday.filter((Patient) => Patient.Id === PatientId)[0];
     let MedicalBillItems = [];
@@ -1212,7 +1638,9 @@ function medicalBillSave(PatientId, appId) {
         }
     });
 
-    if(hasUnsavedChanges){
+
+
+    if (hasUnsavedChanges) {
         return ShowMessage(Messages.UnsavedChanges, MessageTypes.Warning, "Warning!");
     }
 
@@ -1234,26 +1662,54 @@ function medicalBillSave(PatientId, appId) {
     const DateTime = date.getFullYear() + '-' + ("0" + month).slice(-2) + '-' + ("0" + date.getDate()).slice(-2) + ' ' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2);
 
     const PatientsAge = parseInt(date.getFullYear().toString()) - parseInt(PatientMatched.DateOfBirth.split('-')[0]);
+    let doctor = {};
+    let doctorSpecialization = {};
+
+    try{
+        const response = await GetAsync({
+                serviceMethod: ServiceMethods.DoctorGet,
+                params: `/${PatientMatched.DoctorId}`,
+            }
+        );
+        const specializationResponse = await PostAsync({
+                serviceMethod: ServiceMethods.GetDoctorSpecialization,
+                requestBody:{
+                    DoctorId:PatientMatched.DoctorId
+                }
+            }
+        );
+        doctor = response?.Data;
+        doctorSpecialization = specializationResponse?.Data;
+    }catch (e){
+        console.log(e);
+    }
 
     const Patient = {
-        'Doctor': 'Dr. Maester Luwin',
         'PatientName': PatientMatched.Title + ' ' + PatientMatched.FirstName + ' ' + PatientMatched.LastName,
         'Age': PatientsAge,
+        'Address':PatientMatched.Address,
         'TelephoneNumber': PatientMatched.Mobile
     };
+
+    let billTime = (new Date()).toLocaleTimeString();
+
     const MedicalBill = {
         'Items': MedicalBillItems,
         'Discount': $('#TxtDiscount').val() !== '' ? $('#TxtDiscount').val() : 0,
         'Total': $('#TxtTotal').text(),
         'AppDate': DateTime,
         'AppNumber': appId,
-        'BillNumber': 'SO/SC/57333',
+        'BillNumber': 'SO/SC/',
         'BillDate': DateTime.split(' ')[0],
         'BillUser': 'Margery',
-        'BillTime': DateTime.split(' ')[1]
+        'BillTime': billTime,
+        'AppointmentDateTime': generateAppointmentDateTimeString(PatientMatched.TimeStart)
     };
+    console.log(doctor);
     const JsonObjectToSave = {
         'Patient': Patient, 'Bill': MedicalBill, 'UserId': _UserId,
+        "Doctor":doctor,
+        "Specialization":doctorSpecialization
     }
 
     SaveBillData(JsonObjectToSave);
@@ -1275,22 +1731,28 @@ function medicalBillPrint() {
     new MedicalBillPrintPageIframeModal().Render(Containers.Footer);
 
     $('#ModalForMedicalBillIframe .modal-body').html('');
-    const Iframe = '<iframe height="650px" src="medical-bill.html?v1=1" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
+
+    let medicalBillTemplate = "medical-bill.html?v1=1";
+
+    if(_NurseBranch?.Id === 30031 || _NurseBranch?.Id === 1){
+        medicalBillTemplate = "medical-bill-genius.html?v1=1";
+    }
+    const Iframe = '<iframe height="650px" src="'+medicalBillTemplate+'" class="w-100 h-700" frameborder="0" allowfullscreen></iframe>';
     $('#ModalForMedicalBillIframe .modal-body').append(Iframe);
     $('#ModalForMedicalBillIframe').modal('show');
 }
 
-function RerenderMedicalBillTable(){
+function RerenderMedicalBillTable() {
     $('#TblPatientInvoiceBody').html('');
     for (let index = 0; index < MedicalBillData.length; index++) {
         const rowData = MedicalBillData[index];
-        if(rowData.disabled){
+        if (rowData.disabled) {
             $("#TblPatientInvoiceBody").append(_MedicaBillTableReadOnlyRowBuilder({
                 itemName: rowData.itemName,
                 feeType: rowData.feeType,
                 feeAmount: rowData.feeAmount,
             }));
-        }else{
+        } else {
             $("#TblPatientInvoiceBody").append(_MedicaBillTableRowBuilder({index, ...rowData}));
         }
     }
@@ -1307,12 +1769,12 @@ function medicalBillTableSavedResponseAppend(Response) {
     //just renders the received data. must contain the hospital charges and doctor charges
     for (let i = 0; i < data.length; i++) {
         let billItem = data[i];
-        let isDisabled = billItem.ItemName === 'Doctor charges' || billItem.ItemName === 'Service charges';
+        let isDisabled = billItem.ItemName === 'Doctor fee' || billItem.ItemName === 'Hospital fee';
         MedicalBillData.push({
             itemName: billItem.ItemName,
             feeType: billItem.FeeType,
             feeAmount: billItem.Amount,
-            disabled: isDisabled,
+            disabled: false,
             saved: true,
             hasChanges: false,
         });
@@ -1332,6 +1794,15 @@ function LoadAppointmentedPatientList() {
     CreateDataTable('TableAppointedPatient');
     if (_PatientId !== null && _PatientId !== undefined) {
         $(".pres-img").hide();
+    }
+    if (_ViewedDoctorSessionName !== "" && !_ReAssigningAppointmentNumber) {
+        ShowPatientsModal(_ViewedDoctorSessionName);
+    }
+    if (_AppointmentSessionId !== null && _AppointmentSessionId !== undefined){
+        document.getElementById('DrpAppoinmentDoctor').setAttribute('disabled', 'true');
+        document.getElementById('TxtAppointmentSearchDate').setAttribute('disabled', 'true');
+        document.getElementById('AppointmentsSearchButton').setAttribute('disabled', 'true');
+
     }
 }
 
@@ -1724,6 +2195,7 @@ function Admin_View() {
  =================================*/
 
 function AllBranchesOfTheInstituteGet() {
+    $('#loading').modal('show');
     _ArrayAllBranchesOfTheInstituteResultsData = [];
     //invoke a flag to modify the '_UserId' value in 'InitRequestHandler()'
     _IsAdminUserIdRequired = true;
@@ -1757,6 +2229,7 @@ function AllBranchesOfTheInstituteGet_Success(Response) {
 
     new BranchesSearchResultsTable().Render('BranchesSearchResults', TableData);
     CreateDataTable('TableBranchesSearchResults');
+    $('#loading').modal('hide');
 
 }
 
@@ -1856,26 +2329,27 @@ function EditPassword() {
     $('#TxtDoctorPassword').prop('disabled', false);
 }
 
-function  SearchDoctor(){
+function SearchDoctor() {
     _DoctorSearchKeyword = $('#TxtDoctor_Search').val();
     _DoctorSearchBy = $('#Doctor_SearchBy').val();
     let filteredDoctors = []
-    if(_DoctorSearchKeyword !== "" && _DoctorSearchKeyword !== undefined){
-        filteredDoctors = ArrayDoctorSearchResultsData.filter(doctor=>doctor[_DoctorSearchBy].toString().toLowerCase().includes(_DoctorSearchKeyword.toLowerCase()))
+    if (_DoctorSearchKeyword !== "" && _DoctorSearchKeyword !== undefined) {
+        filteredDoctors = ArrayDoctorSearchResultsData.filter(doctor => doctor[_DoctorSearchBy].toString().toLowerCase().includes(_DoctorSearchKeyword.toLowerCase()))
         setDoctorsTable(filteredDoctors);
-    }else{
+    } else {
         setDoctorsTable(ArrayDoctorSearchResultsData);
     }
 }
 
-function setDoctorsTable(Data){
+function setDoctorsTable(Data) {
     let Headers = ["Doctor Name", "Email", "NIC", "Registration Number", "Action"];
     const tableContainer = document.getElementById("DoctorsTableContainer");
     tableContainer.innerHTML = '';
     tableContainer.appendChild(new TableView("TableDoctorsSearchResults", "table table-striped", Headers, Data, undefined));
-    if(Data.length === 0){
+    if (Data.length === 0) {
         $('#TableDoctorsSearchResults').append('<tr><td colspan="5" class="text-center">No Data Found</td></tr>')
     }
+    CreateDataTable('TableDoctorsSearchResults');
 }
 
 
@@ -1896,11 +2370,11 @@ function DownloadReport() {
         let ttlBookingFee = 0;
         let ttlTotalDiscount = 0;
         var csv_data = [];
-        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile', 'Booking Type', 'Payment Status','Appointment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
+        csv_data.push(['#', 'Doctor Name', 'Session Date & Time', 'Appointment No', 'Patient Name', 'Patient Mobile', 'Booking Type', 'Payment Status', 'Appointment Status', 'Hospital Charge', 'Doctor Charge', 'Booking Charge', 'Other Charges', 'Discount Amount'])
         let filteredData = res.Data;
         let filtering = $('#DrpReportAppointmentStatus').val();
-        if(filtering !== "" && filtering !== "All Appointments"){
-            filteredData = filteredData.filter(appointment=>appointment.ChannelingStatus === filtering);
+        if (filtering !== "" && filtering !== "All Appointments") {
+            filteredData = filteredData.filter(appointment => appointment.ChannelingStatus === filtering);
         }
         for (var i = 0; i < filteredData.length; i++) {
             let data = filteredData[i];
@@ -1916,13 +2390,13 @@ function DownloadReport() {
             ttlBookingFee += parseInt(BookingFee);
             ttlTotalDiscount += parseInt(TotalDiscount);
             let bookingType = data.Type === 'offline' ? "Reception" : data.Type;
-            var d = [i, data.DoctorName, data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "), data.Number, data.FirstName + " " + data.LastName, data.Mobile, bookingType, 'PAID',data.ChannelingStatus, hospital, DoctorFee, BookingFee, AllOtherFee, TotalDiscount];
+            var d = [i, data.DoctorName, data.TimeStart.replace("T", " ") + ' ' + data.TimeEnd.replace("T", " "), data.Number, data.FirstName + " " + data.LastName, data.Mobile, bookingType, 'PAID', data.ChannelingStatus, hospital, DoctorFee, BookingFee, AllOtherFee, TotalDiscount];
             console.log(d)
             csv_data.push(d);
 
         }
         // =SUM(I2:I4)
-        var d = ["", "", "", "", "", "", "", '',"", ttlHospital, ttlDoctor, ttlBookingFee, ttlOther, ttlTotalDiscount];
+        var d = ["", "", "", "", "", "", "", '', "", ttlHospital, ttlDoctor, ttlBookingFee, ttlOther, ttlTotalDiscount];
         csv_data.push(d)
 
         // console.log(csv_data);
