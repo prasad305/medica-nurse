@@ -6,7 +6,7 @@ const _GasEnabled = true;
 const _LiveEnabled = true;
 
 //LIVE
-const _ServiceURL = _GasEnabled ? "https://clinic.medica.lk/API" : "http://api.medica.gq";
+const _ServiceURL = _GasEnabled ? "https://api.medica.my" : "http://api.medica.gq";
 const _NotificationBaseUrl = _GasEnabled ? "https://extapi.medica.my/medica/clinic/api/v2" : "http://api.medica.gq";
 
 

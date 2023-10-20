@@ -49,7 +49,7 @@ function LnkDoctorOnline_Click() {
 }
 
 function LnkVirtualconsultation_Click() {
-    window.location.replace("https://live.medica.lk/");
+    window.location.replace("https://vc.medica.my/");
 }
 
 function LnkEditProfile_Click() {
