@@ -1933,7 +1933,7 @@ function AddNewSession() {
       </div>
       
       <div class="col-lg-6 col-6 mt-3">
-          <input id="ChkSMSEnable" type="checkbox" ><label for="ChkSMSEnable" class="ColorBlue ml-1">&nbsp;Notify patients via SMS </label>
+          <input id="ChkSMSEnable" type="checkbox" onchange="setNotifySetting()" ><label for="ChkSMSEnable" class="ColorBlue ml-1">&nbsp;Notify patients via SMS </label>
       </div>
       `
     }

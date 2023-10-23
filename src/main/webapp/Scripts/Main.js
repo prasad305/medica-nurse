@@ -113,6 +113,7 @@ let CmdCardClicked = '';
 let _ArrayAllBranchesOfTheInstituteResultsData = [];
 let _IsAdminUserIdRequired = false;
 let _AddressId = 0;
+let _ISNotifyPatientEnabled = false;
 
 /*========================
      Enums
@@ -175,6 +176,7 @@ const Messages =
         SelectDrp: "Please select from dropdown",
         UserNotFound: "Sorry no Patient Found!",
         SessionSaveSuccess: "The Session Has Been Saved Successfully",
+        SessionUpdateSuccess: "The Session Has Been Updated Successfully",
         NoSession: "No Session Found!",
         ApoointmentSaveSuccess: "The Appointment Has Been Saved Successfully!",
         InvalidDate: "Invalid Date!",

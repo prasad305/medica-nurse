@@ -298,25 +298,30 @@ async function SaveSession_Success(Response) {
         console.log(Response)
         if (_UpdateSession) {
             try {
-                //send notification to all patients
-                //get all appointments in the session
-                const response = await PostAsync({
-                    serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(sessionId)
-                });
-                console.log(response)
-                let doctorName = '';
-                let startingDateTime = Response.Data.TimeStart;
-                let endingDateTime = Response.Data.TimeEnd;
+                if(_ISNotifyPatientEnabled){
+                    //send notification to all patients
+                    //get all appointments in the session
+                    const response = await PostAsync({
+                        serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(sessionId)
+                    });
+                    console.log(response)
+                    let doctorName = '';
+                    let startingDateTime = Response.Data.TimeStart;
+                    let endingDateTime = Response.Data.TimeEnd;
 
-                if (response.Data.length > 0) {
-                    doctorName = response.Data[0].DoctorName;
+                    if (response.Data.length > 0) {
+                        doctorName = response.Data[0].DoctorName;
+                    }
+
+                    await shareSessionUpdateWithPatients(response.Data, {
+                        messageTitle: "Session Updated!",
+                        doctorName: doctorName,
+                        startingDateTime: startingDateTime,
+                        endingDateTime: endingDateTime
+                    });
+                }else{
+                    ShowMessage(Messages.SessionUpdateSuccess, MessageTypes.Success, "Success!");
                 }
-                await shareSessionUpdateWithPatients(response.Data, {
-                    messageTitle: "Session Updated!",
-                    doctorName: doctorName,
-                    startingDateTime: startingDateTime,
-                    endingDateTime: endingDateTime
-                });
 
             } catch (e) {
                 console.log(e)
@@ -326,9 +331,7 @@ async function SaveSession_Success(Response) {
             await SetReservedAppointmentCount(sessionId);
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
-
         CmdCancelSession_Click();
-
     }
 }
 
@@ -745,6 +748,7 @@ function FilterDoctorSessionData(Data) {
 
 function LoadSessionData(Id) {
     _UpdateSession = true;
+    _ISNotifyPatientEnabled = false;
     $('#session-select-modal').modal('hide');
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
