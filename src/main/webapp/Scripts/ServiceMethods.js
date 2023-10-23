@@ -383,6 +383,15 @@ async function shareSessionUpdateWithPatients(appointments = [], {
             })}`
         }
 
+        let status = await  shareAppointmentDetailsWithPatient({
+            messageTitle: messageTitle,
+            mobileNumber: Mobile,
+            appointmentNumber: Number,
+            appointmentId: Id,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime
+        })
+
         // let status = await PostAsync({
         //     serviceMethod: ServiceMethods.SENDSMS, requestBody: {
         //         "ScheduleMedium": [{
@@ -958,7 +967,7 @@ function SaveAppointment_Success(Response) {
  * @param {string} startingDateTime - Starting date and time of the appointment
  * @param {function} onSuccess - Callback function
  * */
-function shareAppointmentDetailsWithPatient({
+async function shareAppointmentDetailsWithPatient({
                                                 messageTitle,
                                                 mobileNumber,
                                                 appointmentNumber,
@@ -972,19 +981,14 @@ function shareAppointmentDetailsWithPatient({
     const data = `${_NurseBranch.InstituteId}||${mobileNumber}||${message}`
     const encoded = enMsg(data);
 
-    fetch(`${_NotificationBaseUrl}/notification`, {
+    return await fetch(`${_NotificationBaseUrl}/notification`, {
         method: "POST",
         headers: {
             "Content-type": "application/json",
         },
         body: JSON.stringify({data: encoded}),
     })
-    .then((res) => res.json())
-    .then((response) => {
-        if(onSuccess){
-            onSuccess(response);
-        }
-    })
+
 }
 
 
