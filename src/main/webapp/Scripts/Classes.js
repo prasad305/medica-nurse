@@ -313,7 +313,8 @@ function DoctorQualification(Id, DoctorId, QualificationId, Status, UserSaved) {
     this.UserSaved = UserSaved;
 }
 
-function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers) {
+function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Status, UserSaved, RegistrationNumber, DateOfBirth, Addresses, ContactNumbers,
+                    DoctorFee, HospitalFee, OtherFee) {
     this.Id = Id;
     this.Title = Title;
     this.FirstName = FirstName;
@@ -327,6 +328,10 @@ function DoctorSave(Id, Title, FirstName, MiddleName, LastName, Email, NIC, Stat
     this.DateOfBirth = DateOfBirth;
     this.Addresses = Addresses;
     this.ContactNumbers = ContactNumbers;
+    this.DoctorFee = DoctorFee;
+    this.HospitalFee = HospitalFee;
+    this.OtherFee = OtherFee;
+    this.BranchId = _UserBranchId;
 }
 
 function DoctorBranch(InstituteBranchId, DoctorId, Status, UserSaved) {

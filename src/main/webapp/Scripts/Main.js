@@ -7,6 +7,8 @@ const _LiveEnabled = true;
 
 //LIVE
 const _ServiceURL = _GasEnabled ? "https://api.medica.my" : "http://api.medica.gq";
+const _NotificationBaseUrl = _GasEnabled ? "https://extapi.medica.my/medica/clinic/api/v2" : "http://api.medica.gq";
+
 
 //TEST
 // const _ServiceURL = _LiveEnabled ? "https://ayu-api.medica.lk" : "http://api.medica.gq";
@@ -49,6 +51,8 @@ var _RequestUpload;
 let _DoctorSearchKeyword = '';
 let _DoctorSearchBy = 'Doctor Name';
 const ArrayDoctorSearchResultsData = [];
+let groupedData = {}
+let _ViewedDoctorSessionName = '';
 
 
 var _PaymentCheck = "LKR2000";
@@ -64,9 +68,10 @@ var _AppointmentUser;
 var _AppointmentNumber;
 var _AppointmentDetails;
 var _AppointmentSessionId;
-let StoredSessionId;
+let StoredSessionId = '';
 var _AppointmentPatientId;
 var _AppointmentDoctorName;
+let _ReAssigningAppointmentNumber = undefined;
 var _AppointmentPatientName;
 var _ApoointmentHeadingTitle;
 var _UpdateSession = false;
@@ -76,7 +81,7 @@ var _ArrayDrugData = [];
 var _DoctorSessionData = [];
 var _BranchData = [];
 var _ArrayPrescriptionData = [];
-var _ArrayAppointedPatientData = [];
+let _ArrayAppointedPatientData = [];
 var _ArrayAppointedMentNumber = [];
 let _ArrayClinicBillsSearchResultsData = [];
 let _ArrayPatientSearchResultsData = [];
@@ -86,6 +91,7 @@ let _ArrayAppointmentsForTodayCount = 0;
 let _ArrayAppointmentsForToday = [];
 let _ArrayAppointmentsLoaded = [];
 let _AppointmentSelected = {};
+let _IsAppointmentsActionBtnDisabled = false;
 
 var _NurseId;
 var _NurseNIC;
@@ -95,6 +101,8 @@ let _NurseLoggedIn = {};
 let _NurseBranch = {};
 let _NurseInstitute = {};
 let _ArrayAllInstitutes = [];
+let _DoctorsAndSessionsWithoutFiltering = []
+let _DoctorsAndSessions = [];
 
 let _IsSetAppointmentToDoctorClicked = false;
 let _CardClicked = '';
@@ -147,6 +155,7 @@ const ServiceMethods =
         BillSave: "Bill/Post",
         BillGet: "Bill/Get",
         SENDSMS: "Schedule/Save",
+        GetDoctorSpecialization:'DoctorSpecialization/GetDoctorSpecialization'
     };
 
 const MessageTypes =
@@ -296,9 +305,11 @@ function Wait(FnCondition, FncSuccess) {
 }
 
 function BindView(Container, View) {
-    let Element = document.getElementById(Container);
-    Element.innerHTML = "";
-    Element.appendChild(View);
+    if(Element){
+        let Element = document.getElementById(Container);
+        Element.innerHTML = "";
+        Element.appendChild(View);
+    }
 }
 
 function ValidateFields(Selector) {
@@ -367,6 +378,41 @@ function Page_Load() {
             InitRequestHandler();
             _LayoutCommon = new LayoutCommon();
             _LayoutCommon.Render();
+
+            window.onbeforeunload = (Args) =>
+            {
+                Args = Args || window.event;
+
+                if (Args)
+                    Args.returnValue = 'Sure';
+                return Args.returnValue;
+            };
+
+            let LinkDummy = document.createElement("button");
+            LinkDummy.onclick = () => { history.pushState('Forward', document.title, '#') };
+            LinkDummy.className = "hidden";
+            document.body.appendChild(LinkDummy);
+
+            let Clicker = () => LinkDummy.click();
+            setTimeout(Clicker, 1000);
+
+            $(document).ready(function ()
+            {
+                if (window.history && window.history.pushState)
+                {
+                    $(window).on('popstate', function ()
+                    {
+                        const Confirm = confirm("Are you sure you want to leave this page? Changes will be discarded.");
+
+                        if (Confirm)
+                        {
+                            history.back();
+                        }
+                        else
+                            history.pushState(null, document.title, location.href);
+                    });
+                }
+            })
         });
 }
 
@@ -376,7 +422,7 @@ function Page_Load() {
 
 const _MedicalBillTableButtonDelete = '<button class="btn btn-danger btn-sm" onclick="medicalBillTableRowDelete(this)"><i class="fa-trash"></i></button>';
 const _MedicalBillTableButtonAddRow = '<button class="btn btn-success btn-sm mr-2" onclick="medicalBillTableRowAdd()"><i class="i-Add"></i></button>';
-
+let _MedicalBillDoctor = {}
 const _MedicalBillTableRow = '<tr class="TblRow">' +
     '<td>1</td>' +
     '<td> ' +
@@ -469,3 +515,19 @@ const _MedicaBillTableReadOnlyRowBuilder = ({
             </td> 
         </tr> `
 }
+
+
+function generateAppointmentDateTimeString(time){
+
+    let StartingDateTime = new Date(time).toISOString().split('T')[0] + " @ ";
+    let TimeStartSplit = time.split("T")[1].split(":");
+    let TimeStart = TimeStartSplit[0] + ":" + TimeStartSplit[1];
+    StartingDateTime += new Date(TimeFormat.DateFormat + TimeStart + "Z").toLocaleTimeString(Language.SelectLanguage, {
+        timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'
+    });
+
+    return StartingDateTime;
+}
+
+
+//comment
