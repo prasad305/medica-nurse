@@ -340,9 +340,14 @@ async function shareSessionUpdateWithPatients(appointments = [], {
     messageTitle, doctorName, startingDateTime, endingDateTime
 }) {
 
-    //filter appointments that are not cancelled
-    let appointmentsNotCancelled = appointments.filter(appointment => appointment.ChannelingStatus !== 'cancelled');
+    //filter appointments that are not cancelled & not reserved patient
 
+    let appointmentsNotCancelled = appointments.filter(appointment => {
+        const stringPatientId = appointment.PatientId.toString();
+        const patientIdConverted = stringPatientId.substring(4, stringPatientId.length - 2)
+        return appointment.ChannelingStatus !== 'cancelled' &&  patientIdConverted !== "183390"
+    });
+    console.log(appointmentsNotCancelled);
     ShowMessage(`<i id='count'> Sending message 0 of ${appointmentsNotCancelled.length}</i>`, MessageTypes.Success, "Success!");
 
     const count = document.getElementById('count');
@@ -375,15 +380,15 @@ async function shareSessionUpdateWithPatients(appointments = [], {
             })}`
         }
 
-        let status = await PostAsync({
-            serviceMethod: ServiceMethods.SENDSMS, requestBody: {
-                "ScheduleMedium": [{
-                    "MediumId": 1, "Destination": Mobile, "Status": 0
-                }], "ScheduleMediumType": [{
-                    "MediumId": 1, "Destination": Mobile, "Status": 0
-                }], "NotifactionType": 1, "Message": messageToPatient, "Status": 0
-            }
-        })
+        // let status = await PostAsync({
+        //     serviceMethod: ServiceMethods.SENDSMS, requestBody: {
+        //         "ScheduleMedium": [{
+        //             "MediumId": 1, "Destination": Mobile, "Status": 0
+        //         }], "ScheduleMediumType": [{
+        //             "MediumId": 1, "Destination": Mobile, "Status": 0
+        //         }], "NotifactionType": 1, "Message": messageToPatient, "Status": 0
+        //     }
+        // })
         setCompletedCount()
     }
     setCompletedStatus();
