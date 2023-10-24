@@ -1921,7 +1921,7 @@ function AddNewSession() {
       DivCustomContentBlock.innerHTML += `
       <div class="col-lg-6 col-6">
           <label class="">Doctor status</label>
-          <select class="form-control form-control-rounded select">
+          <select class="form-control form-control-rounded select" id="DoctorStatus">
               <option value="NO_UPDATE">No Updates</option>
               <option value="CANCELLED">Session cancelled</option>
               <option value="DELAYED">Doctor will arrive later</option>
@@ -1929,7 +1929,7 @@ function AddNewSession() {
       </div>
       <div class="col-lg-6 col-6">
           <label class="">Remarks</label>
-          <input placeholder="State session update remarks here" type="text"  id="TxtSession_Update_Remarks" class="form-control form-control-rounded" />
+          <input placeholder="State session update remarks here" type="text"  id="TxtSession_Update_Remarks" class="form-control form-control-rounded"/>
       </div>
       
       <div class="col-lg-6 col-6 mt-3">

@@ -344,6 +344,15 @@ async function shareSessionUpdateWithPatients(appointments = [], {
 }) {
 
     //filter appointments that are not cancelled & not reserved patient
+    const doctorStatus = document.getElementById('DoctorStatus').value;
+    const sessionUpdateRemarks = document.getElementById('TxtSession_Update_Remarks').value;
+
+
+    if(doctorStatus === 'CANCELLED'){
+        messageTitle = 'Session Cancelled!'
+    }else if(doctorStatus === 'DELAYED'){
+        messageTitle = 'Session will be delayed!'
+    }
 
     let appointmentsNotCancelled = appointments.filter(appointment => {
         const stringPatientId = appointment.PatientId.toString();
@@ -371,36 +380,29 @@ async function shareSessionUpdateWithPatients(appointments = [], {
         const appointment = appointmentsNotCancelled[i];
         const {Id, Mobile, Number} = appointment;
         let messageToPatient = ''
-        if (endingDateTime) {
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })}`
-        } else {
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })}`
-        }
+        // if (endingDateTime) {
+        //     messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })}`
+        // } else {
+        //     messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })}`
+        // }
 
-        let status = await  shareAppointmentDetailsWithPatient({
+        let status = await shareAppointmentDetailsWithPatient({
             messageTitle: messageTitle,
             mobileNumber: Mobile,
             appointmentNumber: Number,
             appointmentId: Id,
             doctorName: doctorName,
-            startingDateTime: startingDateTime
+            startingDateTime: startingDateTime,
+            remarks:sessionUpdateRemarks
         })
 
-        // let status = await PostAsync({
-        //     serviceMethod: ServiceMethods.SENDSMS, requestBody: {
-        //         "ScheduleMedium": [{
-        //             "MediumId": 1, "Destination": Mobile, "Status": 0
-        //         }], "ScheduleMediumType": [{
-        //             "MediumId": 1, "Destination": Mobile, "Status": 0
-        //         }], "NotifactionType": 1, "Message": messageToPatient, "Status": 0
-        //     }
-        // })
+
         setCompletedCount()
     }
     setCompletedStatus();
@@ -966,6 +968,7 @@ function SaveAppointment_Success(Response) {
  * @param {string} doctorName - Name of the doctor
  * @param {string} startingDateTime - Starting date and time of the appointment
  * @param {function} onSuccess - Callback function
+ * @param {string} remarks - custom message to patients
  * */
 async function shareAppointmentDetailsWithPatient({
                                                 messageTitle,
@@ -973,11 +976,16 @@ async function shareAppointmentDetailsWithPatient({
                                                 appointmentNumber,
                                                 appointmentId,
                                                 doctorName,
-                                                startingDateTime
+                                                startingDateTime,
+                                                remarks= undefined
                                             }, onSuccess = null) {
-    const message = `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+    let message = `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
         hour: 'numeric', minute: 'numeric', hour12: true
     })}`;
+    if(remarks){
+        message += `. Remarks: ${remarks}`;
+    }
+    console.log(message);
     const data = `${_NurseBranch.InstituteId}||${mobileNumber}||${message}`
     const encoded = enMsg(data);
 
