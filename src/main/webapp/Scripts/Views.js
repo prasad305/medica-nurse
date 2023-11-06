@@ -1039,14 +1039,19 @@ function EditPatient() {
       ])
     );
     SelectTitle.appendChild(
-      new SelectItem("Miss.", "Miss.", [
+      new SelectItem("Miss", "Miss", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
     );
     SelectTitle.appendChild(
-      new SelectItem("Baby.", "Baby.", [
+      new SelectItem("Baby", "Baby", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
+    );
+    SelectTitle.appendChild(
+        new SelectItem("Master", "Master", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
       new SelectItem("Dr.", "Dr.", [
@@ -1318,7 +1323,7 @@ function AddPatient() {
       ])
     );
     SelectTitle.appendChild(
-      new SelectItem("Miss.", "Miss.", [
+      new SelectItem("Miss", "Miss", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
     );
@@ -1326,6 +1331,11 @@ function AddPatient() {
       new SelectItem("Baby.", "Baby.", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
+    );
+    SelectTitle.appendChild(
+        new SelectItem("Master", "Master", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
       new SelectItem("Dr.", "Dr.", [
@@ -5085,7 +5095,7 @@ function DoctorsAddOrUpdateModal() {
       ])
     );
     data.push(
-      new SelectItem("Prof.", "Prof", [
+      new SelectItem("Prof.", "Prof.", [
         new Attribute(
           _AttributeClass,
           "form-control form-control-rounded appointment-class"
@@ -5109,7 +5119,23 @@ function DoctorsAddOrUpdateModal() {
       ])
     );
     data.push(
-      new SelectItem("Miss.", "Miss", [
+        new SelectItem("Ms.", "Ms.", [
+          new Attribute(
+              _AttributeClass,
+              "form-control form-control-rounded appointment-class"
+          ),
+        ])
+    );
+    data.push(
+        new SelectItem("Master", "Master", [
+          new Attribute(
+              _AttributeClass,
+              "form-control form-control-rounded appointment-class"
+          ),
+        ])
+    );
+    data.push(
+      new SelectItem("Miss", "Miss", [
         new Attribute(
           _AttributeClass,
           "form-control form-control-rounded appointment-class"
