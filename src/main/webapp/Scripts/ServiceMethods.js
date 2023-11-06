@@ -298,25 +298,30 @@ async function SaveSession_Success(Response) {
         console.log(Response)
         if (_UpdateSession) {
             try {
-                //send notification to all patients
-                //get all appointments in the session
-                const response = await PostAsync({
-                    serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(sessionId)
-                });
-                console.log(response)
-                let doctorName = '';
-                let startingDateTime = Response.Data.TimeStart;
-                let endingDateTime = Response.Data.TimeEnd;
+                if(_ISNotifyPatientEnabled){
+                    //send notification to all patients
+                    //get all appointments in the session
+                    const response = await PostAsync({
+                        serviceMethod: ServiceMethods.GetAppoinment, requestBody: new SessionId(sessionId)
+                    });
+                    console.log(response)
+                    let doctorName = '';
+                    let startingDateTime = Response.Data.TimeStart;
+                    let endingDateTime = Response.Data.TimeEnd;
 
-                if (response.Data.length > 0) {
-                    doctorName = response.Data[0].DoctorName;
+                    if (response.Data.length > 0) {
+                        doctorName = response.Data[0].DoctorName;
+                    }
+
+                    await shareSessionUpdateWithPatients(response.Data, {
+                        messageTitle: "Session Updated!",
+                        doctorName: doctorName,
+                        startingDateTime: startingDateTime,
+                        endingDateTime: endingDateTime
+                    });
+                }else{
+                    ShowMessage(Messages.SessionUpdateSuccess, MessageTypes.Success, "Success!");
                 }
-                await shareSessionUpdateWithPatients(response.Data, {
-                    messageTitle: "Session Updated!",
-                    doctorName: doctorName,
-                    startingDateTime: startingDateTime,
-                    endingDateTime: endingDateTime
-                });
 
             } catch (e) {
                 console.log(e)
@@ -326,9 +331,7 @@ async function SaveSession_Success(Response) {
             await SetReservedAppointmentCount(sessionId);
             ShowMessage(Messages.SessionSaveSuccess, MessageTypes.Success, "Success!");
         }
-
         CmdCancelSession_Click();
-
     }
 }
 
@@ -341,6 +344,15 @@ async function shareSessionUpdateWithPatients(appointments = [], {
 }) {
 
     //filter appointments that are not cancelled & not reserved patient
+    const doctorStatus = document.getElementById('DoctorStatus').value;
+    const sessionUpdateRemarks = document.getElementById('TxtSession_Update_Remarks').value;
+
+
+    if(doctorStatus === 'CANCELLED'){
+        messageTitle = 'Session Cancelled!'
+    }else if(doctorStatus === 'DELAYED'){
+        messageTitle = 'Session will be delayed!'
+    }
 
     let appointmentsNotCancelled = appointments.filter(appointment => {
         const stringPatientId = appointment.PatientId.toString();
@@ -368,27 +380,29 @@ async function shareSessionUpdateWithPatients(appointments = [], {
         const appointment = appointmentsNotCancelled[i];
         const {Id, Mobile, Number} = appointment;
         let messageToPatient = ''
-        if (endingDateTime) {
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })}`
-        } else {
-            messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
-                hour: 'numeric', minute: 'numeric', hour12: true
-            })}`
-        }
+        // if (endingDateTime) {
+        //     messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })} Session End Time: ${new Date(endingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })}`
+        // } else {
+        //     messageToPatient = `${messageTitle} Docnote Booking Reference Number : ${Id}, Appointment Number: ${Number}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+        //         hour: 'numeric', minute: 'numeric', hour12: true
+        //     })}`
+        // }
 
-        // let status = await PostAsync({
-        //     serviceMethod: ServiceMethods.SENDSMS, requestBody: {
-        //         "ScheduleMedium": [{
-        //             "MediumId": 1, "Destination": Mobile, "Status": 0
-        //         }], "ScheduleMediumType": [{
-        //             "MediumId": 1, "Destination": Mobile, "Status": 0
-        //         }], "NotifactionType": 1, "Message": messageToPatient, "Status": 0
-        //     }
-        // })
+        let status = await shareAppointmentDetailsWithPatient({
+            messageTitle: messageTitle,
+            mobileNumber: Mobile,
+            appointmentNumber: Number,
+            appointmentId: Id,
+            doctorName: doctorName,
+            startingDateTime: startingDateTime,
+            remarks:sessionUpdateRemarks
+        })
+
+
         setCompletedCount()
     }
     setCompletedStatus();
@@ -745,6 +759,7 @@ function FilterDoctorSessionData(Data) {
 
 function LoadSessionData(Id) {
     _UpdateSession = true;
+    _ISNotifyPatientEnabled = false;
     $('#session-select-modal').modal('hide');
     new AddNewSession().Render(Containers.MainContent);
     GetInstituteBranches();
@@ -953,34 +968,35 @@ function SaveAppointment_Success(Response) {
  * @param {string} doctorName - Name of the doctor
  * @param {string} startingDateTime - Starting date and time of the appointment
  * @param {function} onSuccess - Callback function
+ * @param {string} remarks - custom message to patients
  * */
-function shareAppointmentDetailsWithPatient({
+async function shareAppointmentDetailsWithPatient({
                                                 messageTitle,
                                                 mobileNumber,
                                                 appointmentNumber,
                                                 appointmentId,
                                                 doctorName,
-                                                startingDateTime
+                                                startingDateTime,
+                                                remarks= undefined
                                             }, onSuccess = null) {
-    const message = `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
+    let message = `${messageTitle} Docnote Booking Reference Number : ${appointmentId}, Appointment Number: ${appointmentNumber}, Doctor: ${doctorName}, Session Date: ${startingDateTime.split("T")[0]}, Session Start Time: ${new Date(startingDateTime).toLocaleString('en-US', {
         hour: 'numeric', minute: 'numeric', hour12: true
     })}`;
+    if(remarks){
+        message += `. Remarks: ${remarks}`;
+    }
+    console.log(message);
     const data = `${_NurseBranch.InstituteId}||${mobileNumber}||${message}`
     const encoded = enMsg(data);
 
-    fetch(`${_NotificationBaseUrl}/notification`, {
+    return await fetch(`${_NotificationBaseUrl}/notification`, {
         method: "POST",
         headers: {
             "Content-type": "application/json",
         },
         body: JSON.stringify({data: encoded}),
     })
-    .then((res) => res.json())
-    .then((response) => {
-        if(onSuccess){
-            onSuccess(response);
-        }
-    })
+
 }
 
 

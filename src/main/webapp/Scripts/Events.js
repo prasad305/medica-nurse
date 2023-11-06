@@ -1654,3 +1654,8 @@ function Report_Search() {
         CreateDataTable('TableReportSearchResults');
     });
 }
+
+function  setNotifySetting(){
+    _ISNotifyPatientEnabled = document.getElementById('ChkSMSEnable').checked;
+    console.log(_ISNotifyPatientEnabled)
+}
