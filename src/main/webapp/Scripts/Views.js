@@ -1308,14 +1308,14 @@ function AddPatient() {
       ])
     );
     SelectTitle.appendChild(
-      new SelectItem("Mrs.", "Mrs.", [
-        new Attribute(_AttributeClass, "form-control form-control-rounded"),
-      ])
+        new SelectItem("Mrs.", "Mrs.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
-      new SelectItem("Ms.", "Ms.", [
-        new Attribute(_AttributeClass, "form-control form-control-rounded"),
-      ])
+        new SelectItem("Ms.", "Ms.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
       new SelectItem("Miss.", "Miss.", [
@@ -1328,9 +1328,19 @@ function AddPatient() {
       ])
     );
     SelectTitle.appendChild(
+        new SelectItem("Master.", "Master.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    SelectTitle.appendChild(
       new SelectItem("Dr.", "Dr.", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
+    );
+    SelectTitle.appendChild(
+        new SelectItem("Prof.", "Prof.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
       new SelectItem("Rev.", "Rev.", [
@@ -5020,7 +5030,7 @@ function DoctorsSearchResultsTable() {
     const ButtonAddNewBranch = new Button(
       undefined,
       "Add A New Doctors",
-      "btn btn-primary btn-rounded float-right",
+      "btn btn-primary btn-rounded float-right d-none",
       [new Attribute(_AttributeOnClick, "DoctorAddOrUpdateModalView()")]
     );
     ColumnDoctorPageActions.appendChild(ButtonAddNewBranch);
