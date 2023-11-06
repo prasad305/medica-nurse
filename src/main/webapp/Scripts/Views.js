@@ -1059,6 +1059,11 @@ function EditPatient() {
       ])
     );
     SelectTitle.appendChild(
+        new SelectItem("Prof.", "Prof.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
+    );
+    SelectTitle.appendChild(
       new SelectItem("Rev.", "Rev.", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
@@ -1341,6 +1346,11 @@ function AddPatient() {
       new SelectItem("Dr.", "Dr.", [
         new Attribute(_AttributeClass, "form-control form-control-rounded"),
       ])
+    );
+    SelectTitle.appendChild(
+        new SelectItem("Prof.", "Prof.", [
+          new Attribute(_AttributeClass, "form-control form-control-rounded"),
+        ])
     );
     SelectTitle.appendChild(
       new SelectItem("Rev.", "Rev.", [
